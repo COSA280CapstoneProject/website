@@ -2,8 +2,9 @@
 This repo contains the website for the ICT Project
 
 ## Website Requirements
+
 1. Create landing page targeted at industry partners
-2. Partner login functionality
+2. Admin login functionality
 3. Ability for partners to post potential student projects
 4. Ability for partners to post potential co-op or internship opportunities
 5. Email notification to Sask Poly staff when a new posting comes through
