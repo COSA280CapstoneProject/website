@@ -3,6 +3,8 @@ This repo contains the website for the ICT Project
 
 ICT Website Project Board: https://github.com/orgs/COSA280CapstoneProject/projects/5/views/1
 
+Page Preview: https://cosa280capstoneproject.github.io/ICTWebsite/html/index.html
+
 ## Website Requirements
 
 1. Create landing page targeted at industry partners
