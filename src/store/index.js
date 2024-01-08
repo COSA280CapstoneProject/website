@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { createStore } from 'vuex';
 
 // Create a new store instance
@@ -45,8 +46,10 @@ const store = createStore({
             commit('SET_ADMIN_INFO', adminInfo);
         },
         loadPostings({ commit }) {
-            // Fetch job postings from the backend and commit to state
-            // Example: axios.get('/api/postings').then(...)
+            // Get job postings from the backend and commit to state
+            axios.get('/api/postings').then((response) => {
+                commit('SET_POSTINGS', response.data);
+            });
         },
         logout({ commit }) {
             localStorage.removeItem('token'); // Remove the token from localStorage
