@@ -70,8 +70,11 @@
         <input type="text" id="Description" name="Description">
       </div>
       <div class="FileUpload">
-        <label for="fileUpload">Upload File: </label>
+        <label for="fileUpload">Upload File </label>
         <input type="file" id="fileUpload" name="fileUpload">
+      </div>
+    <div class="submit">
+      <button type="submit" class="submit-button">Submit</button>
       </div>
     </div>
   </div>
@@ -134,5 +137,29 @@
 .Title input {
   transform: translateX(110px);
   width: 480px;
+}
+.Description {
+  transform: translateX(-30px);
+  padding-bottom: 20px;
+}
+.Description input {
+  transform: translateX(60px);
+  width: 480px;
+  padding-bottom: 80px;
+}
+.FileUpload {
+  transform: translateX(-150px);
+  padding-bottom: 20px;
+} 
+.FileUpload input {
+  transform: translateX(63px);
+  cursor: pointer; 
+}
+.submit-button {
+  background-color: #732181; 
+  color: white;
+  border: 1px solid black; 
+  padding: 10px 20px; 
+  cursor: pointer; 
 }
 </style>
