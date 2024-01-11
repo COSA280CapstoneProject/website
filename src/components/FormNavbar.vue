@@ -14,9 +14,10 @@
     <button class="four-square">
       <i class="fa-solid fa-table-cells-large"></i>
     </button>
-    <button class="more-options">
+    <button class="more-options" @click="showDropdown = !showDropdown">
       <i class="fas fa-ellipsis-v"></i>
     </button>
+    <ExportDropdown :show="showDropdown" />
 
     </div>
     </div>
@@ -24,11 +25,17 @@
   </template>
   
   <script>
+  import ExportDropdown from '@/components/ExportDropdown.vue'
 
   export default {
     name: 'SearchAndSort',
+    components: {
+      ExportDropdown,
+    },
     data() {
-      
+      return {
+      showDropdown: false
+    }
     },
     methods: {
     toggleMenu() {

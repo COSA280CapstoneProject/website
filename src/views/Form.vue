@@ -1,24 +1,30 @@
 <template>
     <div>
-      <FormNavbar />
-      <StatsPopup />
+        <FormNavbar @toggleDropdown="showDropdown = !showDropdown" />
+    <ExportDropdown v-if="showDropdown" />
     </div>
   </template>
   
   <script>
   import FormNavbar from '@/components/FormNavbar.vue'
-  import StatsPopup from '@/components/StatsPopup.vue'
+  import ExportDropdown from '@/components/ExportDropdown.vue';
+  
   
   export default {
-    name: 'FormView',
-    components: {
-      FormNavbar,
-      StatsPopup
+  name: 'FormView',
+  components: {
+    FormNavbar,
+    ExportDropdown,
+    
+  },
+  data() {
+    return {
+        showDropdown: false,
     }
-    // ...existing code...
   }
+}
 
-  
+
 
 
   </script>
