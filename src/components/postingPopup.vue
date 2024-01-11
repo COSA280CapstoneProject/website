@@ -18,7 +18,7 @@
           <input type="text" id="email" name="email">
         </div>
         <div class="phoneNumber">
-          <label for="phoneNumber">Phone Number:</label>
+          <label for="phoneNumber">Phone Number </label>
           <input type="text" id="phoneNumber" name="phoneNumber">
         </div>
       </div>
@@ -34,8 +34,8 @@
         </div>
       </div>
       <div class="startDate">
-        <div>
-          <label for="startDate">Start Date:</label>
+        <div class="start-date-container">
+          <label for="startDate">Start Date </label>
           <div class="date-inputs">
             <select id="Year" name="Year">
               <option value=""></option>
@@ -91,5 +91,48 @@
 }
 .email input {
   margin-left: 95px;
+}
+.phoneNumber {
+  transform: translateX(3px);
+}
+.contactName input {
+  transform: translateX(4px);
+}
+.posting {
+  margin-left: -390px;
+  padding-bottom: 20px;
+}
+.posting select {
+  transform: translateX(28px);
+}
+.startDate {
+  display: flex;
+  flex-direction: row; 
+  align-items: center; 
+  transform: translateX(639px);
+}
+
+.start-date-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.startDate label {
+  margin-right: 10px; 
+}
+
+.date-inputs {
+  display: flex;
+  gap: 10px; 
+  transform: translateX(60px);
+}
+.Title {
+  transform: translateX(-55px);
+  padding-bottom: 20px;
+}
+.Title input {
+  transform: translateX(110px);
+  width: 480px;
 }
 </style>
