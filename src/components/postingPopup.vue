@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="Postings">
     <h1>Create Posting</h1>
     <div class="input-group">
       <div class="org-contact-container">
@@ -76,30 +76,53 @@
     <div class="submit">
       <button type="submit" class="submit-button">Submit</button>
       </div>
+    <div class= close-button>
+      <button class="close-button" @click="goBack">X</button>
+      </div>
     </div>
   </div>
 </template>
-
-<script></script>
-
+ 
+<script>
+export default {
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    }
+  }
+}
+</script>
+ 
 <style>
+.Postings {
+  z-index: 1000;
+  border: 1px solid black;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  padding: 40px;
+}
 .org-contact-container, .contact-info-container {
   display: flex;
   justify-content: center;
   gap: 20px; 
   padding-bottom: 20px;
 }
+.orgName {
+  margin-left: -5px;
+}
 .email {
-  transform: translateX(3px);
+  transform: translateX();
 }
 .email input {
   margin-left: 95px;
 }
 .phoneNumber {
-  transform: translateX(3px);
+  transform: translateX();
 }
 .contactName input {
-  transform: translateX(4px);
+  transform: translateX();
 }
 .posting {
   margin-left: -390px;
@@ -112,19 +135,19 @@
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX(639px);
+  transform: translateX();
 }
-
+ 
 .start-date-container {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
 }
-
+ 
 .startDate label {
   margin-right: 10px; 
 }
-
+ 
 .date-inputs {
   display: flex;
   gap: 10px; 
@@ -161,5 +184,18 @@
   border: 1px solid black; 
   padding: 10px 20px; 
   cursor: pointer; 
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.close-button:hover {
+  color: white;
+  background-color: red;
 }
 </style>
