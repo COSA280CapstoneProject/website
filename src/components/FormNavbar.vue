@@ -58,7 +58,7 @@
   align-items: center;
   justify-content: center; /* Center the container */
   height: 60px;
-  background-color: #b108ff;
+  background-image: url("@/assets/header.jpg");
 }
 
 .Navbar-container {
