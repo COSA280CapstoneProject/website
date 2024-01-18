@@ -91,55 +91,77 @@
 </template>
  
 <script>
+import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
+
 export default {
-data() {
-  return {
-    fileName: [],
-    fileDataUrl: [],
-    fileSize: []
+  setup() {
+    const toast = useToast();
+    const fileName = ref([]);
+    const fileDataUrl = ref([]);
+    const fileSize = ref([]);
+
+    const goBack = () => {
+      this.$router.go(-1);
+    };
+
+    const onDragOver = (e) => {
+      e.preventDefault();
+    };
+
+    const onDrop = (e) => {
+      e.preventDefault();
+      onFileChange(e);
+    };
+
+    const onFileChange = (e) => {
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      Array.from(files).forEach(file => {
+        fileName.value.push(file.name);
+        fileSize.value.push(file.size);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          fileDataUrl.value.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+      toast.add({severity:'success', summary: 'File Uploaded', detail:'Your file has been uploaded successfully.', life: 3000});
+    };
+
+    const getPreviewImage = (index) => {
+      if (fileDataUrl.value[index].startsWith('data:image')) {
+        return fileDataUrl.value[index];
+      } else {
+        return require('@/assets/file.png'); 
+      }
+    };
+
+    const removeFile = (index, event) => {
+      event.stopPropagation();
+      fileDataUrl.value.splice(index, 1);
+      fileName.value.splice(index, 1);
+      fileSize.value.splice(index, 1);
+      toast.add({severity:'warn', summary: 'File Removed', detail:'Your file has been removed.', life: 3000});
+    };
+
+    const getFileSize = (index) => {
+      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
+    };
+
+    return {
+      fileName,
+      fileDataUrl,
+      fileSize,
+      goBack,
+      onDragOver,
+      onDrop,
+      onFileChange,
+      getPreviewImage,
+      removeFile,
+      getFileSize
+    };
   }
-},
-methods: {
-  goBack() {
-    this.$router.go(-1);
-  },
-  onDragOver(e) {
-    e.preventDefault();
-  },
-  onDrop(e) {
-    e.preventDefault();
-    this.onFileChange(e);
-  },
-  onFileChange(e) {
-    const files = e.target.files || e.dataTransfer.files;
-    if (!files.length) return;
-    Array.from(files).forEach(file => {
-      this.fileName.push(file.name);
-      this.fileSize.push(file.size);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.fileDataUrl.push(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    });
-  },
-  getPreviewImage(index) {
-    if (this.fileDataUrl[index].startsWith('data:image')) {
-      return this.fileDataUrl[index];
-    } else {
-      return require('@/assets/file.png'); 
-    }
-  },
-  removeFile(index, event) {
-    event.stopPropagation(); // add this line
-    this.fileDataUrl.splice(index, 1);
-    this.fileName.splice(index, 1);
-    this.fileSize.splice(index, 1);
-  },
-  getFileSize(index) {
-    return (this.fileSize[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
-  }
-}
 }
 </script>
  
