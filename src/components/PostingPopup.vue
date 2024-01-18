@@ -72,7 +72,7 @@
         <div class="FileUpload">
     <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
       <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
-      <div class="center-text" v-if="!fileDataUrl.length">Drag & drop image here or choose</div>
+      <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
       <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
     <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
     <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
