@@ -1,0 +1,24 @@
+<template>
+    <AdminViewVue/>
+    <div class="home">
+        <h1>Home Page</h1>
+        <p>
+        This is the home page.
+        </p>
+    </div>
+</template>
+
+<script>
+import AdminViewVue from '@/components/AdminView.vue';
+
+export default {
+    components: {
+        AdminViewVue
+    }
+}
+</script>
+
+
+<style scoped>  
+
+</style>
