@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import PostingPopup from './postingPopup.vue';
+import PostingPopup from './PostingPopup.vue';
 
 export default {
   name: 'HelloWorld',
