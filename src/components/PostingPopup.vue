@@ -70,28 +70,78 @@
           <input type="text" id="Description" name="Description">
         </div>
         <div class="FileUpload">
-          <label for="fileUpload">Upload File </label>
-          <input type="file" id="fileUpload" name="fileUpload">
-        </div>
+    <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
+      <p v-if="!fileDataUrl">Drag & drop image here or choose</p>
+      <img v-if="fileDataUrl" :src="getPreviewImage()" class="preview-image" :title="fileName" @click="removeFile" />
+    </div>
+    <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none">
+  </div>
       <div class="submit">
         <button type="submit" class="submit-button">Submit</button>
-        </div>
-      <div class= close-button>
+      </div>
+      <div class="close-button">
         <button class="close-button" @click="goBack">X</button>
-        </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
    
-  <script>
-  export default {
-    methods: {
-      goBack() {
-        this.$router.go(-1);
+<script>
+export default {
+  data() {
+    return {
+      fileName: '',
+      fileDataUrl: ''
+    }
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
+    onFileChange(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.fileName = files[0].name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.fileDataUrl = e.target.result;
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    onDragOver() {
+      // you can add some visual feedback here
+    },
+    onDrop(e) {
+      this.onFileChange(e);
+    },
+    getPreviewImage() {
+      const extension = this.fileName.split('.').pop().toLowerCase();
+      switch (extension) {
+        case 'doc':
+        case 'docx':
+          return require('@/assets/word.png');
+        case 'xls':
+        case 'xlsx':
+          return require('@/assets/excel.png');
+        case 'ppt':
+        case 'pptx':
+          return require('@/assets/powerpoint.png');
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+          return this.fileDataUrl;
+        default:
+          return this.fileDataUrl; // Return the actual file preview for other file types
       }
+    },
+    removeFile() {
+      this.fileDataUrl = '';
+      this.fileName = '';
     }
   }
-  </script>
+}
+</script>
    
   <style>
   .Postings {
@@ -178,6 +228,38 @@
     transform: translateX(63px);
     cursor: pointer; 
   }
+  .drag-drop-box {
+  border: 2px dashed #732181;
+  padding: 20px;
+  margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.drag-drop-box:hover {
+  color: #732181; 
+}
+.upload-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+  background: #732181;
+  color: white;
+  cursor: pointer;
+}
+.FileUpload {
+  transform: translateX(5px);
+  padding-bottom: 20px;
+}
+.preview-image {
+  width: 50px;
+  height: 50px;
+}
   .submit-button {
     background-color: #732181; 
     color: white;
