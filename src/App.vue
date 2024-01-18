@@ -1,9 +1,10 @@
 <template>
+ 
   <HelloWorld msg=""/>
 </template>
 
 <script>
-import HelloWorld from './views/HomePage.vue'
+import HelloWorld from './views/Form.vue'
 
 export default {
   name: 'App',

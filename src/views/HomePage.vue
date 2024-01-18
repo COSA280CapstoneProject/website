@@ -1,24 +1,35 @@
 <template>
-    <AdminViewVue/>
-    <div class="home">
-        <h1>Home Page</h1>
-        <p>
-        This is the home page.
-        </p>
-    </div>
+  <div class="center-container">
+    <button class="center-button" @click="showPopup = true">Click Me</button>
+    <PostingPopup v-if="showPopup" @close="showPopup = false" />
+  </div>
 </template>
 
 <script>
-import AdminViewVue from '@/components/AdminView.vue';
+import PostingPopup from '@/components/PostingPopup.vue'
 
 export default {
-    components: {
-        AdminViewVue
+  name: 'HomePage',
+  components: {
+    PostingPopup
+  },
+  data() {
+    return {
+      showPopup: false
     }
+  }
 }
 </script>
 
+<style scoped>
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-<style scoped>  
-
+.center-button {
+  padding: 10px 20px;
+}
 </style>
