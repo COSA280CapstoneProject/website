@@ -71,10 +71,14 @@
         </div>
         <div class="FileUpload">
     <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
-      <p v-if="!fileDataUrl">Drag & drop image here or choose</p>
-      <img v-if="fileDataUrl" :src="getPreviewImage()" class="preview-image" :title="fileName" @click="removeFile" />
+      <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
+      <div class="center-text" v-if="!fileDataUrl.length">Drag & drop image here or choose</div>
+      <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
+    <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
+    <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
+  </div>
     </div>
-    <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none">
+    <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
   </div>
       <div class="submit">
         <button type="submit" class="submit-button">Submit</button>
@@ -90,8 +94,9 @@
 export default {
   data() {
     return {
-      fileName: '',
-      fileDataUrl: ''
+      fileName: [],
+      fileDataUrl: [],
+      fileSize: []
     }
   },
   methods: {
@@ -101,43 +106,31 @@ export default {
     onFileChange(e) {
       const files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
-      this.fileName = files[0].name;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.fileDataUrl = e.target.result;
-      };
-      reader.readAsDataURL(files[0]);
+      Array.from(files).forEach(file => {
+        this.fileName.push(file.name);
+        this.fileSize.push(file.size);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.fileDataUrl.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
     },
-    onDragOver() {
-      // you can add some visual feedback here
-    },
-    onDrop(e) {
-      this.onFileChange(e);
-    },
-    getPreviewImage() {
-      const extension = this.fileName.split('.').pop().toLowerCase();
-      switch (extension) {
-        case 'doc':
-        case 'docx':
-          return require('@/assets/word.png');
-        case 'xls':
-        case 'xlsx':
-          return require('@/assets/excel.png');
-        case 'ppt':
-        case 'pptx':
-          return require('@/assets/powerpoint.png');
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-        case 'gif':
-          return this.fileDataUrl;
-        default:
-          return this.fileDataUrl; // Return the actual file preview for other file types
+    getPreviewImage(index) {
+      if (this.fileDataUrl[index].startsWith('data:image')) {
+        return this.fileDataUrl[index];
+      } else {
+        return require('@/assets/file.png'); 
       }
     },
-    removeFile() {
-      this.fileDataUrl = '';
-      this.fileName = '';
+    removeFile(index, event) {
+      event.stopPropagation(); // add this line
+      this.fileDataUrl.splice(index, 1);
+      this.fileName.splice(index, 1);
+      this.fileSize.splice(index, 1);
+    },
+    getFileSize(index) {
+      return (this.fileSize[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
     }
   }
 }
@@ -228,6 +221,17 @@ export default {
     transform: translateX(63px);
     cursor: pointer; 
   }
+  .center-text {
+    width: 100%;
+    text-align: center;
+  }
+  .remove-instruction {
+  color: #732181;
+  font-size: 12px;
+  text-align: center;
+  align-self: center;
+  transform: translateY(-15px);
+}
   .drag-drop-box {
   border: 2px dashed #732181;
   padding: 20px;
@@ -236,8 +240,9 @@ export default {
   cursor: pointer;
   color: black;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 .drag-drop-box:hover {
   color: #732181; 
@@ -259,6 +264,12 @@ export default {
 .preview-image {
   width: 50px;
   height: 50px;
+}
+.file-info {
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10px;
 }
   .submit-button {
     background-color: #732181; 
