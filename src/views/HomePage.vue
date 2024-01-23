@@ -1,7 +1,6 @@
 <template>
     <div class="center-container">
       <button class="center-button" @click="showPopup = true">Click Me</button>
-      <button class="center-button" @click="goToAdminLogin">Go to Admin Login</button>
       <PostingPopup v-if="showPopup" @close="showPopup = false" />
     </div>
   </template>
