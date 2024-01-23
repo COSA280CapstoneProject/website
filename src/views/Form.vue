@@ -1,7 +1,7 @@
 <template>
     <div>
         <FormNavbar @toggleDropdown="showDropdown = !showDropdown" />
-    <ExportDropdown v-if="showDropdown" />
+        <ExportDropdown v-if="showDropdown" />
     </div>
   </template>
   
