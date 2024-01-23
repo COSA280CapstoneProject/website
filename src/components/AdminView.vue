@@ -1,36 +1,85 @@
 <template>
-    <div class="admin-login">
-      <h1>Admin Login</h1>
-      <form @submit.prevent="login">
-        <div>
-          <label for="username">Username:</label>
-          <input type="text" id="username" v-model="username">
+  <div>
+    <nav class="navbar">
+      <div class="user-info">
+        <span>{{ firstName }} {{ lastName }}</span>
+      </div>
+      <div class="settings">
+        <button @click="showSettings = !showSettings">
+          <i class="pi pi-cog"></i>
+        </button>
+        <div v-if="showSettings" class="dropdown-menu">
+          <!-- Settings options go here -->
         </div>
-        <div>
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password">
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        username: '',
-        password: ''
-      }
-    },
-    methods: {
-      login() {
-        // Here you can implement your login logic
-        console.log(`Admin is trying to login with username: ${this.username} and password: ${this.password}`);
-      }
-    }
-  }
-  </script>
-  
-  <style scoped>
-  </style>
+      </div>
+      <div class="form-page">
+        <button>Form Page</button>
+      </div>
+    </nav>
+  </div>
+</template>
+
+<script>
+import 'primeicons/primeicons.css';
+export default {
+  data() {
+    return {
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      showSettings: false,
+    };
+  },
+};
+</script>
+
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: purple;
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px;
+}
+
+.navbar > div {
+  margin-left: 15px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.settings button {
+  background: none;
+  border: none;
+}
+
+.settings button i {
+  font-size: 28px;
+}
+
+.settings:hover .dropdown-menu {
+  display: block;
+}
+</style>

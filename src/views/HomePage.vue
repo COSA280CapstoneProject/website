@@ -1,4 +1,5 @@
 <template>
+  <AdminView/>
     <div class="center-container">
       <button class="center-button" @click="showPopup = true">Click Me</button>
       <PostingPopup v-if="showPopup" @close="showPopup = false" />
@@ -7,11 +8,12 @@
 
 <script>
 import PostingPopup from '@/components/PostingPopup.vue'
+import AdminView from '@/components/AdminView.vue'
 
 export default {
   name: 'HomePage',
   components: {
-    PostingPopup
+    PostingPopup, AdminView
   },
   data() {
     return {
