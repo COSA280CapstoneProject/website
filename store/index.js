@@ -1,5 +1,6 @@
-import axios from 'axios';
 import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
+import axios from 'axios';
 
 // Create a new store instance
 const store = createStore({
@@ -45,11 +46,20 @@ const store = createStore({
             commit('SET_AUTHENTICATED', true);
             commit('SET_ADMIN_INFO', adminInfo);
         },
-        loadPostings({ commit }) {
-            // Get job postings from the backend and commit to state
-            axios.get('/api/postings').then((response) => {
+        async loadPostings({commit}) {
+            // Fetch job postings from the backend and commit to state
+            // Example: axios.get('/api/postings').then(...)
+            try {
+                // Assuming your backend API endpoint for job postings is /api/postings
+                const response = await axios.get('/api/postings');
+
+                // Commit the fetched postings to the state
                 commit('SET_POSTINGS', response.data);
-            });
+
+            } catch (error) {
+                console.error('Error loading job postings:', error);
+                // Handle error, you might want to commit an error state or show a notification
+            }
         },
         logout({ commit }) {
             localStorage.removeItem('token'); // Remove the token from localStorage
@@ -57,6 +67,7 @@ const store = createStore({
         },
         // Other actions as needed for your application logic
     },
+    plugins: [createPersistedState()],
 });
 
 export default store;

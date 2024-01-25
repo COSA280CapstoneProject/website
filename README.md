@@ -1,4 +1,4 @@
-# ict-portal
+# ict-agency-website
 
 ## Project setup
 ```

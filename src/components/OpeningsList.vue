@@ -28,7 +28,7 @@ export default {
         jobOpenings.value = response.data;
       } catch (error) {
         console.error('Error fetching job openings:', error);
-        // Handle error (e.g., show a user-friendly message)
+
       }
     };
 
