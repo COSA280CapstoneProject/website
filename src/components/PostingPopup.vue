@@ -81,7 +81,7 @@
   <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
 </div>
     <div class="submit">
-      <button type="submit" class="submit-button">Submit</button>
+      <button @click="submitForm">Submit</button>
     </div>
     <div class="close-button">
       <button class="close-button" @click="goBack">X</button>
@@ -149,6 +149,29 @@ export default {
       return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
     };
 
+    // The following code is for submitting the form to the server. It is not connected to the backend yet. so it will error
+/*
+    const submitForm = () => {
+  if (!this.fileName || !this.fileDataUrl) {
+    this.$toast.add({severity:'error', summary: 'Error', detail:'Please fill out the form correctly.', life: 3000});
+  } else {
+    const formData = new FormData();
+    formData.append('fileName', this.fileName);
+    formData.append('fileDataUrl', this.fileDataUrl);
+
+    axios.post('/api/submit', formData)
+      .then(response => {
+        // Handle success
+        this.$toast.add({severity:'success', summary: 'Success', detail:'Form submitted successfully.', life: 3000});
+      })
+      .catch(error => {
+        // Handle error
+        this.$toast.add({severity:'error', summary: 'Error', detail:'Failed to submit the form.', life: 3000});
+      });
+  }
+};
+*/
+
     return {
       fileName,
       fileDataUrl,
@@ -159,10 +182,14 @@ export default {
       onFileChange,
       getPreviewImage,
       removeFile,
-      getFileSize
+      getFileSize,
+      submitForm
     };
+  
+    }
   }
 }
+
 </script>
  
 <style>
