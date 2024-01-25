@@ -183,12 +183,12 @@ export default {
       getPreviewImage,
       removeFile,
       getFileSize,
-      submitForm
+      // submitForm
     };
   
     }
   }
-}
+
 
 </script>
  
