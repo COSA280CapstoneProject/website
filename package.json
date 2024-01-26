@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "primeicons": "^4.1.0",
     "primevue": "^3.4.0",
+    "v-click-outside": "^3.2.0",
     "vue": "^3.2.13"
   },
   "devDependencies": {

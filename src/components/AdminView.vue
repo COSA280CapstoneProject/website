@@ -4,12 +4,13 @@
       <div class="user-info">
         <span>{{ firstName }} {{ lastName }}</span>
       </div>
-      <div class="settings">
-        <button @click="showSettings = !showSettings">
+      <div class="settings" ref="settings" @click="toggleSettings">
+        <button>
           <i class="pi pi-cog"></i>
         </button>
-        <div v-if="showSettings" class="dropdown-menu">
-          <!-- Settings options go here -->
+        <div v-show="showSettings" class="dropdown-menu">
+          <div class="dropdown-option">Account Management</div>
+          <div class="dropdown-option">Logout</div>
         </div>
       </div>
       <div class="form-page">
@@ -21,16 +22,33 @@
 
 <script>
 import 'primeicons/primeicons.css';
+
 export default {
   data() {
     return {
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      showSettings: false,
-    };
+      showSettings: false
+    }
   },
-};
+  mounted() {
+    document.addEventListener('click', this.documentClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.documentClick);
+  },
+  methods: {
+    toggleSettings(event) {
+      event.stopPropagation();
+      this.showSettings = !this.showSettings;
+    },
+    documentClick(event) {
+      if (this.$refs.settings && !this.$refs.settings.contains(event.target)) {
+        this.showSettings = false;
+      }
+    }
+  }
+}
 </script>
+
 
 <style scoped>
 * {
@@ -61,13 +79,12 @@ html, body {
 }
 
 .dropdown-menu {
-  display: none;
   position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  padding: 12px 16px;
   z-index: 1;
+  display: none;
 }
 
 .settings button {
@@ -80,6 +97,12 @@ html, body {
 }
 
 .settings:hover .dropdown-menu {
+  display: block;
+}
+.dropdown-option {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
   display: block;
 }
 </style>
