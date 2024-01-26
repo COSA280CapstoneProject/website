@@ -1,26 +1,55 @@
 <template>
   <div>
     <nav class="navbar">
-      <div class="user-info">
-        <span>{{ firstName }} {{ lastName }}</span>
-      </div>
+      <!-- ... other navbar content ... -->
+    <div class="user-info">
+      {{ firstName }} {{ lastName }}
+    </div>
       <div class="settings" ref="settings" @click="toggleSettings">
+        <!-- Settings button -->
         <button :class="{ 'spin-animation': showSettings }">
           <i class="pi pi-cog"></i>
         </button>
+        <!-- Dropdown Menu -->
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
-            <div class="dropdown-option">Account Management</div>
-            <div class="dropdown-option">Logout</div>
+            <!-- Account Management Popup Trigger -->
+            <div class="dropdown-option" @click="openPopup">Account Management</div>
+            <div class="dropdown-option" @click="toggleSettings">Logout</div>
           </div>
         </transition>
       </div>
       <div class="form-page">
-        <button>Form Page</button>
+          <!-- Form Page button -->
+          <button>Form Page</button>
+        </div>
+      </nav>
+      <!-- Popup Overlay and Content -->
+      <div v-show="showPopup" class="overlay">
+        <div class="popup">
+          <div class="popup-header">
+            <span>Admin Management</span>
+            <!-- Close Button -->
+            <button class="close-button" @click="closePopup">X</button>
+          </div>
+          <div class="popup-content">
+            <!-- Popup Form -->
+            <button class="add-admin" @click="addAdmin">Add Admin</button>
+          </div>
+          <!-- Admin List -->
+          <div class ="admin-list-container">
+          <div class="admin-list">
+            <div v-for="(admin, index) in admins" :key="index" class="admin-item" @click="selectAdmin(index)">
+              <p>{{ admin.name }} ({{ admin.email }})</p>
+            </div>
+            </div>
+          </div>
+            <button class="remove-admin" @click="removeAdmin" :disabled="selectedAdmin === null">Remove Admin</button>
+          </div>
+        </div>
       </div>
-    </nav>
-  </div>
 </template>
+
 
 
 
@@ -30,28 +59,89 @@ import 'primeicons/primeicons.css';
 export default {
   data() {
     return {
-      showSettings: false
+      firstName: 'John',
+      lastName: 'Doe',
+      showSettings: false,
+      showPopup: false,
+      admins: [
+        { name: 'Admin One', email: 'admin1@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Admin Two', email: 'admin2@example.com' },
+      ],
+      selectedAdmin: null
     }
   },
+
+  watch: {
+    showPopup(value) {
+      document.body.style.overflow = value ? 'hidden' : '';
+    },
+  },
+
   methods: {
     toggleSettings() {
       this.showSettings = !this.showSettings;
     },
+
+    openPopup() {
+    this.showSettings = false;
+    this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+
     outsideClick(event) {
-      if (this.showSettings && (!this.$refs.dropdown.contains(event.target) &&
-        !this.$refs.settings.contains(event.target))) {
-        this.showSettings = false;
+    if (!this.showPopup && this.showSettings && this.$refs.dropdown && this.$refs.settings &&
+        !this.$refs.dropdown.contains(event.target) &&
+        !this.$refs.settings.contains(event.target)) {
+      this.showSettings = false;
+    }
+    if (this.showPopup && this.$refs.popup && !this.$refs.popup.contains(event.target)) {
+      this.closePopup();
+    }
+    },
+    },
+
+    mounted() {
+      document.addEventListener('click', this.outsideClick);
+    },
+    beforeUnmount() {
+      document.removeEventListener('click', this.outsideClick);
+    },
+  
+
+    addAdmin() {
+      // Add admin logic
+    },
+    selectAdmin(index) {
+      this.selectedAdmin = index;
+    },
+    removeAdmin() {
+      if (this.selectedAdmin !== null) {
+        // Remove admin logic
+        console.log("Removing admin:", this.admins[this.selectedAdmin]);
+        // Reset selected admin
+        this.selectedAdmin = null;
       }
     }
-  },
-  mounted() {
-    document.addEventListener('click', this.outsideClick);
-  },
-  beforeUnmount() {
-    document.removeEventListener('click', this.outsideClick);
   }
-}
 </script>
+
 
 
 <style scoped>
@@ -67,18 +157,28 @@ html, body {
 }
 
 .form-page button {
-  background-color: #4CAF50; /* Green */
+  background-color: #ffffff;
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
 }
 
 .form-page button:hover {
-  background-color: #45a049; /* Darker green */
-  color: white;
+  background-color: #dbdbdb;
+  color: rgb(0, 0, 0);
+}
+
+.form-page button:active {
+  transform: scale(0.98);
 }
 
 .navbar {
@@ -86,9 +186,11 @@ html, body {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: purple;
+  height: 60px;
+  background-image: url(~@/assets/header.jpg);
   color: white;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   padding: 15px;
 }
@@ -106,6 +208,7 @@ html, body {
   background: none;
   border: none;
   transition: transform 0.5s ease-in-out;
+  cursor: pointer;
 }
 
 .settings button i {
@@ -122,7 +225,7 @@ html, body {
 
 .fade-slide-enter-from, .fade-slide-leave-to {
   opacity: 0;
-  transform: translateY(-100);
+  transform: translateY(0);
 }
 
 .fade-slide-enter-to, .fade-slide-leave-from {
@@ -139,16 +242,140 @@ html, body {
   width: auto;
   max-height: 300px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  border: 1px solid #000000;
   z-index: 1;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .dropdown-option {
   color: black;
-  padding: 12px 16px;
+  padding: 10px;
+  border: 1px solid #f8f9fa;
+  background-color: #ffffff;
   text-decoration: none;
   display: block;
 }
+
+.dropdown-option:hover {
+  background-color: #dbdbdb;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+.popup {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 40%;
+  min-width: 300px;
+  max-width: 500px;
+  position: relative;
+}
+
+.popup-header {
+  display: flex;
+  justify-content:center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.popup-header span {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.popup-header button {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.popup-header button:hover {
+  color: #888;
+}
+
+.popup-content {
+  margin-bottom: 20px;
+}
+
+.admin-list {
+  overflow-y: auto;
+  height: 250px;
+  border: 1px solid #eaeaea;
+  padding: 10px;
+  margin-bottom: 10px;
+  overflow-y: scroll;
+}
+
+.admin-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.admin-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-item:hover {
+  background-color: #f8f8f8;
+}
+
+.add-admin, .remove-admin{
+  background-color: #ab4ec0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  font-size: 16px;
+}
+
+.popup .add-admin:hover, .popup .remove-admin:hover{
+  background-color: #723281;
+}
+
+.remove-admin:disabled{
+  background-color: #f7d1ff;
+  cursor: not-allowed;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
 </style>
