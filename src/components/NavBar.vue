@@ -1,86 +1,61 @@
 <template>
   <nav class="navbar">
-    <!-- Logo or Brand Name -->
-    <router-link to="/" class="navbar-brand">ICT Agency</router-link>
-
-    <!-- Navigation Links -->
-    <div class="navbar-menu">
-      <router-link to="/all-openings">All Openings</router-link>
-      <router-link to="/request-resource">Request a Resource</router-link>
-
-      <!-- Dynamic Links Based on Authentication Status -->
-      <template v-if="isAdminLoggedIn">
-        <span class="navbar-text">
-          {{ adminInfo.firstName }} {{ adminInfo.lastName }}
-        </span>
-        <router-link to="/admin/dashboard">Account Management</router-link>
-        <button @click="logout">Logout</button>
-      </template>
-      <template v-else>
-        <router-link to="/admin/login">Admin</router-link>
-      </template>
+    <div class="right-items">
+      <button class="sign-in-btn" @click="openModal">Sign In</button>
+      <sign-in-modal :visible="isModalVisible" @close="isModalVisible = false"></sign-in-modal>
     </div>
   </nav>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import SignInModal from './SignInModal.vue';
 
 export default {
   name: 'NavBar',
-  computed: {
-    ...mapGetters(['isAdminLoggedIn', 'adminInfo']),
+  components: {
+    SignInModal
+  },
+  data() {
+    return {
+      isModalVisible: false,
+    };
   },
   methods: {
-    ...mapActions(['logout']),
-  },
-};
+    openModal() {
+      this.isModalVisible = true;
+    }
+  }
+}
 </script>
 
-<style scoped>
+<style>
 .navbar {
+  margin-top:0;
+  background-image: url("../assets/img.png");
+  height: 60px;
+  width: 100%;
+
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  padding: 1rem;
+  position: fixed;
+  top: 0;
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
-  color: #fff;
-  text-decoration: none;
+.right-items{
+  margin-left: auto;
 }
-
-.navbar-menu {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-menu a {
-  color: #fff;
-  text-decoration: none;
-  margin-right: 1rem;
-}
-
-.navbar-menu a:hover {
-  text-decoration: underline;
-}
-
-.navbar-text {
-  color: #fff;
-  margin-right: 1rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
+.sign-in-btn {
+  text-align: right;
+  padding: 15px 50px;
+  background-color: transparent;
+  color: black;
   border: none;
-  background-color: #f00;
-  color: #fff;
+  border-radius: 5px;
   cursor: pointer;
+  font: 20px Arial;
+  font-weight: bold;
 }
 
-button:hover {
-  background-color: #c00;
+.sign-in-btn:hover {
 }
 </style>
