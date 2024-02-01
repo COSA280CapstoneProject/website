@@ -1,14 +1,9 @@
 <template>
   <nav class="navbar">
-<!--    <h1>hii</h1>-->
-
-
-
     <div class="right-items">
       <button class="sign-in-btn" @click="openModal">Sign In</button>
       <sign-in-modal :visible="isModalVisible" @close="isModalVisible = false"></sign-in-modal>
     </div>
-
   </nav>
 </template>
 
@@ -46,14 +41,6 @@ export default {
   top: 0;
 }
 
-.container {
-//display: flex;
-//justify-content: space-between;
-//position: fixed;
-//top: 0;
-//right: 0;
-
-}
 .right-items{
   margin-left: auto;
 }
