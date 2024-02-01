@@ -1,4 +1,7 @@
 <template>
+  <PostingPopup v-if="showPopup" @close="showPopup = false" />
+  <AdminView/>
+  
   <div class="home">
     <section class="banner">
       <img src="@/assets/logo.png" alt="Banner Image" />
@@ -28,7 +31,8 @@
     <section class="submit-post trapezoid">
       <div class="content">
         <h2>Submit a Post</h2>
-        <button @click="redirectToForm">Create Posting</button>
+        <button @click="showPopup = true">Create Posting</button>
+        
         <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
           By clicking the "Create a Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
         </p>
@@ -107,29 +111,32 @@
 </template>
 
 <script>
+import PostingPopup from '@/components/PostingPopup.vue'
+import AdminView from '@/components/AdminView.vue'
+
 export default {
   name: 'HomeVue',
+  components: {
+    PostingPopup, AdminView
+  },
   data() {
     return {
       showText: true,
+      showPopup: false
     };
   },
   methods: {
-    redirectToForm() {
-      this.$router.push({ name: 'RequestResource' });
-    },
+    
   },
   mounted() {
     // Toggle visibility of text every 3 seconds
-    setInterval(() => {
-      this.showText = !this.showText;
-    }, 3000);
+    
   },
 };
 </script>
 
 <style scoped>
-body, html {
+.home {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -140,6 +147,7 @@ body, html {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure the container takes at least the height of the viewport */
+  margin-top: 50px;
 }
 
 /* Banner styles */

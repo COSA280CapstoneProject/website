@@ -192,15 +192,16 @@ export default {
 
 </script>
  
-<style>
+<style scoped>
 .Postings {
-  z-index: 1000;
+  z-index: 10001;
   border: 1px solid black;
   position: fixed;
   justify-content: center;
   align-items: center;
   background-color: rgb(255, 255, 255);
   padding: 40px;
+
 }
 .org-contact-container, .contact-info-container {
   display: flex;

@@ -3,6 +3,7 @@ import Home from '@/views/HomeVue.vue';
 import AllOpenings from '@/views/AllOpenings.vue';
 import AdminLogin from '@/views/AdminVue.vue';
 import RequestResource from '@/views/RequestResource.vue';
+import Form from '@/views/Form.vue';
 
 
 // Define your routes in an array
@@ -28,6 +29,11 @@ const routes = [
     name: 'RequestResource',
     component: RequestResource
   },
+  { path: '/form',
+    name: 'Form',
+    component: Form
+   },
+
 
   // Define other routes as needed
 ];

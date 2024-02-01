@@ -21,7 +21,7 @@
       </div>
       <div class="form-page">
           <!-- Form Page button -->
-          <button>Form Page</button>
+          <button @click="goToFormPage">Form Page</button>
         </div>
       </nav>
       <!-- Popup Overlay and Content -->
@@ -114,6 +114,9 @@ export default {
     if (this.showPopup && this.$refs.popup && !this.$refs.popup.contains(event.target)) {
       this.closePopup();
     }
+    },
+    goToFormPage() {
+      this.$router.push('/form');
     },
     },
 
