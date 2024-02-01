@@ -5,7 +5,6 @@ import AdminLogin from '@/views/AdminVue.vue';
 import RequestResource from '@/views/RequestResource.vue';
 
 
-
 // Define your routes in an array
 const routes = [
   {
