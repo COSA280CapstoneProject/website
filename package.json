@@ -22,7 +22,7 @@
     "vuedraggable": "^2.24.3",
     "primeicons": "^4.1.0",
     "v-click-outside": "^3.2.0",
-    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@fortawesome/fontawesome-free": "^6.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
