@@ -186,7 +186,7 @@ export default {
               Status: 'Your Status'
             };
 
-            return axios.post('https://your-azure-function-url', postData);
+            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings', postData);
           })
           .then(response => {
             // Handle success of the second POST request
