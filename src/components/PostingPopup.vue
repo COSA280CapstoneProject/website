@@ -93,6 +93,7 @@
 <script>
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
 
 export default {
   setup() {
@@ -100,6 +101,7 @@ export default {
     const fileName = ref([]);
     const fileDataUrl = ref([]);
     const fileSize = ref([]);
+    const fileObjects = ref([]);
 
     const goBack = () => {
       this.$router.go(-1);
@@ -112,21 +114,6 @@ export default {
     const onDrop = (e) => {
       e.preventDefault();
       onFileChange(e);
-    };
-
-    const onFileChange = (e) => {
-      const files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        fileName.value.push(file.name);
-        fileSize.value.push(file.size);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          fileDataUrl.value.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-      toast.add({severity:'success', summary: 'File Uploaded', detail:'Your file has been uploaded successfully.', life: 3000});
     };
 
     const getPreviewImage = (index) => {
@@ -149,33 +136,76 @@ export default {
       return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
     };
 
-    // The following code is for submitting the form to the server. It is not connected to the backend yet. so it will error
-/*
-    const submitForm = () => {
-  if (!this.fileName || !this.fileDataUrl) {
-    this.$toast.add({severity:'error', summary: 'Error', detail:'Please fill out the form correctly.', life: 3000});
-  } else {
-    const formData = new FormData();
-    formData.append('fileName', this.fileName);
-    formData.append('fileDataUrl', this.fileDataUrl);
-
-    axios.post('/api/submit', formData)
-      .then(response => {
-        // Handle success
-        this.$toast.add({severity:'success', summary: 'Success', detail:'Form submitted successfully.', life: 3000});
-      })
-      .catch(error => {
-        // Handle error
-        this.$toast.add({severity:'error', summary: 'Error', detail:'Failed to submit the form.', life: 3000});
+    const onFileChange = (e) => {
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      Array.from(files).forEach(file => {
+        fileName.value.push(file.name);
+        fileSize.value.push(file.size);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          fileDataUrl.value.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+        fileObjects.value.push(file); // Store the File object
       });
-  }
-};
-*/
+      toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'Your file has been uploaded successfully.', life: 3000 });
+    };
+
+    const submitForm = () => {
+      if (!fileName.value || !fileDataUrl.value) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
+      } else {
+        const formData = new FormData();
+        fileObjects.value.forEach((file, index) => {
+          formData.append('file', file, fileName.value[index]); // Append the File object
+        });
+
+        axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(response => {
+            // Handle success
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+
+            // Send another POST request to the Azure Function URL
+            const postData = {
+              OrgName: 'Your OrgName',
+              ContactName: 'Your ContactName',
+              PhoneNum: 'Your PhoneNum',
+              StartDate: 'Your StartDate',
+              PostID: 'Your PostID',
+              PostTitle: 'Your PostTitle',
+              PostDesc: 'Your PostDesc',
+              ProgramType: 'Your ProgramType',
+              PostType: 'Your PostType',
+              Files: 'Your Files',
+              Status: 'Your Status'
+            };
+
+            return axios.post('https://your-azure-function-url', postData);
+          })
+          .then(response => {
+            // Handle success of the second POST request
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+          })
+          .catch(error => {
+            // Handle error
+            console.log(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+          });
+      }
+    };
 
     return {
       fileName,
       fileDataUrl,
       fileSize,
+      fileObjects,
       goBack,
       onDragOver,
       onDrop,
@@ -183,7 +213,7 @@ export default {
       getPreviewImage,
       removeFile,
       getFileSize,
-      // submitForm
+      submitForm
     };
   
     }
