@@ -162,6 +162,8 @@ export default {
       toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'Your file has been uploaded successfully.', life: 3000 });
     };
 
+    console.log('orgName:', orgName.value); // Log the value of orgName to the console
+
     const submitForm = () => {
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
@@ -194,25 +196,25 @@ export default {
 
             // Send another POST request to the Azure Function URL
             const postData = {
-              orgName: orgName.value,
-              contactName: contactName.value,
-              phoneNum: phoneNum.value,
-              startDate: startDate.value,
-              postID: postID,
-              postTitle: postTitle.value,
-              postDesc: postDesc.value,
-              programType: programType.value,
-              postType: programType.value,
-              files: files.join(','), // Send the file names as a comma-separated string
-              status: status,
-              email: email.value,
-              season: season.value
+              OrgName: orgName.value,
+              ContactName: contactName.value,
+              PhoneNum: phoneNum.value,
+              StartDate: startDate.value,
+              PostID: postID,
+              PostTitle: postTitle.value,
+              PostDesc: postDesc.value,
+              ProgramType: programType.value,
+              PostType: programType.value,
+              Files: files.join(','), // Send the file names as a comma-separated string
+              Status: status,
+              Email: email.value,
+              Season: season.value
             };
 
             // Print the POST data to the console
             console.log(JSON.stringify(postData));
 
-            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings?', postData, {
+            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
               headers: {
                 'Content-Type': 'application/json'
               }
