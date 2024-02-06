@@ -93,7 +93,7 @@ import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 
 export default {
-  setup() {
+  setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
     const fileDataUrl = ref([]);
@@ -115,7 +115,7 @@ export default {
     const dateAdded = ref('');
 
     const goBack = () => {
-      this.$router.go(-1);
+      emit('close');
     };
 
     const onDragOver = (e) => {
