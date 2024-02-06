@@ -189,27 +189,30 @@ export default {
             // Automatically set the status to "Open" when the form is submitted
             const status = 'Open';
 
+            // Log the value of orgName
+            console.log('orgName:', orgName.value);
+
             // Send another POST request to the Azure Function URL
             const postData = {
-            OrgName: orgName.value,
-            ContactName: contactName.value,
-            PhoneNum: phoneNum.value,
-            StartDate: startDate.value,
-            PostID: postID,
-            PostTitle: postTitle.value,
-            PostDesc: postDesc.value,
-            ProgramType: programType.value,
-            PostType: programType.value,
-            Files: files.join(','), // Send the file names as a comma-separated string
-            Status: status,
-            Email: email.value,
-            Season: season.value
-          };
+              orgName: orgName.value,
+              contactName: contactName.value,
+              phoneNum: phoneNum.value,
+              startDate: startDate.value,
+              postID: postID,
+              postTitle: postTitle.value,
+              postDesc: postDesc.value,
+              programType: programType.value,
+              postType: programType.value,
+              files: files.join(','), // Send the file names as a comma-separated string
+              status: status,
+              email: email.value,
+              season: season.value
+            };
 
             // Print the POST data to the console
-            console.log(postData);
+            console.log(JSON.stringify(postData));
 
-            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings?', postData, {
               headers: {
                 'Content-Type': 'application/json'
               }
