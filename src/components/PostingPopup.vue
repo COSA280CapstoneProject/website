@@ -417,11 +417,11 @@ flex-direction: row;
 align-items: left;
 gap: 10px;
 }
-.submit-button {
+.submit button {
   background-color: #732181; 
   color: white;
-  border: 1px solid black; 
-  padding: 10px 20px; 
+  border: 2px solid black; 
+  padding: 8px 20px; 
   cursor: pointer; 
 }
 .close-button {
