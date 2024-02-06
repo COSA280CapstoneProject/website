@@ -93,7 +93,7 @@ import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 
 export default {
-  setup() {
+  setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
     const fileDataUrl = ref([]);
@@ -115,7 +115,7 @@ export default {
     const dateAdded = ref('');
 
     const goBack = () => {
-      this.$router.go(-1);
+      emit('close');
     };
 
     const onDragOver = (e) => {
@@ -281,7 +281,7 @@ export default {
 
 </script>
  
-<style scoped>
+<style>
 .Postings {
   z-index: 10001;
   border: 1px solid black;
@@ -421,7 +421,7 @@ gap: 10px;
   background-color: #732181; 
   color: white;
   border: 2px solid black; 
-  padding: 7px 20px; 
+  padding: 8px 20px; 
   cursor: pointer; 
 }
 .close-button {
