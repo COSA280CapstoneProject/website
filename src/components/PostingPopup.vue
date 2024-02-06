@@ -93,7 +93,7 @@ import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 
 export default {
-  setup(props, { emit }) {
+  setup() {
     const toast = useToast();
     const fileName = ref([]);
     const fileDataUrl = ref([]);
@@ -115,7 +115,7 @@ export default {
     const dateAdded = ref('');
 
     const goBack = () => {
-      emit('close');
+      this.$router.go(-1);
     };
 
     const onDragOver = (e) => {
@@ -417,11 +417,11 @@ flex-direction: row;
 align-items: left;
 gap: 10px;
 }
-.submit-button {
+.submit button {
   background-color: #732181; 
   color: white;
-  border: 1px solid black; 
-  padding: 10px 20px; 
+  border: 2px solid black; 
+  padding: 7px 20px; 
   cursor: pointer; 
 }
 .close-button {
