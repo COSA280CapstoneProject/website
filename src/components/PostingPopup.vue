@@ -5,31 +5,30 @@
       <div class="org-contact-container">
         <div class="orgName">
           <label for="orgName">Organization Name </label>
-          <input type="text" id="orgName" name="orgName">
+          <input type="text" id="orgName" name="orgName" v-model="orgName">
         </div>
         <div class="contactName">
           <label for="contactName">Contact Name </label>
-          <input type="text" id="contactName" name="contactName">
+          <input type="text" id="contactName" name="contactName" v-model="contactName">
         </div>
       </div>
       <div class="contact-info-container">
         <div class="email">
           <label for="email">Email </label>
-          <input type="text" id="email" name="email">
+          <input type="text" id="email" name="email" v-model="email">
         </div>
         <div class="phoneNumber">
           <label for="phoneNumber">Phone Number </label>
-          <input type="text" id="phoneNumber" name="phoneNumber">
+          <input type="text" id="phoneNum" name="phoneNum" v-model="phoneNum">
         </div>
       </div>
       <div class="posting type">
         <div>
           <label for="postingType">Type of Posting </label>
-          <select id="postingType" name="postingType">
-            <option value=""></option>
-            <option value="">Student Projects</option>
-            <option value="">Internships</option>
-            <option value="">Job Placements</option>
+          <select id="postingType" name="postingType" v-model="programType">
+            <option value="Student Projects">Student Projects</option>
+            <option value="Internships">Internships</option>
+            <option value="Job Placements">Job Placements</option>
           </select>
         </div>
       </div>
@@ -37,57 +36,55 @@
         <div class="start-date-container">
           <label for="startDate">Start Date </label>
           <div class="date-inputs">
-            <select id="Year" name="Year">
-              <option value=""></option>
-              <option value="">2020</option>
-              <option value="">2021</option>
-              <option value="">2022</option>
-              <option value="">2023</option>
-              <option value="">2024</option>
-              <option value="">2025</option>
-              <option value="">2026</option>
-              <option value="">2027</option>
-              <option value="">2028</option>
-              <option value="">2029</option>
-              <option value="">2030</option>
+            <select id="Year" name="Year" v-model="startDate">
+              <option value="2020">2020</option>
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
             </select>
-            <select id="Season" name="Season">
-              <option value=""></option>
-              <option value="">Fall</option>
-              <option value="">Winter</option>
-              <option value="">Spring</option>
-              <option value="">Summer</option>
+            <select id="Season" name="Season" v-model="season">
+              <option value="Fall">Fall</option>
+              <option value="Winter">Winter</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
             </select>
           </div>
         </div>
       </div>
       <div class="Title">
         <label for="Title">Title </label>
-        <input type="text" id="Title" name="Title">
+        <input type="text" id="Title" name="Title" v-model="postTitle">
       </div>
       <div class="Description">
         <label for="Description">Description </label>
-        <input type="text" id="Description" name="Description">
+        <input type="text" id="Description" name="Description" v-model="postDesc">
       </div>
       <div class="FileUpload">
-  <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
-    <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
-    <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
-    <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
-  <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
-  <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
-</div>
-  </div>
-  <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
-</div>
-    <div class="submit">
-      <button @click="submitForm">Submit</button>
+        <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
+          <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
+          <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
+          <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
+            <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
+            <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
+          </div>
+        </div>
+        <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
+      </div>
+      <div class="submit">
+        <button @click="submitForm">Submit</button>
+      </div>
+      <div class="close-button">
+        <button class="close-button" @click="goBack">X</button>
+      </div>
     </div>
-    <div class="close-button">
-      <button class="close-button" @click="goBack">X</button>
-    </div>
   </div>
-</div>
 </template>
  
 <script>
@@ -102,6 +99,19 @@ export default {
     const fileDataUrl = ref([]);
     const fileSize = ref([]);
     const fileObjects = ref([]);
+    const orgName = ref('');
+    const contactName = ref('');
+    const phoneNum = ref('');
+    const startDate = ref('');
+    const postID = ref('');
+    const postTitle = ref('');
+    const postDesc = ref('');
+    const programType = ref('');
+    const postType = ref('');
+    const files = ref('');
+    const status = ref('');
+    const email = ref('');
+    const season = ref('');
 
     const goBack = () => {
       this.$router.go(-1);
@@ -153,12 +163,14 @@ export default {
     };
 
     const submitForm = () => {
-      if (!fileName.value || !fileDataUrl.value) {
+      if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
       } else {
         const formData = new FormData();
+        let files = []; // Create an array to store file names
         fileObjects.value.forEach((file, index) => {
           formData.append('file', file, fileName.value[index]); // Append the File object
+          files.push(fileName.value[index]); // Add the file name to the array
         });
 
         axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
@@ -171,22 +183,37 @@ export default {
             console.log(response);
             toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
 
+            // Generate a random 6 digit number for the PostID
+            const postID = Math.floor(100000 + Math.random() * 900000);
+
+            // Automatically set the status to "Open" when the form is submitted
+            const status = 'Open';
+
             // Send another POST request to the Azure Function URL
             const postData = {
-              OrgName: 'Your OrgName',
-              ContactName: 'Your ContactName',
-              PhoneNum: 'Your PhoneNum',
-              StartDate: 'Your StartDate',
-              PostID: 'Your PostID',
-              PostTitle: 'Your PostTitle',
-              PostDesc: 'Your PostDesc',
-              ProgramType: 'Your ProgramType',
-              PostType: 'Your PostType',
-              Files: 'Your Files',
-              Status: 'Your Status'
-            };
+            OrgName: orgName.value,
+            ContactName: contactName.value,
+            PhoneNum: phoneNum.value,
+            StartDate: startDate.value,
+            PostID: postID,
+            PostTitle: postTitle.value,
+            PostDesc: postDesc.value,
+            ProgramType: programType.value,
+            PostType: programType.value,
+            Files: files.join(','), // Send the file names as a comma-separated string
+            Status: status,
+            Email: email.value,
+            Season: season.value
+          };
 
-            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings', postData);
+            // Print the POST data to the console
+            console.log(postData);
+
+            return axios.post('https://ictdatabaseapi.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
           })
           .then(response => {
             // Handle success of the second POST request
@@ -213,7 +240,20 @@ export default {
       getPreviewImage,
       removeFile,
       getFileSize,
-      submitForm
+      submitForm,
+      orgName,
+      contactName,
+      phoneNum,
+      startDate,
+      postID,
+      postTitle,
+      postDesc,
+      programType,
+      postType,
+      files,
+      status,
+      email,
+      season
     };
   
     }
