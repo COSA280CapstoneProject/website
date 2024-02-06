@@ -5,31 +5,30 @@
       <div class="org-contact-container">
         <div class="orgName">
           <label for="orgName">Organization Name </label>
-          <input type="text" id="orgName" name="orgName">
+          <input type="text" id="orgName" name="orgName" v-model="orgName">
         </div>
         <div class="contactName">
           <label for="contactName">Contact Name </label>
-          <input type="text" id="contactName" name="contactName">
+          <input type="text" id="contactName" name="contactName" v-model="contactName">
         </div>
       </div>
       <div class="contact-info-container">
         <div class="email">
           <label for="email">Email </label>
-          <input type="text" id="email" name="email">
+          <input type="text" id="email" name="email" v-model="email">
         </div>
         <div class="phoneNumber">
           <label for="phoneNumber">Phone Number </label>
-          <input type="text" id="phoneNumber" name="phoneNumber">
+          <input type="text" id="phoneNum" name="phoneNum" v-model="phoneNum">
         </div>
       </div>
       <div class="posting type">
         <div>
           <label for="postingType">Type of Posting </label>
-          <select id="postingType" name="postingType">
-            <option value=""></option>
-            <option value="">Student Projects</option>
-            <option value="">Internships</option>
-            <option value="">Job Placements</option>
+          <select id="postingType" name="postingType" v-model="programType">
+            <option value="Student Projects">Student Projects</option>
+            <option value="Internships">Internships</option>
+            <option value="Job Placements">Job Placements</option>
           </select>
         </div>
       </div>
@@ -37,72 +36,86 @@
         <div class="start-date-container">
           <label for="startDate">Start Date </label>
           <div class="date-inputs">
-            <select id="Year" name="Year">
-              <option value=""></option>
-              <option value="">2020</option>
-              <option value="">2021</option>
-              <option value="">2022</option>
-              <option value="">2023</option>
-              <option value="">2024</option>
-              <option value="">2025</option>
-              <option value="">2026</option>
-              <option value="">2027</option>
-              <option value="">2028</option>
-              <option value="">2029</option>
-              <option value="">2030</option>
+            <select id="Year" name="Year" v-model="startDate">
+              <option value="2020">2020</option>
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
             </select>
-            <select id="Season" name="Season">
-              <option value=""></option>
-              <option value="">Fall</option>
-              <option value="">Winter</option>
-              <option value="">Spring</option>
-              <option value="">Summer</option>
+            <select id="Season" name="Season" v-model="season">
+              <option value="Fall">Fall</option>
+              <option value="Winter">Winter</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
             </select>
           </div>
         </div>
       </div>
       <div class="Title">
         <label for="Title">Title </label>
-        <input type="text" id="Title" name="Title">
+        <input type="text" id="Title" name="Title" v-model="postTitle">
       </div>
       <div class="Description">
         <label for="Description">Description </label>
-        <input type="text" id="Description" name="Description">
+        <input type="text" id="Description" name="Description" v-model="postDesc">
       </div>
       <div class="FileUpload">
-  <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
-    <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
-    <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
-    <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
-  <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
-  <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
-</div>
-  </div>
-  <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
-</div>
-    <div class="submit">
-      <button @click="submitForm">Submit</button>
+        <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
+          <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
+          <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
+          <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
+            <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
+            <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
+          </div>
+        </div>
+        <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
+      </div>
+      <div class="submit">
+        <button @click="submitForm">Submit</button>
+      </div>
+      <div class="close-button">
+        <button class="close-button" @click="goBack">X</button>
+      </div>
     </div>
-    <div class="close-button">
-      <button class="close-button" @click="goBack">X</button>
-    </div>
   </div>
-</div>
 </template>
  
 <script>
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
 
 export default {
-  setup() {
+  setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
     const fileDataUrl = ref([]);
     const fileSize = ref([]);
+    const fileObjects = ref([]);
+    const orgName = ref('');
+    const contactName = ref('');
+    const phoneNum = ref('');
+    const startDate = ref('');
+    const postID = ref('');
+    const postTitle = ref('');
+    const postDesc = ref('');
+    const programType = ref('');
+    const postType = ref('');
+    const files = ref('');
+    const status = ref('');
+    const email = ref('');
+    const season = ref('');
+    const dateAdded = ref('');
 
     const goBack = () => {
-      this.$router.go(-1);
+      emit('close');
     };
 
     const onDragOver = (e) => {
@@ -112,21 +125,6 @@ export default {
     const onDrop = (e) => {
       e.preventDefault();
       onFileChange(e);
-    };
-
-    const onFileChange = (e) => {
-      const files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        fileName.value.push(file.name);
-        fileSize.value.push(file.size);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          fileDataUrl.value.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-      toast.add({severity:'success', summary: 'File Uploaded', detail:'Your file has been uploaded successfully.', life: 3000});
     };
 
     const getPreviewImage = (index) => {
@@ -149,33 +147,110 @@ export default {
       return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
     };
 
-    // The following code is for submitting the form to the server. It is not connected to the backend yet. so it will error
-/*
-    const submitForm = () => {
-  if (!this.fileName || !this.fileDataUrl) {
-    this.$toast.add({severity:'error', summary: 'Error', detail:'Please fill out the form correctly.', life: 3000});
-  } else {
-    const formData = new FormData();
-    formData.append('fileName', this.fileName);
-    formData.append('fileDataUrl', this.fileDataUrl);
-
-    axios.post('/api/submit', formData)
-      .then(response => {
-        // Handle success
-        this.$toast.add({severity:'success', summary: 'Success', detail:'Form submitted successfully.', life: 3000});
-      })
-      .catch(error => {
-        // Handle error
-        this.$toast.add({severity:'error', summary: 'Error', detail:'Failed to submit the form.', life: 3000});
+    const onFileChange = (e) => {
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      Array.from(files).forEach(file => {
+        fileName.value.push(file.name);
+        fileSize.value.push(file.size);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          fileDataUrl.value.push(e.target.result);
+        };
+        reader.readAsDataURL(file);
+        fileObjects.value.push(file); // Store the File object
       });
-  }
-};
-*/
+      toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'Your file has been uploaded successfully.', life: 3000 });
+    };
+
+    console.log('orgName:', orgName.value); // Log the value of orgName to the console
+
+    const submitForm = () => {
+      if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
+      } else {
+        const formData = new FormData();
+        let files = []; // Create an array to store file names
+        fileObjects.value.forEach((file, index) => {
+          formData.append('file', file, fileName.value[index]); // Append the File object
+          files.push(fileName.value[index]); // Add the file name to the array
+        });
+
+        axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(response => {
+            // Handle success
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+
+            // Generate a random 6 digit number for the PostID
+            const postID = Math.floor(100000 + Math.random() * 900000);
+
+            // Automatically set the status to "Open" when the form is submitted
+            const status = 'Open';
+
+            // Log the value of orgName
+            console.log('orgName:', orgName.value);
+
+            // Get the current date and time
+            const dateAdded = new Date().toLocaleString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+
+            // Send another POST request to the Azure Function URL
+            const postData = {
+              orgName: orgName.value,
+              contactName: contactName.value,
+              phoneNum: phoneNum.value,
+              startDate: startDate.value,
+              postID: postID,
+              postTitle: postTitle.value,
+              postDesc: postDesc.value,
+              programType: programType.value,
+              postType: programType.value,
+              files: files.join(','), // Send the file names as a comma-separated string
+              status: status,
+              email: email.value,
+              season: season.value,
+              dateAdded: dateAdded,
+            };
+
+            // Print the POST data to the console
+            console.log(JSON.stringify(postData));
+
+            return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+          })
+          .then(response => {
+            // Handle success of the second POST request
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+          })
+          .catch(error => {
+            // Handle error
+            console.log(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+          });
+      }
+    };
 
     return {
       fileName,
       fileDataUrl,
       fileSize,
+      fileObjects,
       goBack,
       onDragOver,
       onDrop,
@@ -183,7 +258,21 @@ export default {
       getPreviewImage,
       removeFile,
       getFileSize,
-      // submitForm
+      submitForm,
+      orgName,
+      contactName,
+      phoneNum,
+      startDate,
+      postID,
+      postTitle,
+      postDesc,
+      programType,
+      postType,
+      files,
+      status,
+      email,
+      season,
+      dateAdded
     };
   
     }
@@ -192,15 +281,16 @@ export default {
 
 </script>
  
-<style>
+<style scoped>
 .Postings {
-  z-index: 1000;
+  z-index: 10001;
   border: 1px solid black;
   position: fixed;
   justify-content: center;
   align-items: center;
   background-color: rgb(255, 255, 255);
   padding: 40px;
+
 }
 .org-contact-container, .contact-info-container {
   display: flex;

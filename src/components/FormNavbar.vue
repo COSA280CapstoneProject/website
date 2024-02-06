@@ -4,9 +4,10 @@
         <button class="hamburger" @click="Statspopup">
       <i class="fas fa-bars"></i>
     </button>
-      <button class="sorting">
-      Sorting &#9660; <!-- This is a Unicode character for a down arrow -->
-    </button>
+    <button class="sorting" @click="showSorting = !showSorting">
+        Sorting &#9660; <!-- This is a Unicode character for a down arrow -->
+      </button>
+      
     <div class="search-bar">
       <i class="fa fa-search"></i>
       <input type="text" placeholder="Search..." />
@@ -18,7 +19,7 @@
       <i class="fas fa-ellipsis-v"></i>
     </button>
     <ExportDropdown :show="showDropdown" />
-
+    <SortingMenu v-if="showSorting" />
     </div>
     </div>
     
@@ -26,15 +27,18 @@
   
   <script>
   import ExportDropdown from '@/components/ExportDropdown.vue'
+  import SortingMenu from '@/components/SortingDropdown.vue'
 
   export default {
     name: 'SearchAndSort',
     components: {
       ExportDropdown,
+      SortingMenu,
     },
     data() {
       return {
-      showDropdown: false
+      showDropdown: false,
+      showSorting: false
     }
     },
     methods: {
@@ -58,7 +62,7 @@
   align-items: center;
   justify-content: center; /* Center the container */
   height: 60px;
-  background-color: #b108ff;
+  background-image: url("@/assets/header.jpg");
 }
 
 .Navbar-container {

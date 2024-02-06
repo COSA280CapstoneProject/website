@@ -1,26 +1,33 @@
 <template>
- 
-  <HelloWorld msg=""/>
+  <div id="app">
+    <NavBar></NavBar>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './views/HomePage.vue'
+import NavBar from './views/HomePage.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    NavBar
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+/* Global styles */
+body {
+  margin: 0;
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+
+#app {
+  text-align: center;
+}
+
+/* Add more global styles as needed */
 </style>
