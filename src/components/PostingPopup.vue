@@ -112,6 +112,7 @@ export default {
     const status = ref('');
     const email = ref('');
     const season = ref('');
+    const dateAdded = ref('');
 
     const goBack = () => {
       this.$router.go(-1);
@@ -194,6 +195,17 @@ export default {
             // Log the value of orgName
             console.log('orgName:', orgName.value);
 
+            // Get the current date and time
+            const dateAdded = new Date().toLocaleString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+
             // Send another POST request to the Azure Function URL
             const postData = {
               orgName: orgName.value,
@@ -208,7 +220,8 @@ export default {
               files: files.join(','), // Send the file names as a comma-separated string
               status: status,
               email: email.value,
-              season: season.value
+              season: season.value,
+              dateAdded: dateAdded,
             };
 
             // Print the POST data to the console
@@ -258,7 +271,8 @@ export default {
       files,
       status,
       email,
-      season
+      season,
+      dateAdded
     };
   
     }
