@@ -14,14 +14,14 @@
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
             <!-- Account Management Popup Trigger -->
-            <div class="dropdown-option" @click="openPopup">Account Management</div>
-            <div class="dropdown-option" @click="toggleSettings">Logout</div>
+            <div class="account-man" @click="openPopup">Account Management</div>
+            <div class="logout" @click="toggleSettings">Logout</div>
           </div>
         </transition>
       </div>
       <div class="form-page">
           <!-- Form Page button -->
-          <button @click="goToFormPage">Form Page</button>
+          <button>Form Page</button>
         </div>
       </nav>
       <!-- Popup Overlay and Content -->
@@ -39,7 +39,7 @@
           <!-- Admin List -->
           <div class ="admin-list-container">
           <div class="admin-list">
-            <div v-for="(admin, index) in admins" :key="index" class="admin-item" @click="selectAdmin(index)">
+            <div v-for="(admin, index) in admins" :key="index" class="admin-item" :class = "{ 'admin-selected': selectedAdmin === index}" @click="selectAdmin(index)">
               <p>{{ admin.name }} ({{ admin.email }})</p>
             </div>
             </div>
@@ -59,15 +59,15 @@ import 'primeicons/primeicons.css';
 export default {
   data() {
     return {
-      firstName: 'John',
-      lastName: 'Doe',
+      firstName: 'Carter',
+      lastName: 'Gorski',
       showSettings: false,
       showPopup: false,
       admins: [
-        { name: 'Admin One', email: 'admin1@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
+        { name: 'Rylan Copeland', email: 'admin1@example.com' },
+        { name: 'Triston Lloyd', email: 'admin2@example.com' },
+        { name: 'Javin', email: 'admin2@example.com' },
+        { name: 'Arrsh', email: 'admin2@example.com' },
         { name: 'Admin Two', email: 'admin2@example.com' },
         { name: 'Admin Two', email: 'admin2@example.com' },
         { name: 'Admin Two', email: 'admin2@example.com' },
@@ -85,6 +85,13 @@ export default {
       selectedAdmin: null
     }
   },
+
+  mounted() {
+      document.addEventListener('click', this.outsideClick);
+    },
+    beforeUnmount() {
+      document.removeEventListener('click', this.outsideClick);
+    },
 
   watch: {
     showPopup(value) {
@@ -116,12 +123,6 @@ export default {
     }
     },
     goToFormPage() {
-
-      // Close settings dropdown and popup
-      this.showSettings = false;
-      this.showPopup = false;
-
-
       this.$router.push('/form');
     },
     },
@@ -132,13 +133,8 @@ export default {
     beforeUnmount() {
       document.removeEventListener('click', this.outsideClick);
     },
-  
-
     addAdmin() {
       // Add admin logic
-    },
-    selectAdmin(index) {
-      this.selectedAdmin = index;
     },
     removeAdmin() {
       if (this.selectedAdmin !== null) {
@@ -147,8 +143,19 @@ export default {
         // Reset selected admin
         this.selectedAdmin = null;
       }
-    }
+    },
+
+    // logout() {
+    //   const tenantID = 'azure sucks ass'; // Replace with your Azure tenant ID
+    //   const postLogoutRedirectUri = encodeURIComponent('http://localhost:8080/'); // Replace with the URL to redirect after logout
+
+    //   const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/logout?post_logout_redirect_uri=${postLogoutRedirectUri}`;
+
+    //   window.location.href = logoutUrl;
+    // },
+    },
   }
+
 </script>
 
 
@@ -178,7 +185,7 @@ html, body {
   height: 30px;
   font-size: 16px;
   cursor: pointer;
-  transition: transform 0.1s ease-in-out;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
 }
 
 .form-page button:hover {
@@ -188,6 +195,7 @@ html, body {
 
 .form-page button:active {
   transform: scale(0.98);
+  box-shadow: inset 0 0 2px #000000;
 }
 
 .navbar {
@@ -248,8 +256,8 @@ html, body {
   transform: translateX(-50%);
   top: calc(100% + 5px);
   background-color: #f9f9f9;
-  width: auto;
-  max-height: 300px;
+  width: 200px;
+  max-height: 250px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   border: 1px solid #000000;
   z-index: 1;
@@ -261,17 +269,22 @@ html, body {
   flex-direction: column;
 }
 
-.dropdown-option {
+.account-man, .logout {
   color: black;
   padding: 10px;
-  border: 1px solid #f8f9fa;
+  border: 1px solid #ebebeb;
   background-color: #ffffff;
   text-decoration: none;
   display: block;
+  transition: box-shadow 0.1s ease-in-out;
 }
 
-.dropdown-option:hover {
-  background-color: #dbdbdb;
+.account-man:hover, .logout:hover {
+  background-color: #f1f1f1;
+}
+
+.account-man:active, .logout:active {
+  box-shadow: inset 0 0 1px #000000;
 }
 
 .overlay {
@@ -294,7 +307,6 @@ body.no-scroll {
 .popup {
   background-color: #fff;
   padding: 30px;
-  border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   width: 40%;
   min-width: 300px;
@@ -352,8 +364,12 @@ body.no-scroll {
   transition: background-color 0.3s ease;
 }
 
-.admin-item:hover {
-  background-color: #f8f8f8;
+.admin-selected {
+  background-color: #e1acff;
+}
+
+.admin-item:not(.admin-selected):hover {
+  background-color: #dbdbdb;
 }
 
 .add-admin, .remove-admin{
@@ -363,8 +379,13 @@ body.no-scroll {
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 100%;
+  width: 50%;
   font-size: 16px;
+}
+
+.remove-admin {
+  width: 30%;
+  font-size: small;
 }
 
 .popup .add-admin:hover, .popup .remove-admin:hover{
@@ -385,6 +406,23 @@ body.no-scroll {
   border: none;
   background: none;
   cursor: pointer;
+}
+
+@media screen and (max-width: 950px) {
+  .remove-admin {
+    width: 50%;
+  }
+
+  .close-button {
+    top: -20px;
+    right: -23px;
+    font-size: 20px;
+  }
+
+  .form-page button {
+    font-size: 12px;
+    width: 50px;
+  }
 }
 
 </style>

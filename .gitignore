@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Dist folder
 dist/
+
+# JetBrains idea folder
+.idea/
