@@ -1,20 +1,19 @@
 <template>
   <div class="home">
     <section class="banner">
-      <img src="@/assets/logo.png" alt="Banner Image" />
-      <h1 v-show="showText">Welcome to ICT</h1>
+      <img src="@/assets/banner.jpg" alt="Banner Image" />
+      <h1 v-show="showText" class="title">Welcome to ICT</h1>
     </section>
 
     <!-- Introduction Section -->
     <section class="introduction trapezoid">
       <div class="content">
-        <img src="@/assets/logo.png" alt="Introduction Image" />
         <div class="text">
-          <p>
+          <p class="paragraph">
             ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
             The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
           </p>
-          <p> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
+          <p class="paragraph"> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
             The submit a post section, designed as an inclined trapeze, presents a sleek button inviting users to create postings, redirecting them to the relevant form page.
           </p>
         </div>
@@ -27,12 +26,12 @@
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
       <div class="content">
-        <h2>Submit a Post</h2>
-        <button @click="redirectToForm">Create Posting</button>
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+        <h2 class="subtitling">Submit a Post</h2>
+        <button @click="redirectToForm" class="button">Create Posting</button>
+        <p class="paragraph">If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
           By clicking the "Create a Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
         </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+        <p class="paragraph">ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
           Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
         </p>
       </div>
@@ -52,7 +51,7 @@
             <h5 class="subtitle">CST Student</h5>
           </div>
 
-          <p>
+          <p class="paragraph">
             "Working with ICT has been a transformative experience for our HR team.
             The platform's extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company's culture and values.
             The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."</p>
@@ -61,16 +60,16 @@
             <h4>Spencer Nikkel:</h4>
             <h5 class="subtitle">Client</h5>
           </div>
-          <p>
+          <p class="paragraph">
             "Choosing ICT for our hiring needs was a strategic move that paid off immensely.
             The platform's innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals.
             ICT has become an indispensable ally in our quest for building a high-performing team."</p>
-          <!-- Add more testimonials as needed -->
+          <!-- Add more testimonials if needed -->
         </div>
 
         <!-- Video Advertisement -->
         <div class="video-ad">
-          <h2>What Employers Have To Say About ICT</h2>
+          <h2 class="subtitles">What Employers Have To Say About ICT</h2>
           <video controls>
             <source src="path-to-your-video.mp4" type="video/mp4">
             Your browser does not support the video tag.
@@ -86,9 +85,9 @@
           <img src="@/assets/logo.png" alt="Footer Logo" />
         </div>
         <div class="footer-info">
-          <p>&copy; 2024 ICT Regina. All rights reserved.</p>
-          <p>123 Main Street, Regina, SK S4P 3Y2</p>
-          <p>Email: info@ictregina.com | Phone: (123) 456-7890</p>
+          <p class="footer-text">&copy; 2024 ICT Regina. All rights reserved.</p>
+          <p class="footer-text">123 Main Street, Regina, SK S4P 3Y2</p>
+          <p class="footer-text">Email: info@ictregina.com | Phone: (123) 456-7890</p>
         </div>
         <div class="footer-social">
           <a href="#" target="_blank" rel="noopener noreferrer">
@@ -119,12 +118,12 @@ export default {
       this.$router.push({ name: 'RequestResource' });
     },
   },
-  mounted() {
-    // Toggle visibility of text every 3 seconds
-    setInterval(() => {
-      this.showText = !this.showText;
-    }, 3000);
-  },
+  // mounted() {
+  //   // Toggle visibility of text every 3 seconds
+  //   setInterval(() => {
+  //     this.showText = !this.showText;
+  //   }, 3000);
+  // },
 };
 </script>
 
@@ -145,24 +144,32 @@ body, html {
 /* Banner styles */
 .banner {
   position: relative;
-  text-align: center;
+  text-align: right;
 }
 
 .banner img {
-  width: 100%; /* Adjust as needed */
-  max-height: 200px
+  width: 100%;
+  max-height: 200px;
 }
-
-.banner h1 {
+.title {
+  font-family: 'Gotham', sans-serif;
+  font-size: 2rem;
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem; /* Adjust as needed */
+  right: 10%; 
+  transform: translateY(-50%);
 }
 
+/* For titles */
+.subtitle {
+  font-family: 'Gotham', sans-serif;
+}
 
-/* Common styles for trapezoidal sections */
+/* For normal text */
+.paragraph {
+  font-family: 'Gotham', sans-serif;
+}
+
 .trapezoid {
   position: relative;
   overflow: hidden;
@@ -201,7 +208,7 @@ body, html {
   margin: 0;
   height: 4px;
   width: 100%;
-  background-color: black; /* Line color */
+  background-color: #732181; /* Line color */
 }
 
 .line-1 {
@@ -229,7 +236,11 @@ body, html {
   color: #fff;
   padding: 10px 20px;
   font-size: 16px;
+  margin-bottom: 10;
   cursor: pointer;
+}
+.paragraph {
+  font-family: 'Gotham', sans-serif;
 }
 
 .employerReview {
@@ -239,10 +250,15 @@ body, html {
 .employerReview p {
   margin: 0;
 }
-
+.subtitling{
+  font-family: 'Gotham', sans-serif;
+  margin-top: 5;
+  margin-bottom: 20;
+  text-align: left;
+}
 .subtitle {
   font-style: italic;
-  margin: 0;
+  margin-bottom: 20;
 }
 
 .testimonials-video .content {
@@ -258,7 +274,8 @@ body, html {
 }
 
 .video-ad {
-  margin-left: 2rem; /* Adjust as needed for spacing */
+  margin-top: 0;
+  margin-left: 40px; /* Adjust as needed for spacing */
 }
 
 .video-ad h2 {
@@ -268,7 +285,7 @@ body, html {
 
 /* Footer styles */
 footer {
-  background-color: #333;
+  background-color: #732181;
   color: #fff;
   padding: 1rem 0;
 }
@@ -291,4 +308,5 @@ footer {
   width: 30px;
   margin-right: 10px;
 }
+
 </style>

@@ -5,7 +5,6 @@
 
     <!-- Navigation Links -->
     <div class="navbar-menu">
-      <router-link to="/all-openings">All Openings</router-link>
       <router-link to="/request-resource">Request a Resource</router-link>
 
       <!-- Dynamic Links Based on Authentication Status -->
@@ -42,7 +41,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: #732181;
   padding: 1rem;
 }
 
