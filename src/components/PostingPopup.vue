@@ -89,15 +89,15 @@
 </template>
  
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import Toast from 'primevue/toast';
 
 export default {
   components: {
-      Toast
-    },
+    Toast
+  },
   setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
@@ -123,6 +123,22 @@ export default {
       emit('close');
     };
 
+    // Watcher for phoneNum
+    watch(phoneNum, (value) => {
+      value = value.replace(/\D/g, "");
+      value = value.slice(0, 10); // limit to max 10 digits
+      let formatted = "";
+      if (value.length >= 3) {
+        let areaCode = value.slice(0, 3);
+        let prefix = value.slice(3, 6);
+        let lineNum = value.slice(6, 10);
+        formatted = `(${areaCode}) ${prefix}-${lineNum}`;
+      } else {
+        formatted = value;
+      }
+      phoneNum.value = formatted;
+    });
+
     const onDragOver = (e) => {
       e.preventDefault();
     };
@@ -140,7 +156,6 @@ export default {
       }
     };
 
-    // Clear the form when the user submits the form
     const clearForm = () => {
       orgName.value = '';
       contactName.value = '';
@@ -189,8 +204,6 @@ export default {
       });
       toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
     };
-
-    console.log('orgName:', orgName.value); // Log the value of orgName to the console
 
     const submitForm = () => {
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
@@ -303,12 +316,10 @@ export default {
       dateAdded,
       toast
     };
-  
-    }
   }
-
-
+};
 </script>
+
  
 <style scoped>
 .Postings {
