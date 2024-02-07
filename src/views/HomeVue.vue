@@ -138,7 +138,7 @@ body, html {
 .home {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure the container takes at least the height of the viewport */
+  min-height: 100vh; 
 }
 
 /* Banner styles */
@@ -179,9 +179,9 @@ body, html {
 .trapezoid:before {
   content: '';
   position: absolute;
-  top: -40px; /* adjust as needed */
+  top: -40px; 
   left: 20%;
-  width: 60%; /* adjust as needed */
+  width: 60%; 
   height: 0;
   border-bottom: 40px solid transparent; /* Transparent border */
   border-left: 10px solid transparent;
@@ -192,11 +192,11 @@ body, html {
 .trapezoid:after {
   content: '';
   position: absolute;
-  bottom: -40px; /* adjust as needed */
+  bottom: -40px; 
   left: 10%;
-  width: 70%; /* adjust as needed */
+  width: 70%; 
   height: 0;
-  border-top: 40px solid transparent; /* Transparent border */
+  border-top: 40px solid transparent; 
   border-left: 20px solid transparent;
   border-right: 10px solid transparent;
   z-index: 1;
@@ -275,11 +275,11 @@ body, html {
 
 .video-ad {
   margin-top: 0;
-  margin-left: 40px; /* Adjust as needed for spacing */
+  margin-left: 40px; 
 }
 
 .video-ad h2 {
-  margin-top: 0; /* Remove top margin */
+  margin-top: 0; 
 }
 
 
