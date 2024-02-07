@@ -215,7 +215,7 @@ export default {
 }
 
 .line-1 {
-  transform: rotate(-3deg); /* Angle of 20 degrees clockwise */
+  transform: rotate(3deg); /* Angle of 20 degrees clockwise */
 }
 
 .line-2 {
