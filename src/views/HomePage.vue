@@ -1,7 +1,9 @@
 <template>
   <AdminView/>
     <HomeVue/>
-    
+    <h1>
+      Welcome to the Home Page
+    </h1>
   </template>
 
 <script>
@@ -20,12 +22,6 @@ export default {
       showPopup: false
     }
   },
-    methods: {
-        goToAdminLogin() {
-        this.$router.push('/AdminLogin.vue');
-        }
-        
-    }
 }
 </script>
 

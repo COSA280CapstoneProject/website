@@ -116,6 +116,12 @@ export default {
     }
     },
     goToFormPage() {
+
+      // Close settings dropdown and popup
+      this.showSettings = false;
+      this.showPopup = false;
+
+
       this.$router.push('/form');
     },
     },

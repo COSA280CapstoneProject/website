@@ -1,6 +1,6 @@
 <template>
   <PostingPopup v-if="showPopup" @close="showPopup = false" />
-  <AdminView/>
+  
   
   <div class="home">
     <section class="banner">
@@ -112,12 +112,12 @@
 
 <script>
 import PostingPopup from '@/components/PostingPopup.vue'
-import AdminView from '@/components/AdminView.vue'
+
 
 export default {
   name: 'HomeVue',
   components: {
-    PostingPopup, AdminView
+    PostingPopup
   },
   data() {
     return {
