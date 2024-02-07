@@ -281,7 +281,7 @@ export default {
 
 </script>
  
-<style>
+<style scoped>
 .Postings {
   z-index: 10001;
   border: 1px solid black;
