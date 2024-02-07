@@ -329,31 +329,34 @@ export default {
 }
 .orgName {
   margin-left: -5px;
+  transform: translateX(10px);
 }
 .email {
-  transform: translateX();
+  transform: translateX(px);
 }
 .email input {
   margin-left: 95px;
+  transform: translateX(22px);
 }
 .phoneNumber {
-  transform: translateX();
+  transform: translateX(12px);
 }
 .contactName input {
-  transform: translateX();
+  transform: translateX(5px);
 }
 .posting {
-  margin-left: -390px;
+  margin-left: -380px;
   padding-bottom: 20px;
+  transform: translateX(-8px);
 }
 .posting select {
-  transform: translateX(28px);
+  transform: translateX(32px);
 }
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX();
+  transform: translateX(-6px);
 }
  
 .start-date-container {
@@ -364,27 +367,27 @@ export default {
  
 .startDate label {
   margin-right: 10px; 
+  transform: translateX(10px);
 }
- 
 .date-inputs {
   display: flex;
   gap: 10px; 
-  transform: translateX(60px);
+  transform: translateX(83px);
 }
 .Title {
-  transform: translateX(-55px);
+  transform: translateX(-67px);
   padding-bottom: 20px;
 }
 .Title input {
-  transform: translateX(110px);
+  transform: translateX(127px);
   width: 480px;
 }
 .Description {
-  transform: translateX(-30px);
+  transform: translateX(-40px);
   padding-bottom: 20px;
 }
 .Description input {
-  transform: translateX(60px);
+  transform: translateX(70px);
   width: 480px;
   padding-bottom: 80px;
 }
@@ -422,16 +425,7 @@ align-items: flex-start;
 .drag-drop-box:hover {
 color: #732181; 
 }
-.upload-button {
-display: block;
-width: 100%;
-padding: 10px;
-margin-top: 10px;
-text-align: center;
-background: #732181;
-color: white;
-cursor: pointer;
-}
+
 .FileUpload {
 transform: translateX(5px);
 padding-bottom: 20px;
