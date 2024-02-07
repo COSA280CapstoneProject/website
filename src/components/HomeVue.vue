@@ -1,5 +1,5 @@
 <template>
-  <PostingPopup v-if="showPopup" @close="showPopup = false" />
+  <PostingPopup @close="showPopup = false" v-if="showPopup" />
   <AdminView/>
   
   <div class="home">

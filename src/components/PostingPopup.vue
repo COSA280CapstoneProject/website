@@ -1,5 +1,6 @@
 <template>
   <div class="Postings">
+    <Toast v-model="toast" position="top-right" />
     <h1>Create Posting</h1>
     <div class="input-group">
       <div class="org-contact-container">
@@ -91,9 +92,13 @@
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import Toast from 'primevue/toast';
 
 export default {
-  setup() {
+  components: {
+      Toast
+    },
+  setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
     const fileDataUrl = ref([]);
@@ -115,7 +120,7 @@ export default {
     const dateAdded = ref('');
 
     const goBack = () => {
-      this.$router.go(-1);
+      emit('close');
     };
 
     const onDragOver = (e) => {
@@ -133,6 +138,28 @@ export default {
       } else {
         return require('@/assets/file.png'); 
       }
+    };
+
+    // Clear the form when the user submits the form
+    const clearForm = () => {
+      orgName.value = '';
+      contactName.value = '';
+      phoneNum.value = '';
+      startDate.value = '';
+      postID.value = '';
+      postTitle.value = '';
+      postDesc.value = '';
+      programType.value = '';
+      postType.value = '';
+      files.value = '';
+      status.value = '';
+      email.value = '';
+      season.value = '';
+      dateAdded.value = '';
+      fileName.value = [];
+      fileDataUrl.value = [];
+      fileSize.value = [];
+      fileObjects.value = [];
     };
 
     const removeFile = (index, event) => {
@@ -160,7 +187,7 @@ export default {
         reader.readAsDataURL(file);
         fileObjects.value.push(file); // Store the File object
       });
-      toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'Your file has been uploaded successfully.', life: 3000 });
+      toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
     };
 
     console.log('orgName:', orgName.value); // Log the value of orgName to the console
@@ -237,6 +264,7 @@ export default {
             // Handle success of the second POST request
             console.log(response);
             toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+            clearForm(); // Clear the form
           })
           .catch(error => {
             // Handle error
@@ -272,7 +300,8 @@ export default {
       status,
       email,
       season,
-      dateAdded
+      dateAdded,
+      toast
     };
   
     }
@@ -417,11 +446,11 @@ flex-direction: row;
 align-items: left;
 gap: 10px;
 }
-.submit-button {
+.submit button {
   background-color: #732181; 
   color: white;
-  border: 1px solid black; 
-  padding: 10px 20px; 
+  border: 2px solid black; 
+  padding: 8px 20px; 
   cursor: pointer; 
 }
 .close-button {
