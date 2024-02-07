@@ -226,6 +226,10 @@ export default {
   transform: skewY(3deg); /* Skew the background */
   background-color: green;
   margin: 0;
+  padding-top: 125px;
+  padding-bottom: 10px;
+  margin-top: -100px;
+  z-index: 2;
 }
 
 /* Specific styles for each section */
