@@ -4,14 +4,14 @@
   
   <div class="home">
     <section class="banner">
-      <img src="@/assets/logo.png" alt="Banner Image" />
-      <h1 v-show="showText">Welcome to ICT</h1>
     </section>
 
     <!-- Introduction Section -->
     <section class="introduction trapezoid">
       <div class="content">
-        <img src="@/assets/logo.png" alt="Introduction Image" />
+        <div class="logo">
+          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
+        </div>
         <div class="text">
           <p>
             ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
@@ -87,7 +87,7 @@
     <footer>
       <div class="footer-content">
         <div class="footer-logo">
-          <img src="@/assets/logo.png" alt="Footer Logo" />
+          <img src="@/assets/footer-logo.png" alt="Footer Logo" style="width: 200%;" />
         </div>
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
@@ -142,7 +142,9 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-
+.logo {
+  padding-bottom: 50px;
+}
 .home {
   display: flex;
   flex-direction: column;
@@ -220,10 +222,17 @@ export default {
   transform: rotate(-3deg); /* Angle of 10 degrees counter-clockwise */
 }
 
+.introduction {
+  transform: skewY(3deg); /* Skew the background */
+  background-color: green;
+  margin: 0;
+}
+
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
+  transform: skewY(-3deg); /* Counter-skew the content */
 }
 
 .introduction img {
@@ -276,7 +285,7 @@ export default {
 
 /* Footer styles */
 footer {
-  background-color: #333;
+  background-color: #732181;
   color: #fff;
   padding: 1rem 0;
 }
