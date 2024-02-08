@@ -10,7 +10,7 @@ import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import './assets/fonts.css';
-import Home from './views/HomePage.vue';
+
 
 // Define your routes
 const routes = [
