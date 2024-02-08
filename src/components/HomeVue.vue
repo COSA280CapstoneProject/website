@@ -4,14 +4,14 @@
   
   <div class="home">
     <section class="banner">
-      <img src="@/assets/logo.png" alt="Banner Image" />
-      <h1 v-show="showText">Welcome to ICT</h1>
     </section>
 
     <!-- Introduction Section -->
     <section class="introduction trapezoid">
       <div class="content">
-        <img src="@/assets/logo.png" alt="Introduction Image" />
+        <div class="logo">
+          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
+        </div>
         <div class="text">
           <p>
             ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
@@ -30,16 +30,18 @@
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
       <div class="content">
+        <div class="inner-content">
         <h2>Submit a Post</h2>
         <button @click="showPopup = true">Create Posting</button>
         
         <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create a Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
         </p>
         <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
           Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
         </p>
       </div>
+        </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials/Video Section -->
@@ -87,7 +89,7 @@
     <footer>
       <div class="footer-content">
         <div class="footer-logo">
-          <img src="@/assets/logo.png" alt="Footer Logo" />
+          <img src="@/assets/footer-logo.png" alt="Footer Logo" style="width: 200%;" />
         </div>
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
@@ -129,8 +131,6 @@ export default {
     
   },
   mounted() {
-    // Toggle visibility of text every 3 seconds
-    
   },
 };
 </script>
@@ -142,7 +142,9 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-
+.logo {
+  padding-bottom: 50px;
+}
 .home {
   display: flex;
   flex-direction: column;
@@ -203,28 +205,43 @@ export default {
   z-index: 1;
 }
 
-/* Lines between sections */
-.line {
-  position: relative;
+
+
+.introduction {
+  transform: skewY(3deg); /* Skew the background */
+  background-color: lightgray;
   margin: 0;
-  height: 4px;
-  width: 100%;
-  background-color: black; /* Line color */
-}
-
-.line-1 {
-  transform: rotate(3deg); /* Angle of 20 degrees clockwise */
-}
-
-.line-2 {
-  transform: rotate(-3deg); /* Angle of 10 degrees counter-clockwise */
+  padding-top: 125px;
+  padding-bottom: 10px;
+  margin-top: -100px;
+  z-index: 1;
 }
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
+  transform: skewY(-3deg); /* Counter-skew the content */
 }
+
+.submit-post {
+  background-color: #8D68AB;
+  margin: -100px;
+  margin-top: -125px;
+  padding: 23px 0px;
+  padding-top: 150px;
+  padding-left: 400px;
+  padding-right: 400px;
+  padding-bottom: 150px;
+  z-index: 0;
+}
+
+.submit-post .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 
 .introduction img {
   max-width: 100%;
@@ -253,8 +270,23 @@ export default {
   margin: 0;
 }
 
+.testimonials-video {
+  background-color: lightgray;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  z-index: 2;
+  transform: skewY(-3deg); /* Skew the background */
+  margin-bottom: -50px;
+}
+
 .testimonials-video .content {
   display: flex;
+  background-color: lightgray;
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-bottom: 50px;
+  transform: skewY(3deg); /* Counter-skew the content */
+  z-index: 2;
 }
 
 .testimonials {
@@ -276,9 +308,10 @@ export default {
 
 /* Footer styles */
 footer {
-  background-color: #333;
+  background-color: #753C97;
   color: #fff;
   padding: 1rem 0;
+  z-index: 3;
 }
 
 .footer-content {
