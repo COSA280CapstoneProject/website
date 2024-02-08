@@ -1,9 +1,9 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
-import AdminView from './components/AdminView.vue';
 import '@fortawesome/fontawesome-free/css/all.css';
 import PrimeVue from 'primevue/config';
+import HomePage from './views/HomePage.vue';
 import ToastService from 'primevue/toastservice';
 import Form from './views/Form.vue';
 import 'primevue/resources/themes/saga-blue/theme.css';
@@ -15,8 +15,8 @@ import './assets/fonts.css';
 const routes = [
     {
       path: '/',
-      name: 'Home',
-      component: Home
+      name: 'HomePage',
+      component: HomePage
     },
 
     { path: '/form',
