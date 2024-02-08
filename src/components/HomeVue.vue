@@ -205,58 +205,41 @@ export default {
   z-index: 1;
 }
 
-/* Lines between sections */
-.line {
-  position: relative;
-  margin: 0;
-  height: 4px;
-  width: 100%;
-  background-color: black; /* Line color */
-}
 
-.line-1 {
-  transform: rotate(-3deg); /* Angle of 20 degrees clockwise */
-  z-index: 0;
-}
-
-.line-2 {
-  transform: rotate(-3deg); /* Angle of 10 degrees counter-clockwise */
-  z-index: 0;
-}
 
 .introduction {
-  transform: skewY(-3deg); /* Skew the background */
-  background-color: green;
+  transform: skewY(3deg); /* Skew the background */
+  background-color: lightgray;
   margin: 0;
   padding-top: 125px;
   padding-bottom: 10px;
   margin-top: -100px;
-  z-index: 0;
+  z-index: 1;
 }
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
-  transform: skewY(3deg); /* Counter-skew the content */
+  transform: skewY(-3deg); /* Counter-skew the content */
 }
 
 .submit-post {
-  background-color: #CBC3E3;
-  margin: 0;
+  background-color: #753C97;
+  margin: -100px;
+  margin-top: -125px;
   padding: 23px 0px;
+  padding-top: 150px;
+  padding-left: 400px;
+  padding-right: 400px;
+  padding-bottom: 150px;
   z-index: 0;
-  transform: skewY(-3deg); /* Skew the background */
 }
 
 .submit-post .content {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.submit-post .inner-content {
-  transform: skewY(3deg); /* Counter-skew the content */
 }
 
 
@@ -287,8 +270,23 @@ export default {
   margin: 0;
 }
 
+.testimonials-video {
+  background-color: lightgray;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  z-index: 2;
+  transform: skewY(-3deg); /* Skew the background */
+  margin-bottom: -50px;
+}
+
 .testimonials-video .content {
   display: flex;
+  background-color: lightgray;
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-bottom: 50px;
+  transform: skewY(3deg); /* Counter-skew the content */
+  z-index: 2;
 }
 
 .testimonials {
@@ -310,9 +308,10 @@ export default {
 
 /* Footer styles */
 footer {
-  background-color: #732181;
+  background-color: #753C97;
   color: #fff;
   padding: 1rem 0;
+  z-index: 3;
 }
 
 .footer-content {
