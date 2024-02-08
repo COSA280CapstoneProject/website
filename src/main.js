@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import '@fortawesome/fontawesome-free/css/all.css';
 import PrimeVue from 'primevue/config';
+import HomePage from './views/HomePage.vue';
 import ToastService from 'primevue/toastservice';
 import Form from './views/Form.vue';
 import 'primevue/resources/themes/saga-blue/theme.css';
@@ -15,8 +16,8 @@ import Home from './views/HomePage.vue';
 const routes = [
     {
       path: '/',
-      name: 'Home',
-      component: Home
+      name: 'HomePage',
+      component: HomePage
     },
 
     { path: '/form',
