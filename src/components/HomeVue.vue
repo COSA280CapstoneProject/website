@@ -30,16 +30,18 @@
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
       <div class="content">
+        <div class="inner-content">
         <h2>Submit a Post</h2>
         <button @click="showPopup = true">Create Posting</button>
         
         <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create a Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
         </p>
         <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
           Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
         </p>
       </div>
+        </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials/Video Section -->
@@ -129,8 +131,6 @@ export default {
     
   },
   mounted() {
-    // Toggle visibility of text every 3 seconds
-    
   },
 };
 </script>
@@ -215,29 +215,50 @@ export default {
 }
 
 .line-1 {
-  transform: rotate(3deg); /* Angle of 20 degrees clockwise */
+  transform: rotate(-3deg); /* Angle of 20 degrees clockwise */
+  z-index: 0;
 }
 
 .line-2 {
   transform: rotate(-3deg); /* Angle of 10 degrees counter-clockwise */
+  z-index: 0;
 }
 
 .introduction {
-  transform: skewY(3deg); /* Skew the background */
+  transform: skewY(-3deg); /* Skew the background */
   background-color: green;
   margin: 0;
   padding-top: 125px;
   padding-bottom: 10px;
   margin-top: -100px;
-  z-index: 2;
+  z-index: 0;
 }
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
-  transform: skewY(-3deg); /* Counter-skew the content */
+  transform: skewY(3deg); /* Counter-skew the content */
 }
+
+.submit-post {
+  background-color: #f1c40f;
+  margin: 0;
+  padding: 23px 0px;
+  z-index: 0;
+  transform: skewY(-3deg); /* Skew the background */
+}
+
+.submit-post .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submit-post .inner-content {
+  transform: skewY(3deg); /* Counter-skew the content */
+}
+
 
 .introduction img {
   max-width: 100%;

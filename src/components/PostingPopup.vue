@@ -1,4 +1,8 @@
 <template>
+  <div class="background" @click="goBack">
+    <div v-if="isPopupActive" class="overlay"></div>
+    <div v-bind:class="{ 'Postings': isPopupActive }">
+      <div class="Postings" @click.stop> 
   <div class="Postings">
     <Toast v-model="toast" position="top-right" />
     <h1>Create Posting</h1>
@@ -86,6 +90,9 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
+</div>
 </template>
  
 <script>
@@ -95,6 +102,19 @@ import axios from 'axios';
 import Toast from 'primevue/toast';
 
 export default {
+    data() {
+    return {
+      isPopupActive: false,
+    };
+  },
+  methods: {
+    openPopup() {
+      this.isPopupActive = true;
+    },
+    closePopup() {
+      this.isPopupActive = false;
+    },
+  },
   components: {
       Toast
     },
@@ -311,15 +331,27 @@ export default {
 </script>
  
 <style scoped>
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+
 .Postings {
   z-index: 10001;
   border: 1px solid black;
   position: fixed;
-  justify-content: center;
-  align-items: center;
   background-color: rgb(255, 255, 255);
   padding: 40px;
-
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  width: 100%; /* Set the width of the form */
+  max-width: 800px; /* Set the maximum width of the form */
 }
 .org-contact-container, .contact-info-container {
   display: flex;
@@ -356,7 +388,7 @@ export default {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX(-6px);
+  transform: translateX(22px);
 }
  
 .start-date-container {
@@ -383,11 +415,11 @@ export default {
   width: 480px;
 }
 .Description {
-  transform: translateX(-40px);
+  transform: translateX(-38px);
   padding-bottom: 20px;
 }
 .Description input {
-  transform: translateX(70px);
+  transform: translateX(68px);
   width: 480px;
   padding-bottom: 80px;
 }
@@ -459,5 +491,14 @@ gap: 10px;
 .close-button:hover {
   color: white;
   background-color: red;
+}
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1; 
 }
 </style>
