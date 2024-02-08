@@ -1,4 +1,8 @@
 <template>
+  <div class="background" @click="goBack">
+    <div v-if="isPopupActive" class="overlay"></div>
+    <div v-bind:class="{ 'Postings': isPopupActive }">
+      <div class="Postings" @click.stop> 
   <div class="Postings">
     <Toast v-model="toast" position="top-right" />
     <h1>Create Posting</h1>
@@ -86,6 +90,9 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
+</div>
 </template>
  
 <script>
@@ -93,8 +100,21 @@ import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import Toast from 'primevue/toast';
-
+ 
 export default {
+    data() {
+    return {
+      isPopupActive: false,
+    };
+  },
+  methods: {
+    openPopup() {
+      this.isPopupActive = true;
+    },
+    closePopup() {
+      this.isPopupActive = false;
+    },
+  },
   components: {
       Toast
     },
@@ -118,20 +138,20 @@ export default {
     const email = ref('');
     const season = ref('');
     const dateAdded = ref('');
-
+ 
     const goBack = () => {
       emit('close');
     };
-
+ 
     const onDragOver = (e) => {
       e.preventDefault();
     };
-
+ 
     const onDrop = (e) => {
       e.preventDefault();
       onFileChange(e);
     };
-
+ 
     const getPreviewImage = (index) => {
       if (fileDataUrl.value[index].startsWith('data:image')) {
         return fileDataUrl.value[index];
@@ -139,7 +159,7 @@ export default {
         return require('@/assets/file.png'); 
       }
     };
-
+ 
     // Clear the form when the user submits the form
     const clearForm = () => {
       orgName.value = '';
@@ -161,7 +181,7 @@ export default {
       fileSize.value = [];
       fileObjects.value = [];
     };
-
+ 
     const removeFile = (index, event) => {
       event.stopPropagation();
       fileDataUrl.value.splice(index, 1);
@@ -169,11 +189,11 @@ export default {
       fileSize.value.splice(index, 1);
       toast.add({severity:'warn', summary: 'File Removed', detail:'Your file has been removed.', life: 3000});
     };
-
+ 
     const getFileSize = (index) => {
       return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
     };
-
+ 
     const onFileChange = (e) => {
       const files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
@@ -189,9 +209,9 @@ export default {
       });
       toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
     };
-
+ 
     console.log('orgName:', orgName.value); // Log the value of orgName to the console
-
+ 
     const submitForm = () => {
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
@@ -202,7 +222,7 @@ export default {
           formData.append('file', file, fileName.value[index]); // Append the File object
           files.push(fileName.value[index]); // Add the file name to the array
         });
-
+ 
         axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -212,16 +232,16 @@ export default {
             // Handle success
             console.log(response);
             toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
-
+ 
             // Generate a random 6 digit number for the PostID
             const postID = Math.floor(100000 + Math.random() * 900000);
-
+ 
             // Automatically set the status to "Open" when the form is submitted
             const status = 'Open';
-
+ 
             // Log the value of orgName
             console.log('orgName:', orgName.value);
-
+ 
             // Get the current date and time
             const dateAdded = new Date().toLocaleString('en-GB', {
             year: 'numeric',
@@ -232,7 +252,7 @@ export default {
             second: '2-digit',
             hour12: false
           });
-
+ 
             // Send another POST request to the Azure Function URL
             const postData = {
               orgName: orgName.value,
@@ -250,10 +270,10 @@ export default {
               season: season.value,
               dateAdded: dateAdded,
             };
-
+ 
             // Print the POST data to the console
             console.log(JSON.stringify(postData));
-
+ 
             return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
               headers: {
                 'Content-Type': 'application/json'
@@ -273,7 +293,7 @@ export default {
           });
       }
     };
-
+ 
     return {
       fileName,
       fileDataUrl,
@@ -303,23 +323,35 @@ export default {
       dateAdded,
       toast
     };
-  
+ 
     }
   }
-
-
+ 
+ 
 </script>
  
 <style scoped>
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+ 
 .Postings {
   z-index: 10001;
   border: 1px solid black;
   position: fixed;
-  justify-content: center;
-  align-items: center;
   background-color: rgb(255, 255, 255);
   padding: 40px;
-
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  width: 100%; /* Set the width of the form */
+  max-width: 800px; /* Set the maximum width of the form */
 }
 .org-contact-container, .contact-info-container {
   display: flex;
@@ -329,31 +361,34 @@ export default {
 }
 .orgName {
   margin-left: -5px;
+  transform: translateX(10px);
 }
 .email {
-  transform: translateX();
+  transform: translateX(px);
 }
 .email input {
   margin-left: 95px;
+  transform: translateX(22px);
 }
 .phoneNumber {
-  transform: translateX();
+  transform: translateX(12px);
 }
 .contactName input {
-  transform: translateX();
+  transform: translateX(5px);
 }
 .posting {
-  margin-left: -390px;
+  margin-left: -380px;
   padding-bottom: 20px;
+  transform: translateX(-8px);
 }
 .posting select {
-  transform: translateX(28px);
+  transform: translateX(32px);
 }
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX();
+  transform: translateX(22px);
 }
  
 .start-date-container {
@@ -364,27 +399,27 @@ export default {
  
 .startDate label {
   margin-right: 10px; 
+  transform: translateX(10px);
 }
- 
 .date-inputs {
   display: flex;
   gap: 10px; 
-  transform: translateX(60px);
+  transform: translateX(83px);
 }
 .Title {
-  transform: translateX(-55px);
+  transform: translateX(-67px);
   padding-bottom: 20px;
 }
 .Title input {
-  transform: translateX(110px);
+  transform: translateX(127px);
   width: 480px;
 }
 .Description {
-  transform: translateX(-30px);
+  transform: translateX(-38px);
   padding-bottom: 20px;
 }
 .Description input {
-  transform: translateX(60px);
+  transform: translateX(68px);
   width: 480px;
   padding-bottom: 80px;
 }
@@ -422,16 +457,7 @@ align-items: flex-start;
 .drag-drop-box:hover {
 color: #732181; 
 }
-.upload-button {
-display: block;
-width: 100%;
-padding: 10px;
-margin-top: 10px;
-text-align: center;
-background: #732181;
-color: white;
-cursor: pointer;
-}
+ 
 .FileUpload {
 transform: translateX(5px);
 padding-bottom: 20px;
@@ -465,5 +491,14 @@ gap: 10px;
 .close-button:hover {
   color: white;
   background-color: red;
+}
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1; 
 }
 </style>
