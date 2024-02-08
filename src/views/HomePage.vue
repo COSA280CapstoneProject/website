@@ -1,9 +1,6 @@
 <template>
   <AdminView/>
     <HomeVue/>
-    <h1>
-      Welcome to the Home Page
-    </h1>
   </template>
 
 <script>
