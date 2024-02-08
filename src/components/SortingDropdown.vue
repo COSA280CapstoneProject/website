@@ -73,10 +73,23 @@
     z-index: 1;
     margin-top: 50px;
     background-color: #f8f9fa;
-    margin-left: 50px;
+    margin-left: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    padding-left: 10px;
   }
   .multi-select {
     width: 300px; /* Adjust this value as needed */
   }
+  ::v-deep  .pi-calendar {
+  background-color: #732181;
+
+}
+::v-deep  .p-button  {
+  background-color: #732181;
+  border: #732181;
+}
+
   
   </style>

@@ -21,7 +21,7 @@
       </div>
       <div class="form-page">
           <!-- Form Page button -->
-          <button>Form Page</button>
+          <button @click="goToFormPage">Form Page</button>
         </div>
       </nav>
       <!-- Popup Overlay and Content -->
@@ -69,29 +69,19 @@ export default {
         { name: 'Javin', email: 'admin2@example.com' },
         { name: 'Arrsh', email: 'admin2@example.com' },
         { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
+        // ... rest of the admins ...
       ],
       selectedAdmin: null
-    }
+    };
   },
 
   mounted() {
-      document.addEventListener('click', this.outsideClick);
-    },
-    beforeUnmount() {
-      document.removeEventListener('click', this.outsideClick);
-    },
+    document.addEventListener('click', this.outsideClick);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener('click', this.outsideClick);
+  },
 
   watch: {
     showPopup(value) {
@@ -105,50 +95,52 @@ export default {
     },
 
     openPopup() {
-    this.showSettings = false;
-    this.showPopup = true;
+      this.showSettings = false;
+      this.showPopup = true;
     },
+
     closePopup() {
       this.showPopup = false;
     },
 
     outsideClick(event) {
-    if (!this.showPopup && this.showSettings && this.$refs.dropdown && this.$refs.settings &&
-        !this.$refs.dropdown.contains(event.target) &&
-        !this.$refs.settings.contains(event.target)) {
-      this.showSettings = false;
-    }
-    if (this.showPopup && this.$refs.popup && !this.$refs.popup.contains(event.target)) {
-      this.closePopup();
-    }
+      if (!this.showPopup && this.showSettings && this.$refs.dropdown && this.$refs.settings &&
+          !this.$refs.dropdown.contains(event.target) &&
+          !this.$refs.settings.contains(event.target)) {
+        this.showSettings = false;
+      }
+      if (this.showPopup && this.$refs.popup && !this.$refs.popup.contains(event.target)) {
+        this.closePopup();
+      }
     },
 
-    selectAdmin(index) {
-      this.selectedAdmin = index;
+    goToFormPage() {
+      this.$router.push('/form');
     },
+
     addAdmin() {
       // Add admin logic
     },
+
     removeAdmin() {
       if (this.selectedAdmin !== null) {
         // Remove admin logic
         console.log("Removing admin:", this.admins[this.selectedAdmin]);
         // Reset selected admin
         this.selectedAdmin = null;
+
+        // logout() {
+        //   const tenantID = 'azure sucks ass'; // Replace with your Azure tenant ID
+        //   const postLogoutRedirectUri = encodeURIComponent('http://localhost:8080/'); // Replace with the URL to redirect after logout
+
+        //   const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/logout?post_logout_redirect_uri=${postLogoutRedirectUri}`;
+
+        //   window.location.href = logoutUrl;
+        // },
       }
     },
-
-    // logout() {
-    //   const tenantID = 'azure sucks ass'; // Replace with your Azure tenant ID
-    //   const postLogoutRedirectUri = encodeURIComponent('http://localhost:8080/'); // Replace with the URL to redirect after logout
-
-    //   const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/logout?post_logout_redirect_uri=${postLogoutRedirectUri}`;
-
-    //   window.location.href = logoutUrl;
-    // },
-    },
   }
-
+}
 </script>
 
 
