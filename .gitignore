@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Dist folder
+dist/
+
+# JetBrains idea folder
+.idea/

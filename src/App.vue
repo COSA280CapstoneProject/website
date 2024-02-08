@@ -1,26 +1,33 @@
 <template>
- 
-  <HelloWorld msg=""/>
+  <div id="app">
+    
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './views/Form.vue'
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+/* Global styles */
+body {
+  margin: 0;
+  font-family: 'Gotham', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+
+#app {
+  text-align: center;
+}
+
+/* Add more global styles as needed */
 </style>
