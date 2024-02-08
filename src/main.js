@@ -1,7 +1,6 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
-import AdminView from './components/AdminView.vue';
 import '@fortawesome/fontawesome-free/css/all.css';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
@@ -10,6 +9,7 @@ import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import './assets/fonts.css';
+import Home from './views/HomePage.vue';
 
 // Define your routes
 const routes = [

@@ -21,7 +21,7 @@
       </div>
       <div class="form-page">
           <!-- Form Page button -->
-          <button>Form Page</button>
+          <button @click="goToFormPage">Form Page</button>
         </div>
       </nav>
       <!-- Popup Overlay and Content -->
@@ -125,7 +125,7 @@ export default {
     goToFormPage() {
       this.$router.push('/form');
     },
-    },
+    
 
     mounted() {
       document.addEventListener('click', this.outsideClick);
@@ -144,6 +144,7 @@ export default {
         this.selectedAdmin = null;
       }
     },
+    
 
     // logout() {
     //   const tenantID = 'azure sucks ass'; // Replace with your Azure tenant ID
@@ -153,8 +154,8 @@ export default {
 
     //   window.location.href = logoutUrl;
     // },
-    },
   }
+}
 
 </script>
 
