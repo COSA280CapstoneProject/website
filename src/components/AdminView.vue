@@ -21,7 +21,7 @@
       </div>
       <div class="form-page">
           <!-- Form Page button -->
-          <button>Form Page</button>
+          <button>Postings</button>
         </div>
       </nav>
       <!-- Popup Overlay and Content -->
