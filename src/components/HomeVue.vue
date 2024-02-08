@@ -225,7 +225,7 @@ export default {
 }
 
 .submit-post {
-  background-color: #753C97;
+  background-color: #8D68AB;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
