@@ -13,13 +13,13 @@
           <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
         </div>
         <div class="text">
-          <p>
+          <h2>
             ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
             The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
-          </p>
-          <p> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
+          </h2>
+          <h2> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
             The submit a post section, designed as an inclined trapeze, presents a sleek button inviting users to create postings, redirecting them to the relevant form page.
-          </p>
+          </h2>
         </div>
       </div>
     </section>
@@ -33,13 +33,12 @@
         <div class="inner-content">
         <h2>Submit a Post</h2>
         <button @click="showPopup = true">Create Posting</button>
-        
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-        </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-        </p>
+          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          </p>
+          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+          </p>
       </div>
         </div>
     </section>
@@ -61,7 +60,8 @@
           <p>
             "Working with ICT has been a transformative experience for our HR team.
             The platform's extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company's culture and values.
-            The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."</p>
+            The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."
+          </p>
 
           <div class="employerReview">
             <h4>Spencer Nikkel:</h4>
@@ -70,17 +70,8 @@
           <p>
             "Choosing ICT for our hiring needs was a strategic move that paid off immensely.
             The platform's innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals.
-            ICT has become an indispensable ally in our quest for building a high-performing team."</p>
-          <!-- Add more testimonials as needed -->
-        </div>
-
-        <!-- Video Advertisement -->
-        <div class="video-ad">
-          <h2>What Employers Have To Say About ICT</h2>
-          <video controls>
-            <source src="path-to-your-video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
+            ICT has become an indispensable ally in our quest for building a high-performing team."
+          </p>
         </div>
       </div>
     </section>
