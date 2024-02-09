@@ -13,13 +13,13 @@
           <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
         </div>
         <div class="text">
-          <p>
+          <h2>
             ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
             The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
-          </p>
-          <p> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
+          </h2>
+          <h2> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
             The submit a post section, designed as an inclined trapeze, presents a sleek button inviting users to create postings, redirecting them to the relevant form page.
-          </p>
+          </h2>
         </div>
       </div>
     </section>
