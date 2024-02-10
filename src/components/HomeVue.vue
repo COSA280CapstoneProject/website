@@ -43,11 +43,14 @@
         </div>
     </section>
 
-    <!-- Line Between Submit a Post and Testimonials/Video Section -->
+    <!-- Line Between Submit a Post and Testimonials Section -->
     <div class="line line-2"></div>
 
-    <!-- Testimonials and Video Section -->
-    <section class="testimonials-video trapezoid">
+    <!-- Testimonials Section -->
+    <section class="testimonials-section trapezoid">
+      <div class="testimonials-header-text">
+        <h2>What people are saying</h2>
+      </div>
       <div class="content testimonials-container">
         <!-- Written Testimonials -->
         <div class="testimonials">
@@ -249,7 +252,7 @@ export default {
 }
 
 .employerReview {
-  text-align: left;
+  text-align: center;
 }
 
 .employerReview p {
@@ -261,7 +264,7 @@ export default {
   margin: 0;
 }
 
-.testimonials-video {
+.testimonials-section {
   background-color: lightgray;
   padding-top: 50px;
   padding-bottom: 50px;
@@ -270,12 +273,21 @@ export default {
   margin-bottom: -50px;
 }
 
-.testimonials-video .content {
+.testimonials-section .content {
   display: flex;
+  justify-content: center;
   background-color: lightgray;
   padding-top: 50px;
   padding-left: 50px;
   padding-bottom: 50px;
+  transform: skewY(3deg); /* Counter-skew the content */
+  z-index: 2;
+}
+
+.testimonials-header-text {
+  display: flex;
+  justify-content: center;
+  padding-left: 50px;
   transform: skewY(3deg); /* Counter-skew the content */
   z-index: 2;
 }
