@@ -158,9 +158,9 @@ html, body {
 }
 
 .form-page button {
-  background-color: #ffffff;
+  background-color: #c56eff;
   border: none;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -171,11 +171,12 @@ html, body {
   font-size: 16px;
   cursor: pointer;
   transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 5px;
 }
 
 .form-page button:hover {
-  background-color: #dbdbdb;
-  color: rgb(0, 0, 0);
+  background-color: #a51eff;
+  color: rgb(255, 255, 255);
 }
 
 .form-page button:active {
