@@ -1,4 +1,8 @@
 <template>
+  <div class="background" @click="goBack">
+    <div v-if="isPopupActive" class="overlay"></div>
+    <div v-bind:class="{ 'Postings': isPopupActive }">
+      <div class="Postings" @click.stop> 
   <div class="Postings">
     <Toast v-model="toast" position="top-right" />
     <h1>Create Posting</h1>
@@ -86,6 +90,9 @@
       </div>
     </div>
   </div>
+  </div>
+</div>
+</div>
 </template>
  
 <script>
@@ -95,6 +102,19 @@ import axios from 'axios';
 import Toast from 'primevue/toast';
 
 export default {
+    data() {
+    return {
+      isPopupActive: false,
+    };
+  },
+  methods: {
+    openPopup() {
+      this.isPopupActive = true;
+    },
+    closePopup() {
+      this.isPopupActive = false;
+    },
+  },
   components: {
       Toast
     },
@@ -311,15 +331,27 @@ export default {
 </script>
  
 <style scoped>
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+
 .Postings {
   z-index: 10001;
   border: 1px solid black;
   position: fixed;
-  justify-content: center;
-  align-items: center;
   background-color: rgb(255, 255, 255);
   padding: 40px;
-
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  width: 100%; /* Set the width of the form */
+  max-width: 800px; /* Set the maximum width of the form */
 }
 .org-contact-container, .contact-info-container {
   display: flex;
@@ -329,31 +361,34 @@ export default {
 }
 .orgName {
   margin-left: -5px;
+  transform: translateX(10px);
 }
 .email {
-  transform: translateX();
+  transform: translateX(px);
 }
 .email input {
   margin-left: 95px;
+  transform: translateX(22px);
 }
 .phoneNumber {
-  transform: translateX();
+  transform: translateX(12px);
 }
 .contactName input {
-  transform: translateX();
+  transform: translateX(5px);
 }
 .posting {
-  margin-left: -390px;
+  margin-left: -380px;
   padding-bottom: 20px;
+  transform: translateX(-8px);
 }
 .posting select {
-  transform: translateX(28px);
+  transform: translateX(32px);
 }
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX();
+  transform: translateX(22px);
 }
  
 .start-date-container {
@@ -364,27 +399,27 @@ export default {
  
 .startDate label {
   margin-right: 10px; 
+  transform: translateX(10px);
 }
- 
 .date-inputs {
   display: flex;
   gap: 10px; 
-  transform: translateX(60px);
+  transform: translateX(83px);
 }
 .Title {
-  transform: translateX(-55px);
+  transform: translateX(-67px);
   padding-bottom: 20px;
 }
 .Title input {
-  transform: translateX(110px);
+  transform: translateX(127px);
   width: 480px;
 }
 .Description {
-  transform: translateX(-30px);
+  transform: translateX(-38px);
   padding-bottom: 20px;
 }
 .Description input {
-  transform: translateX(60px);
+  transform: translateX(68px);
   width: 480px;
   padding-bottom: 80px;
 }
@@ -422,16 +457,7 @@ align-items: flex-start;
 .drag-drop-box:hover {
 color: #732181; 
 }
-.upload-button {
-display: block;
-width: 100%;
-padding: 10px;
-margin-top: 10px;
-text-align: center;
-background: #732181;
-color: white;
-cursor: pointer;
-}
+
 .FileUpload {
 transform: translateX(5px);
 padding-bottom: 20px;
@@ -465,5 +491,14 @@ gap: 10px;
 .close-button:hover {
   color: white;
   background-color: red;
+}
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 4; 
 }
 </style>
