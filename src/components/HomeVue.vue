@@ -281,7 +281,7 @@ export default {
   display: flex;
   justify-content: center;
   background-color: lightgray;
-  padding-top: 50px;
+  padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
   transform: skewY(3deg); /* Counter-skew the content */
