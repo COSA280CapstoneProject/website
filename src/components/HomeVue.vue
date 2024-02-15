@@ -10,9 +10,12 @@
     <section class="introduction trapezoid">
       <div class="content">
         <div class="logo">
+        <a href="https://saskpolytech.ca/" target="_blank">
           <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
+        </a>
         </div>
         <div class="text">
+          <h1>Introduction</h1>
           <h2>
             ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
             The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
@@ -29,18 +32,19 @@
 
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
-      <div class="content">
-        <div class="inner-content">
+    <div class="content">
+      <div class="inner-content">
         <h2>Submit a Post</h2>
+        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+        </p>
+        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+        </p>
+        <p><em>We will be evaluating your posting</em></p>
         <button @click="showPopup = true">Create Posting</button>
-          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-          </p>
-          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-          </p>
       </div>
-        </div>
+    </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials Section -->
