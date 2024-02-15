@@ -157,7 +157,7 @@ export default {
 }
 
 .banner img {
-  width: 100%; /* Adjust as needed */
+  width: 100%;
   max-height: 200px
 }
 
@@ -166,7 +166,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem; /* Adjust as needed */
+  font-size: 2rem;
 }
 
 
@@ -180,9 +180,9 @@ export default {
 .trapezoid:before {
   content: '';
   position: absolute;
-  top: -40px; /* adjust as needed */
+  top: -40px;
   left: 20%;
-  width: 60%; /* adjust as needed */
+  width: 60%;
   height: 0;
   border-bottom: 40px solid transparent; /* Transparent border */
   border-left: 10px solid transparent;
@@ -193,9 +193,9 @@ export default {
 .trapezoid:after {
   content: '';
   position: absolute;
-  bottom: -40px; /* adjust as needed */
+  bottom: -40px;
   left: 10%;
-  width: 70%; /* adjust as needed */
+  width: 70%;
   height: 0;
   border-top: 40px solid transparent; /* Transparent border */
   border-left: 20px solid transparent;
@@ -305,7 +305,7 @@ export default {
 }
 
 .video-ad {
-  margin-left: 2rem; /* Adjust as needed for spacing */
+  margin-left: 2rem;
 }
 
 .video-ad h2 {
