@@ -245,7 +245,7 @@ html, body {
   max-height: 250px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   border: 1px solid #000000;
-  z-index: 1;
+  z-index: 10;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
