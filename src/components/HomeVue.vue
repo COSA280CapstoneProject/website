@@ -35,6 +35,7 @@
     <div class="content">
       <div class="inner-content">
         <h2>Submit a Post</h2>
+        <button @click="showPopup = true">Create Posting</button>
         <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
           By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
         </p>
@@ -42,7 +43,6 @@
           Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
         </p>
         <p><em>We will be evaluating your posting</em></p>
-        <button @click="showPopup = true">Create Posting</button>
       </div>
     </div>
     </section>
@@ -95,15 +95,15 @@
           <p>Email: info@ictregina.com | Phone: (123) 456-7890</p>
         </div>
         <div class="footer-social">
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="Facebook Icon" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="Twitter Icon" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="LinkedIn Icon" />
-          </a>
+        <a href="https://www.facebook.com/saskpolytech/" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/facebook.png" alt="Facebook Icon" />
+        </a>
+        <a href="https://x.com/SaskPolytech" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/x.png" alt="Twitter (X) Icon" />
+        </a>
+        <a href="https://www.linkedin.com/school/saskpolytech" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/linkedin.png" alt="LinkedIn Icon" />
+        </a>
         </div>
       </div>
     </footer>
