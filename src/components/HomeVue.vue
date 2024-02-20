@@ -35,6 +35,7 @@
     <div class="content">
       <div class="inner-content">
         <h2>Submit a Post</h2>
+        <button @click="showPopup = true">Create Posting</button>
         <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
           By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
         </p>
@@ -42,7 +43,6 @@
           Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
         </p>
         <p><em>We will be evaluating your posting</em></p>
-        <button @click="showPopup = true">Create Posting</button>
       </div>
     </div>
     </section>
@@ -92,18 +92,18 @@
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
           <p>123 Main Street, Regina, SK S4P 3Y2</p>
-          <p>Email: info@ictregina.com | Phone: (123) 456-7890</p>
+          <p>Email: <a href="mailto:info@ictregina.com">info@ictregina.com</a> | Phone: <a href="tel:1234567890">(123) 456-7890</a></p>
         </div>
         <div class="footer-social">
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="Facebook Icon" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="Twitter Icon" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="LinkedIn Icon" />
-          </a>
+        <a href="https://www.facebook.com/saskpolytech/" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/facebook.png" alt="Facebook Icon" />
+        </a>
+        <a href="https://x.com/SaskPolytech" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/x.png" alt="Twitter (X) Icon" />
+        </a>
+        <a href="https://www.linkedin.com/school/saskpolytech" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/linkedin.png" alt="LinkedIn Icon" />
+        </a>
         </div>
       </div>
     </footer>
@@ -157,7 +157,7 @@ export default {
 }
 
 .banner img {
-  width: 100%; /* Adjust as needed */
+  width: 100%;
   max-height: 200px
 }
 
@@ -166,7 +166,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem; /* Adjust as needed */
+  font-size: 2rem;
 }
 
 
@@ -180,9 +180,9 @@ export default {
 .trapezoid:before {
   content: '';
   position: absolute;
-  top: -40px; /* adjust as needed */
+  top: -40px;
   left: 20%;
-  width: 60%; /* adjust as needed */
+  width: 60%;
   height: 0;
   border-bottom: 40px solid transparent; /* Transparent border */
   border-left: 10px solid transparent;
@@ -193,9 +193,9 @@ export default {
 .trapezoid:after {
   content: '';
   position: absolute;
-  bottom: -40px; /* adjust as needed */
+  bottom: -40px;
   left: 10%;
-  width: 70%; /* adjust as needed */
+  width: 70%;
   height: 0;
   border-top: 40px solid transparent; /* Transparent border */
   border-left: 20px solid transparent;
@@ -281,7 +281,7 @@ export default {
   display: flex;
   justify-content: center;
   background-color: lightgray;
-  padding-top: 50px;
+  padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
   transform: skewY(3deg); /* Counter-skew the content */
@@ -305,7 +305,7 @@ export default {
 }
 
 .video-ad {
-  margin-left: 2rem; /* Adjust as needed for spacing */
+  margin-left: 2rem;
 }
 
 .video-ad h2 {
@@ -332,7 +332,7 @@ footer {
 }
 
 .footer-info {
-  max-width: 300px;
+  width: 80%;
 }
 
 .footer-social img {
