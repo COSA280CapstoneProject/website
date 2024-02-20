@@ -92,7 +92,7 @@
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
           <p>123 Main Street, Regina, SK S4P 3Y2</p>
-          <p>Email: info@ictregina.com | Phone: (123) 456-7890</p>
+          <p>Email: <a href="mailto:info@ictregina.com">info@ictregina.com</a> | Phone: <a href="tel:1234567890">(123) 456-7890</a></p>
         </div>
         <div class="footer-social">
         <a href="https://www.facebook.com/saskpolytech/" target="_blank" rel="noopener noreferrer">
@@ -332,7 +332,7 @@ footer {
 }
 
 .footer-info {
-  max-width: 300px;
+  width: 80%;
 }
 
 .footer-social img {
