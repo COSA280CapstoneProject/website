@@ -7,7 +7,7 @@
     </section>
 
     <!-- Introduction Section -->
-    <section class="introduction trapezoid">
+    <section class="introduction trapezoid introduction-bg">
       <div class="content">
         <div class="logo">
         <a href="https://saskpolytech.ca/" target="_blank">
@@ -215,6 +215,13 @@ export default {
   z-index: 1;
 }
 
+.introduction-bg { /* Background image for the introduction section */
+  background-image: url('@/assets/stock-image.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
@@ -266,6 +273,11 @@ export default {
 .subtitle {
   font-style: italic;
   margin: 0;
+}
+
+.text {
+  color: #000;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .testimonials-section {
