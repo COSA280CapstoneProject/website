@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '@/views/HomeVue.vue';
+import Home from '@/views/HomePage.vue';
 import AllOpenings from '@/views/AllOpenings.vue';
 import AdminLogin from '@/views/AdminVue.vue';
 import RequestResource from '@/views/RequestResource.vue';
@@ -10,7 +10,7 @@ import Form from '@/views/Form.vue';
 const routes = [
   {
     path: '/',
-    name: 'HomeVue',
+    name: 'Home',
     component: Home
   },
   {
