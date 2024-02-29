@@ -10,27 +10,29 @@
             <div class="org-contact-container">
               <div class="orgName">
                 <label for="orgName">Organization Name </label>
-                <input type="text" id="orgName" name="orgName" v-model="orgName">
+                <input type="text" v-model="orgName" :class="{ error: submitted && !orgName }" /> 
               </div>
               <div class="contactName">
                 <label for="contactName">Contact Name </label>
-                <input type="text" id="contactName" name="contactName" v-model="contactName">
+                <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" /> 
               </div>
             </div>
             <div class="contact-info-container">
               <div class="email">
                 <label for="email">Email </label>
-                <input type="text" id="email" name="email" v-model="email">
+                <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && !emailIsValid }" />
+                <span v-if="submitted && !emailIsValid" class="error-message">Please enter a valid email address.</span>
               </div>
+
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
-                  <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber">
+                  <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
               </div>
             </div>
       <div class="posting type">
         <div>
           <label for="postingType">Type of Posting </label>
-          <select id="postingType" name="postingType" v-model="programType">
+          <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
             <option value="Student Projects">Student Project</option>
             <option value="Internships">Internship</option>
             <option value="Job Placements">Job Placement</option>
@@ -41,7 +43,7 @@
         <div class="start-date-container">
           <label for="startDate">Start Date </label>
           <div class="date-inputs">
-            <select id="Year" name="Year" v-model="startDate">
+            <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }" > 
               <option value="2020">2020</option>
               <option value="2021">2021</option>
               <option value="2022">2022</option>
@@ -54,7 +56,7 @@
               <option value="2029">2029</option>
               <option value="2030">2030</option>
             </select>
-            <select id="Season" name="Season" v-model="season">
+            <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }" > 
               <option value="Fall">Fall</option>
               <option value="Winter">Winter</option>
               <option value="Spring">Spring</option>
@@ -65,11 +67,11 @@
       </div>
       <div class="Title">
         <label for="Title">Title </label>
-        <input type="text" id="Title" name="Title" v-model="postTitle">
+        <input type="text" id="Title" name="Title" v-model="postTitle" :class="{ error: submitted && !postTitle }" /> 
       </div>
       <div class="Description">
         <label for="Description">Description </label>
-        <input type="text" id="Description" name="Description" v-model="postDesc">
+        <input type="text" id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }" /> 
       </div>
       <div class="FileUpload">
         <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
@@ -80,7 +82,7 @@
             <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
           </div>
         </div>
-        <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
+        <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple :class="{ error: submitted && !fileDataUrl.length }" /> <!-- eslint-disable-next-line -->
       </div>
       <div class="submit">
         <button @click="submitForm">Submit</button>
@@ -102,22 +104,15 @@ import axios from 'axios';
 import Toast from 'primevue/toast';
 
 export default {
-    data() {
+  components: {
+    Toast // Add Toast to the components object
+  },
+  data() {
     return {
       isPopupActive: false,
+      submitted: false,
     };
   },
-  methods: {
-    openPopup() {
-      this.isPopupActive = true;
-    },
-    closePopup() {
-      this.isPopupActive = false;
-    },
-  },
-  components: {
-      Toast
-    },
   setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
@@ -138,6 +133,17 @@ export default {
     const email = ref('');
     const season = ref('');
     const dateAdded = ref('');
+    const submitted = ref(false);
+    const emailIsValid = ref(true);
+
+    const isValidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+  
+  const validateEmail = () => {
+    emailIsValid.value = isValidEmail(email.value);
+  };
 
     const goBack = () => {
       emit('close');
@@ -151,22 +157,22 @@ export default {
       e.preventDefault();
       onFileChange(e);
     };
+
     const formattedPhoneNumber = computed(() => {
       return phoneNum.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     });
     const updatePhoneNumber = (event) => {
-    // Remove non-digit characters from input and update phoneNum
-    phoneNum.value = event.target.value.replace(/\D/g, '');
-  };
+      phoneNum.value = event.target.value.replace(/\D/g, '');
+    };
+
     const getPreviewImage = (index) => {
       if (fileDataUrl.value[index].startsWith('data:image')) {
         return fileDataUrl.value[index];
       } else {
-        return require('@/assets/file.png'); 
+        return require('@/assets/file.png');
       }
     };
 
-    // Clear the form when the user submits the form
     const clearForm = () => {
       orgName.value = '';
       contactName.value = '';
@@ -193,7 +199,7 @@ export default {
       fileDataUrl.value.splice(index, 1);
       fileName.value.splice(index, 1);
       fileSize.value.splice(index, 1);
-      toast.add({severity:'warn', summary: 'File Removed', detail:'Your file has been removed.', life: 3000});
+      toast.add({ severity: 'warn', summary: 'File Removed', detail: 'Your file has been removed.', life: 3000 });
     };
 
     const getFileSize = (index) => {
@@ -219,124 +225,126 @@ export default {
     console.log('orgName:', orgName.value); // Log the value of orgName to the console
 
     const submitForm = () => {
-      if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
-      } else {
-        const formData = new FormData();
-        let files = []; // Create an array to store file names
-        fileObjects.value.forEach((file, index) => {
-          formData.append('file', file, fileName.value[index]); // Append the File object
-          files.push(fileName.value[index]); // Add the file name to the array
-        });
-
-        axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-          .then(response => {
-            // Handle success
-            console.log(response);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
-
-            // Generate a random 6 digit number for the PostID
-            const postID = Math.floor(100000 + Math.random() * 900000);
-
-            // Automatically set the status to "Open" when the form is submitted
-            const status = 'Open';
-
-            // Log the value of orgName
-            console.log('orgName:', orgName.value);
-
-            // Get the current date and time
-            const dateAdded = new Date().toLocaleString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-          });
-
-            // Send another POST request to the Azure Function URL
-            const postData = {
-              orgName: orgName.value,
-              contactName: contactName.value,
-              phoneNum: phoneNum.value,
-              startDate: startDate.value,
-              postID: postID,
-              postTitle: postTitle.value,
-              postDesc: postDesc.value,
-              programType: programType.value,
-              postType: programType.value,
-              files: files.join(','), // Send the file names as a comma-separated string
-              status: status,
-              email: email.value,
-              season: season.value,
-              dateAdded: dateAdded,
-            };
-
-            // Print the POST data to the console
-            console.log(JSON.stringify(postData));
-
-            return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-          })
-          .then(response => {
-            // Handle success of the second POST request
-            console.log(response);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
-            clearForm(); // Clear the form
-          })
-          .catch(error => {
-            // Handle error
-            console.log(error);
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
-          });
-      }
-    };
-
-    return {
-      fileName,
-      fileDataUrl,
-      fileSize,
-      fileObjects,
-      goBack,
-      onDragOver,
-      onDrop,
-      onFileChange,
-      getPreviewImage,
-      removeFile,
-      getFileSize,
-      submitForm,
-      orgName,
-      contactName,
-      phoneNum,
-      startDate,
-      postID,
-      postTitle,
-      postDesc,
-      programType,
-      postType,
-      files,
-      status,
-      email,
-      season,
-      dateAdded,
-      formattedPhoneNumber,
-      updatePhoneNumber,
-      toast
-    };
-  
-    }
+  // Initial validation check for required fields
+  if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
+    submitted.value = true;
+    return;
   }
 
+  // Validate email
+  if (!isValidEmail(email.value)) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
+    submitted.value = true;
+    return;
+  }
 
+  // Set submitted to true (assuming you want to track the submission status)
+  submitted.value = true;
+
+  const formData = new FormData();
+  const filesToUpload = [];
+
+  fileObjects.value.forEach((file, index) => {
+    formData.append('file', file, fileName.value[index]);
+    filesToUpload.push(fileName.value[index]);
+  });
+
+  axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(response => {
+    console.log(response);
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+
+    const postID = Math.floor(100000 + Math.random() * 900000);
+    const status = 'Open';
+    const dateAdded = new Date().toLocaleString('en-GB', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+
+    const postData = {
+      orgName: orgName.value,
+      contactName: contactName.value,
+      phoneNum: phoneNum.value,
+      startDate: startDate.value,
+      postID: postID,
+      postTitle: postTitle.value,
+      postDesc: postDesc.value,
+      programType: programType.value,
+      postType: programType.value,
+      files: filesToUpload.join(','),
+      status: status,
+      email: email.value,
+      season: season.value,
+      dateAdded: dateAdded,
+    };
+
+    console.log(JSON.stringify(postData));
+
+    return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  })
+  .then(response => {
+    console.log(response);
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+    clearForm();
+  })
+  .catch(error => {
+    console.error(error);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+  });
+};
+
+    return {
+    fileName,
+    fileDataUrl,
+    fileSize,
+    fileObjects,
+    goBack,
+    onDragOver,
+    onDrop,
+    onFileChange,
+    getPreviewImage,
+    removeFile,
+    getFileSize,
+    submitForm,
+    orgName,
+    contactName,
+    phoneNum,
+    startDate,
+    postID,
+    postTitle,
+    postDesc,
+    programType,
+    postType,
+    files,
+    status,
+    email,
+    season,
+    dateAdded,
+    formattedPhoneNumber,
+    updatePhoneNumber,
+    isValidEmail,
+    validateEmail,
+    toast
+    };
+  }
+};
 </script>
+
+
  
 <style scoped>
 .overlay {
@@ -508,5 +516,8 @@ gap: 10px;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 4; 
+}
+.error {
+  border: 4px solid red;
 }
 </style>
