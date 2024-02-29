@@ -358,77 +358,77 @@ export default {
   justify-content: center;
   gap: 20px; 
   padding-bottom: 20px;
+  margin-left: auto;
 }
 .orgName {
-  margin-left: -5px;
-  transform: translateX(10px);
+  margin-left: auto;
+
 }
 .email {
-  transform: translateX(px);
+  margin-left: auto;
 }
 .email input {
-  margin-left: 95px;
-  transform: translateX(22px);
+  margin-left: auto;
 }
 .phoneNumber {
-  transform: translateX(12px);
+  margin-left: auto;
 }
 .contactName input {
-  transform: translateX(5px);
+  margin-left: auto;
 }
 .posting {
-  margin-left: -380px;
+  margin-left: auto;
   padding-bottom: 20px;
-  transform: translateX(-8px);
 }
 .posting select {
-  transform: translateX(32px);
+  margin-left: auto;
 }
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX(22px);
+  margin-left: auto;
 }
  
 .start-date-container {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
+  margin-left: auto;
 }
  
 .startDate label {
   margin-right: 10px; 
-  transform: translateX(10px);
+  margin-left: auto;
 }
 .date-inputs {
   display: flex;
   gap: 10px; 
-  transform: translateX(83px);
+  margin-left: auto;
 }
 .Title {
-  transform: translateX(-67px);
+  margin-left: auto;
   padding-bottom: 20px;
 }
 .Title input {
-  transform: translateX(127px);
+  margin-left: auto;
   width: 480px;
 }
 .Description {
-  transform: translateX(-38px);
+  margin-left: auto;
   padding-bottom: 20px;
 }
 .Description input {
-  transform: translateX(68px);
+  margin-left: auto;
   width: 480px;
   padding-bottom: 80px;
 }
 .FileUpload {
-  transform: translateX(-150px);
+  margin-left: auto;
   padding-bottom: 20px;
 } 
 .FileUpload input {
-  transform: translateX(63px);
+  margin-left: auto;
   cursor: pointer; 
 }
 .center-text {
