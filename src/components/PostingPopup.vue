@@ -3,37 +3,37 @@
     <div v-if="isPopupActive" class="overlay"></div>
     <div v-bind:class="{ 'Postings': isPopupActive }">
       <div class="Postings" @click.stop> 
-  <div class="Postings">
-    <Toast v-model="toast" position="top-right" />
-    <h1>Create Posting</h1>
-    <div class="input-group">
-      <div class="org-contact-container">
-        <div class="orgName">
-          <label for="orgName">Organization Name </label>
-          <input type="text" id="orgName" name="orgName" v-model="orgName">
-        </div>
-        <div class="contactName">
-          <label for="contactName">Contact Name </label>
-          <input type="text" id="contactName" name="contactName" v-model="contactName">
-        </div>
-      </div>
-      <div class="contact-info-container">
-        <div class="email">
-          <label for="email">Email </label>
-          <input type="text" id="email" name="email" v-model="email">
-        </div>
-        <div class="phoneNumber">
-          <label for="phoneNumber">Phone Number </label>
-          <input type="text" id="phoneNum" name="phoneNum" v-model="phoneNum">
-        </div>
-      </div>
+        <div class="Postings">
+          <Toast v-model="toast" position="top-right" />
+          <h1>Create Posting</h1>
+          <div class="input-group">
+            <div class="org-contact-container">
+              <div class="orgName">
+                <label for="orgName">Organization Name </label>
+                <input type="text" id="orgName" name="orgName" v-model="orgName">
+              </div>
+              <div class="contactName">
+                <label for="contactName">Contact Name </label>
+                <input type="text" id="contactName" name="contactName" v-model="contactName">
+              </div>
+            </div>
+            <div class="contact-info-container">
+              <div class="email">
+                <label for="email">Email </label>
+                <input type="text" id="email" name="email" v-model="email">
+              </div>
+              <div class="phoneNumber">
+                <label for="phoneNumber">Phone Number </label>
+                  <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber">
+              </div>
+            </div>
       <div class="posting type">
         <div>
           <label for="postingType">Type of Posting </label>
           <select id="postingType" name="postingType" v-model="programType">
-            <option value="Student Projects">Student Projects</option>
-            <option value="Internships">Internships</option>
-            <option value="Job Placements">Job Placements</option>
+            <option value="Student Projects">Student Project</option>
+            <option value="Internships">Internship</option>
+            <option value="Job Placements">Job Placement</option>
           </select>
         </div>
       </div>
@@ -96,7 +96,7 @@
 </template>
  
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import Toast from 'primevue/toast';
@@ -151,7 +151,13 @@ export default {
       e.preventDefault();
       onFileChange(e);
     };
-
+    const formattedPhoneNumber = computed(() => {
+      return phoneNum.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    });
+    const updatePhoneNumber = (event) => {
+    // Remove non-digit characters from input and update phoneNum
+    phoneNum.value = event.target.value.replace(/\D/g, '');
+  };
     const getPreviewImage = (index) => {
       if (fileDataUrl.value[index].startsWith('data:image')) {
         return fileDataUrl.value[index];
@@ -321,6 +327,8 @@ export default {
       email,
       season,
       dateAdded,
+      formattedPhoneNumber,
+      updatePhoneNumber,
       toast
     };
   
