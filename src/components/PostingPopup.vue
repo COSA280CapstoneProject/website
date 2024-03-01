@@ -10,7 +10,7 @@
             <div class="org-contact-container">
               <div class="orgName">
                 <label for="orgName">Organization Name </label>
-                <input type="text" v-model="orgName" :class="{ error: submitted && !orgName }" /> 
+                <input type="text" v-model="orgName" :class="{ error: submitted && !orgName.trim() }" />
               </div>
               <div class="contactName">
                 <label for="contactName">Contact Name </label>
@@ -109,8 +109,7 @@ export default {
   },
   data() {
     return {
-      isPopupActive: false,
-      submitted: false,
+      isPopupActive: false
     };
   },
   setup(props, { emit }) {
@@ -225,87 +224,84 @@ export default {
     console.log('orgName:', orgName.value); // Log the value of orgName to the console
 
     const submitForm = () => {
-  // Initial validation check for required fields
-  if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
-    submitted.value = true;
-    return;
-  }
+      submitted.value = true;
 
-  // Validate email
-  if (!isValidEmail(email.value)) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
-    submitted.value = true;
-    return;
-  }
-
-  // Set submitted to true (assuming you want to track the submission status)
-  submitted.value = true;
-
-  const formData = new FormData();
-  const filesToUpload = [];
-
-  fileObjects.value.forEach((file, index) => {
-    formData.append('file', file, fileName.value[index]);
-    filesToUpload.push(fileName.value[index]);
-  });
-
-  axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-  .then(response => {
-    console.log(response);
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
-
-    const postID = Math.floor(100000 + Math.random() * 900000);
-    const status = 'Open';
-    const dateAdded = new Date().toLocaleString('en-GB', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
-
-    const postData = {
-      orgName: orgName.value,
-      contactName: contactName.value,
-      phoneNum: phoneNum.value,
-      startDate: startDate.value,
-      postID: postID,
-      postTitle: postTitle.value,
-      postDesc: postDesc.value,
-      programType: programType.value,
-      postType: programType.value,
-      files: filesToUpload.join(','),
-      status: status,
-      email: email.value,
-      season: season.value,
-      dateAdded: dateAdded,
-    };
-
-    console.log(JSON.stringify(postData));
-
-    return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
-      headers: {
-        'Content-Type': 'application/json'
+      // Initial validation check for required fields
+      if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please make sure the field is filled out correctly.', life: 3000 });
+        return;
       }
-    });
-  })
-  .then(response => {
-    console.log(response);
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
-    clearForm();
-  })
-  .catch(error => {
-    console.error(error);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
-  });
-};
+
+      // Validate email
+      if (!isValidEmail(email.value)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
+        return;
+      }
+
+      const formData = new FormData();
+      const filesToUpload = [];
+
+      fileObjects.value.forEach((file, index) => {
+        formData.append('file', file, fileName.value[index]);
+        filesToUpload.push(fileName.value[index]);
+      });
+
+      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(response => {
+          console.log(response);
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+
+          const postID = Math.floor(100000 + Math.random() * 900000);
+          const status = 'Open';
+          const dateAdded = new Date().toLocaleString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
+
+          const postData = {
+            orgName: orgName.value,
+            contactName: contactName.value,
+            phoneNum: phoneNum.value,
+            startDate: startDate.value,
+            postID: postID,
+            postTitle: postTitle.value,
+            postDesc: postDesc.value,
+            programType: programType.value,
+            postType: programType.value,
+            files: filesToUpload.join(','),
+            status: status,
+            email: email.value,
+            season: season.value,
+            dateAdded: dateAdded,
+          };
+
+          console.log(JSON.stringify(postData));
+
+          return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        })
+        .then(response => {
+          console.log(response);
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+          clearForm();
+        })
+        .catch(error => {
+          console.error(error);
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+        });
+    };
 
     return {
     fileName,
@@ -338,7 +334,8 @@ export default {
     updatePhoneNumber,
     isValidEmail,
     validateEmail,
-    toast
+    toast,
+    submitted
     };
   }
 };
@@ -518,6 +515,6 @@ gap: 10px;
   z-index: 4; 
 }
 .error {
-  border: 4px solid red;
+  border: 2px solid red;
 }
 </style>
