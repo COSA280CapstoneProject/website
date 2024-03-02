@@ -382,25 +382,38 @@ export default {
   margin-left: auto;
 
 }
+
 .email {
   margin-left: auto;
 }
+
 .email input {
   margin-left: auto;
 }
+
+.email .error-message {
+  display: block;
+  font-size: 0.8em; /* Adjust as needed */
+  color: red; /* Adjust as needed */
+}
+
 .phoneNumber {
   margin-left: auto;
 }
+
 .contactName input {
   margin-left: auto;
 }
+
 .posting {
   margin-left: auto;
   padding-bottom: 20px;
 }
+
 .posting select {
   margin-left: auto;
 }
+
 .startDate {
   display: flex;
   flex-direction: row; 
@@ -419,40 +432,49 @@ export default {
   margin-right: 10px; 
   margin-left: auto;
 }
+
 .date-inputs {
   display: flex;
   gap: 10px; 
   margin-left: auto;
 }
+
 .Title {
   margin-left: auto;
   padding-bottom: 20px;
 }
+
 .Title input {
   margin-left: auto;
   width: 480px;
 }
+
 .Description {
   margin-left: auto;
   padding-bottom: 20px;
 }
+
 .Description input {
   margin-left: auto;
   width: 480px;
   padding-bottom: 80px;
 }
+
 .FileUpload {
   margin-left: auto;
   padding-bottom: 20px;
-} 
+}
+
 .FileUpload input {
   margin-left: auto;
   cursor: pointer; 
 }
+
 .center-text {
   width: 100%;
   text-align: center;
 }
+
 .remove-instruction {
 color: #732181;
 font-size: 12px;
@@ -460,6 +482,7 @@ text-align: center;
 align-self: center;
 transform: translateY(-15px);
 }
+
 .drag-drop-box {
 border: 2px dashed #732181;
 padding: 20px;
@@ -472,6 +495,7 @@ flex-direction: column;
 justify-content: center;
 align-items: flex-start;
 }
+
 .drag-drop-box:hover {
 color: #732181; 
 }
@@ -480,16 +504,19 @@ color: #732181;
 transform: translateX(5px);
 padding-bottom: 20px;
 }
+
 .preview-image {
 width: 50px;
 height: 50px;
 }
+
 .file-info {
 display: flex;
 flex-direction: row;
 align-items: left;
 gap: 10px;
 }
+
 .submit button {
   background-color: #732181; 
   color: white;
@@ -497,6 +524,7 @@ gap: 10px;
   padding: 8px 20px; 
   cursor: pointer; 
 }
+
 .close-button {
   position: absolute;
   top: 10px;
@@ -506,10 +534,12 @@ gap: 10px;
   font-size: 20px;
   cursor: pointer;
 }
+
 .close-button:hover {
   color: white;
   background-color: red;
 }
+
 .background {
   position: fixed;
   top: 0;
@@ -519,7 +549,9 @@ gap: 10px;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 4; 
 }
+
 .error {
   border: 2px solid red;
 }
+
 </style>
