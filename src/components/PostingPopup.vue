@@ -23,7 +23,6 @@
                 <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && !emailIsValid }" />
                 <span v-if="submitted && !emailIsValid" class="error-message">Please enter a valid email address.</span>
               </div>
-
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
                   <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
@@ -135,14 +134,16 @@ export default {
     const submitted = ref(false);
     const emailIsValid = ref(true);
 
-    const isValidEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-  
-  const validateEmail = () => {
-    emailIsValid.value = isValidEmail(email.value);
-  };
+    const isValidEmail = (emailValue) => {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(emailValue);
+    };
+
+    const validateEmail = () => {
+      console.log('Email:', email.value);
+      emailIsValid.value = isValidEmail(email.value);
+      console.log('Email is valid:', emailIsValid.value);
+    };
 
     const goBack = () => {
       emit('close');
@@ -234,8 +235,11 @@ export default {
 
       // Validate email
       if (!isValidEmail(email.value)) {
+        emailIsValid.value = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
         return;
+      } else {
+        emailIsValid.value = true;
       }
 
       const formData = new FormData();
@@ -335,7 +339,8 @@ export default {
     isValidEmail,
     validateEmail,
     toast,
-    submitted
+    submitted,
+    emailIsValid
     };
   }
 };
