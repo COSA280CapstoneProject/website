@@ -7,7 +7,7 @@
     </section>
 
     <!-- Introduction Section -->
-    <section class="introduction trapezoid">
+    <section class="introduction trapezoid introduction-bg">
       <div class="content">
         <div class="logo">
         <a href="https://saskpolytech.ca/" target="_blank">
@@ -91,7 +91,7 @@
         </div>
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
-          <p>123 Main Street, Regina, SK S4P 3Y2</p>
+          <p><a href="https://maps.app.goo.gl/kQPc3ypHg8xk8xdW7" target="_blank" rel="noopener noreferrer">4500 Wascana Pkwy, Regina, SK S4S 5X1</a></p>
           <p>Email: <a href="mailto:info@ictregina.com">info@ictregina.com</a> | Phone: <a href="tel:1234567890">(123) 456-7890</a></p>
         </div>
         <div class="footer-social">
@@ -215,6 +215,13 @@ export default {
   z-index: 1;
 }
 
+.introduction-bg { /* Background image for the introduction section */
+  background-image: url('@/assets/stock-image.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
@@ -266,6 +273,11 @@ export default {
 .subtitle {
   font-style: italic;
   margin: 0;
+}
+
+.text {
+  color: #000;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .testimonials-section {
