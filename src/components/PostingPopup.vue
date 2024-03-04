@@ -31,7 +31,7 @@
             </div>
       <div class="posting type">
         <div>
-          <label for="postingType">Type of Posting </label>
+          <label for="postingType">Type of <br> Posting </label>
           <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
             <option value="Student Projects">Student Project</option>
             <option value="Internships">Internship</option>
@@ -356,7 +356,7 @@ export default {
   background: rgba(0, 0, 0, 0.5);
   z-index: 10000;
 }
-
+ 
 .Postings {
   z-index: 10001;
   border: 1px solid black;
@@ -368,126 +368,171 @@ export default {
   transform: translate(-50%, -50%);
   width: 100%; /* Set the width of the form */
   max-width: 800px; /* Set the maximum width of the form */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+ 
 .org-contact-container, .contact-info-container {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   gap: 20px; 
   padding-bottom: 20px;
-  margin-left: auto;
 }
-.orgName {
-  margin-left: auto;
-
+ 
+.orgName, .contactName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 45%;
 }
+ 
 .email {
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; /* Add this line */
+  width: 45%;
 }
-.email input {
-  margin-left: auto;
-}
+ 
 .phoneNumber {
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 45%;
 }
-.contactName input {
-  margin-left: auto;
+ 
+.orgName label, .contactName label, .email label, .phoneNumber label {
+  margin-right: 5px;
+  font-size: 16px; /* Set the same font size for all labels */
 }
+ 
+.email label {
+  margin-left: 31px; /* Adjust this value as needed */
+}
+ 
+.orgName input, .contactName input, .email input, .phoneNumber input {
+  padding: 5px; /* Set the same padding for all inputs */
+  margin: 0; /* Set the same margin for all inputs */
+  font-size: 16px; /* Set the same font size for all inputs */
+}
+ 
+.Description input {
+  height: 120px; /* Adjust this value as needed */
+  padding: 5px; /* Set the same padding for all inputs */
+  margin: 0; /* Set the same margin for all inputs */
+  font-size: 16px; /* Set the same font size for all inputs */
+}
+ 
 .posting {
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   padding-bottom: 20px;
 }
+ 
 .posting select {
-  margin-left: auto;
+  margin-left: 45px;
 }
+
+
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  margin-left: auto;
 }
  
 .start-date-container {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
-  margin-left: auto;
 }
  
 .startDate label {
   margin-right: 10px; 
-  margin-left: auto;
 }
+ 
 .date-inputs {
   display: flex;
   gap: 10px; 
-  margin-left: auto;
 }
-.Title {
-  margin-left: auto;
-  padding-bottom: 20px;
+ 
+.Title, .Description {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.Title label, .Description label {
+  margin-right: 5px;
+  padding-bottom: 35px;
+}
+
+.Title input, .Description input {
+  width: 605px;
 }
 .Title input {
-  margin-left: auto;
-  width: 480px;
-}
-.Description {
-  margin-left: auto;
-  padding-bottom: 20px;
-}
-.Description input {
-  margin-left: auto;
-  width: 480px;
-  padding-bottom: 80px;
+  margin-left: 60px
 }
 .FileUpload {
-  margin-left: auto;
   padding-bottom: 20px;
 } 
+ 
 .FileUpload input {
-  margin-left: auto;
   cursor: pointer; 
 }
+ 
 .center-text {
   width: 100%;
   text-align: center;
 }
+ 
 .remove-instruction {
-color: #732181;
-font-size: 12px;
-text-align: center;
-align-self: center;
-transform: translateY(-15px);
+  color: #732181;
+  font-size: 12px;
+  text-align: center;
+  align-self: center;
 }
+ 
 .drag-drop-box {
-border: 2px dashed #732181;
-padding: 20px;
-margin-top: 10px;
-text-align: center;
-cursor: pointer;
-color: black;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: flex-start;
+  border: 2px dashed #732181;
+  padding: 20px;
+  margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
+ 
 .drag-drop-box:hover {
-color: #732181; 
+  color: #732181; 
 }
-
+ 
 .FileUpload {
-transform: translateX(5px);
-padding-bottom: 20px;
+  padding-bottom: 20px;
 }
+ 
 .preview-image {
-width: 50px;
-height: 50px;
+  width: 50px;
+  height: 50px;
 }
+ 
 .file-info {
-display: flex;
-flex-direction: row;
-align-items: left;
-gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10px;
 }
+ 
 .submit button {
   background-color: #732181; 
   color: white;
@@ -495,6 +540,7 @@ gap: 10px;
   padding: 8px 20px; 
   cursor: pointer; 
 }
+ 
 .close-button {
   position: absolute;
   top: 10px;
@@ -504,10 +550,12 @@ gap: 10px;
   font-size: 20px;
   cursor: pointer;
 }
+ 
 .close-button:hover {
   color: white;
   background-color: red;
 }
+ 
 .background {
   position: fixed;
   top: 0;
