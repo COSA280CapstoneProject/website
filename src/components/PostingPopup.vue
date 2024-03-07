@@ -393,8 +393,8 @@ export default {
 
 .email .error-message {
   display: block;
-  font-size: 0.8em; /* Adjust as needed */
-  color: red; /* Adjust as needed */
+  font-size: 0.8em;
+  color: red;
 }
 
 .phoneNumber {
