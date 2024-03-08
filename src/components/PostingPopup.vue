@@ -29,14 +29,14 @@
                   <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
               </div>
             </div>
-                    <div class="posting">
-          <label for="postingType">Type of Posting</label>
-          <div class="select-container">
-            <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
-              <option value="Student Projects">Student Project</option>
-              <option value="Internships">Internship</option>
-              <option value="Job Placements">Job Placement</option>
-            </select>
+          <div class="posting">
+            <label for="postingType">Type of Posting</label>
+            <div class="select-container">
+              <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
+                <option value="Student Projects">Student Project</option>
+                <option value="Internships">Internship</option>
+                <option value="Job Placements">Job Placement</option>
+              </select>
           </div>
         </div>
       <div class="startDate">
@@ -418,10 +418,10 @@ export default {
 }
  
 .Description input {
-  height: 120px; /* Adjust this value as needed */
-  padding: 5px; /* Set the same padding for all inputs */
-  margin: 0; /* Set the same margin for all inputs */
-  font-size: 16px; /* Set the same font size for all inputs */
+  height: 120px;
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
 }
  
 .posting {
@@ -429,11 +429,12 @@ export default {
   flex-direction: row;
   align-items: center;
   padding-bottom: 20px;
-  
+  margin-left: -3px;
 }
 
 .posting .select-container {
-  width: 100%; /* Make the select container take the remaining width */
+  display: flex;
+  margin-left: 20px;
 }
 
 .startDate {
