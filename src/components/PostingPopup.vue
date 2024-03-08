@@ -29,16 +29,16 @@
                   <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
               </div>
             </div>
-      <div class="posting type">
-        <div>
-          <label for="postingType">Type of <br> Posting </label>
-          <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
-            <option value="Student Projects">Student Project</option>
-            <option value="Internships">Internship</option>
-            <option value="Job Placements">Job Placement</option>
-          </select>
+                    <div class="posting">
+          <label for="postingType">Type of Posting</label>
+          <div class="select-container">
+            <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
+              <option value="Student Projects">Student Project</option>
+              <option value="Internships">Internship</option>
+              <option value="Job Placements">Job Placement</option>
+            </select>
+          </div>
         </div>
-      </div>
       <div class="startDate">
         <div class="start-date-container">
           <label for="startDate">Start Date </label>
@@ -394,8 +394,8 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between; /* Add this line */
-  width: 45%;
+  justify-content: space-between; 
+  width: 46.2%;
 }
  
 .phoneNumber {
@@ -409,10 +409,6 @@ export default {
 .orgName label, .contactName label, .email label, .phoneNumber label {
   margin-right: 5px;
   font-size: 16px; /* Set the same font size for all labels */
-}
- 
-.email label {
-  margin-left: 31px; /* Adjust this value as needed */
 }
  
 .orgName input, .contactName input, .email input, .phoneNumber input {
@@ -432,14 +428,13 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
   padding-bottom: 20px;
-}
- 
-.posting select {
-  margin-left: 45px;
+  
 }
 
+.posting .select-container {
+  width: 100%; /* Make the select container take the remaining width */
+}
 
 .startDate {
   display: flex;
@@ -451,6 +446,7 @@ export default {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
+  gap: 16px;
 }
  
 .startDate label {
@@ -471,11 +467,17 @@ export default {
  
 .Title label, .Description label {
   margin-right: 5px;
-  padding-bottom: 35px;
-}
 
+}
+.Title {
+  padding-bottom: 20px;
+}
 .Title input, .Description input {
   width: 605px;
+}
+.Description label {
+  margin-bottom: 5px;
+  margin-top: -100px; /* Adjust this value as needed */
 }
 .Title input {
   margin-left: 60px
