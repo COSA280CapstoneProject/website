@@ -20,9 +20,9 @@
             <div class="contact-info-container">
               <div class="email">
                 <label for="email">Email </label>
-                <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && !emailIsValid }" />
-                <span v-if="submitted && !emailIsValid" class="error-message">Please enter a valid email address.</span>
-              </div>
+                <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && (!emailIsValid || !email) }" />
+                <span v-if="submitted && (!emailIsValid || (!email && !emailIsValid))" class="error-message">Please enter a valid email address.</span>
+            </div>
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
                   <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
@@ -140,10 +140,14 @@ export default {
     };
 
     const validateEmail = () => {
-      console.log('Email:', email.value);
-      emailIsValid.value = isValidEmail(email.value);
-      console.log('Email is valid:', emailIsValid.value);
-    };
+  console.log('Email:', email.value);
+  if (!email.value) {
+    emailIsValid.value = false;
+  } else {
+    emailIsValid.value = isValidEmail(email.value);
+  }
+  console.log('Email is valid:', emailIsValid.value);
+};
 
     const goBack = () => {
       emit('close');
@@ -551,7 +555,11 @@ gap: 10px;
 }
 
 .error {
-  border: 2px solid red;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-bottom: 1px solid red;
+  border-right: 1px solid red;
 }
+
 
 </style>
