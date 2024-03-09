@@ -2,20 +2,18 @@
   <div>
     <nav class="navbar">
       <!-- ... other navbar content ... -->
-    <div class="user-info">
-      {{ firstName }} {{ lastName }}
-    </div>
+      <div class="user-info" v-if="isLoggedIn">
+        {{ firstName }} {{ lastName }}
+      </div>
       <div class="settings" ref="settings" @click="toggleSettings">
-        <!-- Settings button -->
         <button :class="{ 'spin-animation': showSettings }">
           <i class="pi pi-cog"></i>
         </button>
-        <!-- Dropdown Menu -->
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
-            <!-- Account Management Popup Trigger -->
-            <div class="account-man" @click="openPopup">Account Management</div>
-            <div class="logout" @click="toggleSettings">Logout</div>
+            <div v-if="isLoggedIn" class="account-man" @click="openPopup">Account Management</div>
+            <div v-if="isLoggedIn" class="logout" @click="handleLogout">Logout</div>
+            <div v-else class="login" @click="promptForLogin">Login</div>
           </div>
         </transition>
       </div>
@@ -59,6 +57,7 @@ import 'primeicons/primeicons.css';
 export default {
   data() {
     return {
+      isLoggedIn: false,
       firstName: 'Carter',
       lastName: 'Gorski',
       showSettings: false,
@@ -92,6 +91,25 @@ export default {
   methods: {
     toggleSettings() {
       this.showSettings = !this.showSettings;
+    },
+
+    promptForLogin() {
+      const code = prompt("Enter the 4 digit login code:");
+      this.login(code);
+    },
+
+    handleLogout() {
+      this.isLoggedIn = false;
+      // Additional logout logic if needed
+    },
+
+    login(code) {
+      if (code === '1234') {
+        this.isLoggedIn = true;
+        // You can add more login logic here
+      } else {
+        alert("Incorrect login code.");
+      }
     },
 
     openPopup() {
@@ -172,6 +190,7 @@ html, body {
   cursor: pointer;
   transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
   border-radius: 5px;
+  margin: auto;
 }
 
 .form-page button:hover {
@@ -196,6 +215,7 @@ html, body {
   align-items: center;
   justify-content: flex-end;
   padding: 15px;
+  padding-top: 5px;
 }
 
 .navbar > div {
@@ -246,7 +266,7 @@ html, body {
   max-height: 250px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   border: 1px solid #000000;
-  z-index: 1;
+  z-index: 10000000;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -255,7 +275,7 @@ html, body {
   flex-direction: column;
 }
 
-.account-man, .logout {
+.account-man, .logout, .login {
   color: black;
   padding: 10px;
   border: 1px solid #ebebeb;
