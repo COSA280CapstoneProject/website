@@ -28,16 +28,16 @@
                   <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
               </div>
             </div>
-      <div class="posting type">
-        <div>
-          <label for="postingType">Type of Posting </label>
-          <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
-            <option value="Student Projects">Student Project</option>
-            <option value="Internships">Internship</option>
-            <option value="Job Placements">Job Placement</option>
-          </select>
+          <div class="posting">
+            <label for="postingType">Type of Posting</label>
+            <div class="select-container">
+              <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
+                <option value="Student Projects">Student Project</option>
+                <option value="Internships">Internship</option>
+                <option value="Job Placements">Job Placement</option>
+              </select>
+          </div>
         </div>
-      </div>
       <div class="startDate">
         <div class="start-date-container">
           <label for="startDate">Start Date </label>
@@ -362,7 +362,7 @@ export default {
   background: rgba(0, 0, 0, 0.5);
   z-index: 10000;
 }
-
+ 
 .Postings {
   z-index: 10001;
   border: 1px solid black;
@@ -374,153 +374,180 @@ export default {
   transform: translate(-50%, -50%);
   width: 100%; /* Set the width of the form */
   max-width: 800px; /* Set the maximum width of the form */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+ 
 .org-contact-container, .contact-info-container {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   gap: 20px; 
   padding-bottom: 20px;
-  margin-left: auto;
 }
-.orgName {
-  margin-left: auto;
-
+ 
+.orgName, .contactName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 45%;
 }
-
+ 
 .email {
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; 
+  width: 45.6%;
 }
-
-.email input {
-  margin-left: auto;
-}
-
-.email .error-message {
-  display: block;
-  font-size: 0.8em;
-  color: red;
-}
-
+ 
 .phoneNumber {
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 45%;
+}
+ 
+.orgName label, .contactName label, .email label, .phoneNumber label {
+  margin-right: 5px;
+  font-size: 16px; /* Set the same font size for all labels */
 }
 
-.contactName input {
-  margin-left: auto;
+.email label {
+  margin-left: 20px;
 }
-
+ 
+.orgName input, .contactName input, .email input, .phoneNumber input {
+  padding: 5px; /* Set the same padding for all inputs */
+  margin: 0; /* Set the same margin for all inputs */
+  font-size: 16px; /* Set the same font size for all inputs */
+}
+ 
+.Description input {
+  height: 120px;
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
+}
+ 
 .posting {
-  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   padding-bottom: 20px;
+  margin-left: -3px;
 }
 
-.posting select {
-  margin-left: auto;
+.posting .select-container {
+  display: flex;
+  margin-left: 20px;
 }
 
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  margin-left: auto;
 }
  
 .start-date-container {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
-  margin-left: auto;
+  gap: 16px;
 }
  
 .startDate label {
   margin-right: 10px; 
-  margin-left: auto;
 }
-
+ 
 .date-inputs {
   display: flex;
   gap: 10px; 
-  margin-left: auto;
+}
+ 
+.Title, .Description {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.Title label, .Description label {
+  margin-right: 5px;
+
 }
 
 .Title {
-  margin-left: auto;
   padding-bottom: 20px;
 }
-
+.Title input, .Description input {
+  width: 605px;
+}
+.Description label {
+  margin-bottom: 5px;
+  margin-top: -100px; /* Adjust this value as needed */
+}
 .Title input {
-  margin-left: auto;
-  width: 480px;
-}
-
-.Description {
-  margin-left: auto;
-  padding-bottom: 20px;
-}
-
-.Description input {
-  margin-left: auto;
-  width: 480px;
-  padding-bottom: 80px;
+  margin-left: 60px
 }
 
 .FileUpload {
-  margin-left: auto;
   padding-bottom: 20px;
-}
-
+} 
+ 
 .FileUpload input {
-  margin-left: auto;
   cursor: pointer; 
 }
-
+ 
 .center-text {
   width: 100%;
   text-align: center;
 }
-
+ 
 .remove-instruction {
-color: #732181;
-font-size: 12px;
-text-align: center;
-align-self: center;
-transform: translateY(-15px);
+  color: #732181;
+  font-size: 12px;
+  text-align: center;
+  align-self: center;
 }
-
+ 
 .drag-drop-box {
-border: 2px dashed #732181;
-padding: 20px;
-margin-top: 10px;
-text-align: center;
-cursor: pointer;
-color: black;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: flex-start;
+  border: 2px dashed #732181;
+  padding: 20px;
+  margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
-
+ 
 .drag-drop-box:hover {
-color: #732181; 
+  color: #732181; 
 }
-
+ 
 .FileUpload {
-transform: translateX(5px);
-padding-bottom: 20px;
+  padding-bottom: 20px;
 }
-
+ 
 .preview-image {
-width: 50px;
-height: 50px;
+  width: 50px;
+  height: 50px;
 }
-
+ 
 .file-info {
-display: flex;
-flex-direction: row;
-align-items: left;
-gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10px;
 }
-
+ 
 .submit button {
   background-color: #732181; 
   color: white;
@@ -528,7 +555,7 @@ gap: 10px;
   padding: 8px 20px; 
   cursor: pointer; 
 }
-
+ 
 .close-button {
   position: absolute;
   top: 10px;
@@ -538,12 +565,12 @@ gap: 10px;
   font-size: 20px;
   cursor: pointer;
 }
-
+ 
 .close-button:hover {
   color: white;
   background-color: red;
 }
-
+ 
 .background {
   position: fixed;
   top: 0;
