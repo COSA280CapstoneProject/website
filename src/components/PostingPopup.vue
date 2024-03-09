@@ -2,7 +2,7 @@
   <div class="background" @click="goBack">
     <div v-if="isPopupActive" class="overlay"></div>
     <div v-bind:class="{ 'Postings': isPopupActive }">
-      <div class="Postings" @click.stop> 
+      <div class="Postings" @click.stop>
         <div class="Postings">
           <Toast v-model="toast" position="top-right" />
           <h1>Create Posting</h1>
@@ -14,86 +14,99 @@
               </div>
               <div class="contactName">
                 <label for="contactName">Contact Name </label>
-                <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" /> 
+                <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" />
               </div>
             </div>
             <div class="contact-info-container">
-              <div class="email">
-                <label for="email">Email </label>
-                <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && (!emailIsValid || !email) }" />
-                <span v-if="submitted && (!emailIsValid || (!email && !emailIsValid))" class="error-message">Please enter a valid email address.</span>
-            </div>
+              <div class="contact-info-container">
+                <div class="email">
+                  <label for="email">Email </label>
+                  <div>
+                    <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && (!emailIsValid || !email) }" />
+                    <span v-if="submitted && (!emailIsValid || (!email && !emailIsValid)) " class="error-message">Please enter a valid email address.</span>
+                  </div>
+                </div>
+              </div>
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
-                  <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
+                <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
+                  :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
+                <!-- eslint-disable-next-line -->
               </div>
             </div>
-          <div class="posting">
-            <label for="postingType">Type of Posting</label>
-            <div class="select-container">
-              <select id="postingType" name="postingType" v-model="programType" :class="{ error: submitted && !programType }"> 
-                <option value="Student Projects">Student Project</option>
-                <option value="Internships">Internship</option>
-                <option value="Job Placements">Job Placement</option>
-              </select>
+            <div class="posting">
+              <label for="postingType">Type of Posting</label>
+              <div class="select-container">
+                <select id="postingType" name="postingType" v-model="programType"
+                  :class="{ error: submitted && !programType }">
+                  <option value="Student Projects">Student Project</option>
+                  <option value="Internships">Internship</option>
+                  <option value="Job Placements">Job Placement</option>
+                </select>
+              </div>
+            </div>
+            <div class="startDate">
+              <div class="start-date-container">
+                <label for="startDate">Start Date </label>
+                <div class="date-inputs">
+                  <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                  </select>
+                  <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
+                    <option value="Fall">Fall</option>
+                    <option value="Winter">Winter</option>
+                    <option value="Spring">Spring</option>
+                    <option value="Summer">Summer</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="Title">
+              <label for="Title">Title </label>
+              <input type="text" id="Title" name="Title" v-model="postTitle"
+                :class="{ error: submitted && !postTitle }" />
+            </div>
+            <div class="Description">
+              <label for="Description">Description </label>
+              <input type="text" id="Description" name="Description" v-model="postDesc"
+                :class="{ error: submitted && !postDesc }" />
+            </div>
+            <div class="FileUpload">
+              <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop"
+                @click="$refs.fileUpload.click()">
+                <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
+                <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
+                <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
+                  <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]"
+                    @click="removeFile(index, $event)" />
+                  <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
+                </div>
+              </div>
+              <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange"
+                style="display: none" multiple :class="{ error: submitted && !fileDataUrl.length }" />
+              <!-- eslint-disable-next-line -->
+            </div>
+            <div class="submit">
+              <button @click="submitForm">Submit</button>
+            </div>
+            <div class="close-button">
+              <button class="close-button" @click="goBack">X</button>
+            </div>
           </div>
         </div>
-      <div class="startDate">
-        <div class="start-date-container">
-          <label for="startDate">Start Date </label>
-          <div class="date-inputs">
-            <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }" > 
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-              <option value="2030">2030</option>
-            </select>
-            <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }" > 
-              <option value="Fall">Fall</option>
-              <option value="Winter">Winter</option>
-              <option value="Spring">Spring</option>
-              <option value="Summer">Summer</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="Title">
-        <label for="Title">Title </label>
-        <input type="text" id="Title" name="Title" v-model="postTitle" :class="{ error: submitted && !postTitle }" /> 
-      </div>
-      <div class="Description">
-        <label for="Description">Description </label>
-        <input type="text" id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }" /> 
-      </div>
-      <div class="FileUpload">
-        <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
-          <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
-          <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
-          <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
-            <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
-            <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
-          </div>
-        </div>
-        <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple :class="{ error: submitted && !fileDataUrl.length }" /> <!-- eslint-disable-next-line -->
-      </div>
-      <div class="submit">
-        <button @click="submitForm">Submit</button>
-      </div>
-      <div class="close-button">
-        <button class="close-button" @click="goBack">X</button>
       </div>
     </div>
   </div>
-  </div>
-</div>
-</div>
 </template>
  
 <script>
@@ -399,16 +412,21 @@ export default {
 .email {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between; 
   width: 45.6%;
+}
+
+.email div {
+  display: flex;
+  flex-direction: column;
 }
  
 .phoneNumber {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 25px;
   width: 45%;
 }
  
@@ -425,6 +443,13 @@ export default {
   padding: 5px; /* Set the same padding for all inputs */
   margin: 0; /* Set the same margin for all inputs */
   font-size: 16px; /* Set the same font size for all inputs */
+}
+
+.email input {
+  padding: 5px;
+  margin: 0;
+  margin-left: 53px;
+  font-size: 16px;
 }
  
 .Description input {
