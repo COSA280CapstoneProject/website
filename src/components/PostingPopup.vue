@@ -23,7 +23,6 @@
                 <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && !emailIsValid }" />
                 <span v-if="submitted && !emailIsValid" class="error-message">Please enter a valid email address.</span>
               </div>
-
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
                   <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" /> <!-- eslint-disable-next-line -->
@@ -395,7 +394,7 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between; 
-  width: 46.2%;
+  width: 45.6%;
 }
  
 .phoneNumber {
@@ -409,6 +408,10 @@ export default {
 .orgName label, .contactName label, .email label, .phoneNumber label {
   margin-right: 5px;
   font-size: 16px; /* Set the same font size for all labels */
+}
+
+.email label {
+  margin-left: 20px;
 }
  
 .orgName input, .contactName input, .email input, .phoneNumber input {
