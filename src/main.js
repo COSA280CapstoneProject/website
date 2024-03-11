@@ -15,37 +15,29 @@ import './assets/fonts.css';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { msalConfig } from './authConfig'; // Ensure this path is correct
 
-// Create MSAL instance
+// Create and initialize MSAL instance
 const msalInstance = new PublicClientApplication(msalConfig);
-
-// Handle the redirect promise only once when the application loads
-msalInstance.handleRedirectPromise().then((response) => {
-  // Here you can handle the authentication response.
-  // For example, you could store the user's information in the application's state.
-  console.log('Authentication response:', response);
-}).catch((error) => {
-  console.error('Failed to handle redirect:', error);
-});
+msalInstance.initialize();
 
 // Define your routes
 const routes = [
-  {
-    path: '/',
-    name: 'HomePage',
-    component: HomePage
-  },
-  {
-    path: '/form',
-    name: 'Form',
-    component: Form
-  },
-  // Define other routes as needed
+    {
+      path: '/',
+      name: 'HomePage',
+      component: HomePage
+    },
+    {
+      path: '/form',
+      name: 'Form',
+      component: Form
+    },
+    // Define other routes as needed
 ];
 
 // Create the router instance and pass the `routes` option
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL), // Use history mode
-  routes,
+    history: createWebHistory(process.env.BASE_URL), // Use history mode
+    routes,
 });
 
 const app = createApp(App);
