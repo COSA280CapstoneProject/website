@@ -2,7 +2,8 @@
   <nav class="navbar">
     <div class="navbar-brand">Saskatchewan Polytechnic</div>
     <div class="navbar-menu">
-      <button @click="signIn">Sign In</button>
+      <button v-if="account" @click="signOut">Sign Out</button>
+      <button v-else @click="signIn">Sign In</button>
     </div>
   </nav>
 </template>
@@ -10,14 +11,38 @@
 <script>
 export default {
   name: 'HomeNavbar',
+  data() {
+    return {
+      account: null, // Add this to track authentication status
+      msalInitialized: false, // Track MSAL initialization status
+    };
+  },
+  async mounted() {
+    // Wait for MSAL instance to be initialized
+    await this.$msal.handleRedirectPromise();
+
+    // Set msalInitialized flag to true
+    this.msalInitialized = true;
+
+    // Check if the user is already signed in
+    this.account = await this.$msal.getAccount();
+  },
   methods: {
-    signIn() {
+    async signIn() {
       // Access the global MSAL instance and initiate the sign-in process
-      this.$msal.loginRedirect({
+      await this.$msal.loginRedirect({
         scopes: ["User.Read"] // Specify the scopes your application requires
-      }).catch(err => {
-        console.error(err);
       });
+
+      // Retrieve the account details after sign-in
+      this.account = await this.$msal.getAccount();
+    },
+    async signOut() {
+      // Access the global MSAL instance and initiate the sign-out process
+      await this.$msal.logoutRedirect();
+
+      // Reset the account information
+      this.account = null;
     }
   }
 }
