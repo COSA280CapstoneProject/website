@@ -35,7 +35,16 @@ export default {
       });
 
       // Retrieve the account details after sign-in
-      this.account = await this.$msal.getAllAccounts()[0];
+      const account = await this.$msal.getAllAccounts()[0];
+
+      // Set the account details
+      this.account = {
+        username: account.username,
+        name: account.name,
+        email: account.idTokenClaims.email,
+        firstName: account.idTokenClaims.given_name,
+        lastName: account.idTokenClaims.family_name,
+      };
     },
     async signOut() {
       // Access the global MSAL instance and initiate the sign-out process
