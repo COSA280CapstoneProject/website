@@ -31,7 +31,7 @@ export default {
   padding: 1rem;
   background-image: url(@/assets/img.png);
   color: #fff;
-  z-index: 2000;
+  z-index: 1;
 }
 .navbar-brand {
   font-size: 1.5rem;
