@@ -25,7 +25,7 @@ export default {
     this.msalInitialized = true;
 
     // Check if the user is already signed in
-    this.account = await this.$msal.getAccount();
+    this.account = await this.$msal.getAllAccounts()[0];
   },
   methods: {
     async signIn() {
@@ -35,7 +35,7 @@ export default {
       });
 
       // Retrieve the account details after sign-in
-      this.account = await this.$msal.getAccount();
+      this.account = await this.$msal.getAllAccounts()[0];
     },
     async signOut() {
       // Access the global MSAL instance and initiate the sign-out process
