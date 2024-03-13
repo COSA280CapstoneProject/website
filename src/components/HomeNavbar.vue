@@ -27,16 +27,19 @@ export default {
     // Check if the user is already signed in
     this.account = await this.$msal.getAllAccounts()[0];
 
-    // Print the login details to the console for debugging
-    console.log("Email:", this.account.idTokenClaims.email);
-    console.log("First name:", this.account.idTokenClaims.given_name);
-    console.log("Last name:", this.account.idTokenClaims.family_name);
+    // Check if account is not undefined before accessing its properties
+    if (this.account) {
+      // Print the login details to the console for debugging
+      console.log("Email:", this.account.idTokenClaims.email);
+      console.log("First name:", this.account.idTokenClaims.given_name);
+      console.log("Last name:", this.account.idTokenClaims.family_name);
+    }
   },
   methods: {
     async signIn() {
       // Access the global MSAL instance and initiate the sign-in process
       await this.$msal.loginRedirect({
-        scopes: ["User.Read"] // Specify the scopes your application requires
+        scopes: ["User.Read", "email", "profile"] // Include email and profile scopes
       });
 
       // Retrieve the account details after sign-in
@@ -50,6 +53,14 @@ export default {
         firstName: account.idTokenClaims.given_name,
         lastName: account.idTokenClaims.family_name,
       };
+
+      // Check if account is not undefined before accessing its properties
+      if (this.account) {
+        // Print the login details to the console for debugging
+        console.log("Email:", this.account.email);
+        console.log("First name:", this.account.firstName);
+        console.log("Last name:", this.account.lastName);
+      }
     },
     async signOut() {
       // Access the global MSAL instance and initiate the sign-out process
