@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="container">
     <!-- Main Content -->
     <div class="content">
@@ -44,10 +45,16 @@
         <button class="sidebar-button">Delete</button>
       </div>
     </aside>
+=======
+  <div id="app">
+    
+    <router-view></router-view>
+>>>>>>> main
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 export default {
   data() {
     return {
@@ -62,10 +69,19 @@ export default {
     handleFiles(event) {
       this.files = Array.from(event.target.files).slice(0, 3);
     },
+=======
+
+
+export default {
+  name: 'App',
+  components: {
+    
+>>>>>>> main
   },
 };
 </script>
 
+<<<<<<< HEAD
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
@@ -189,5 +205,20 @@ aside.active {
 
 .sidebar-button:hover {
   background-color: #5a1c7a; /* Darker shade of purple for hover effect */
+=======
+<style>
+/* Global styles */
+body {
+  margin: 0;
+  font-family: 'Gotham', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+>>>>>>> main
 }
+
+#app {
+  text-align: center;
+}
+
+/* Add more global styles as needed */
 </style>
