@@ -26,6 +26,11 @@ export default {
 
     // Check if the user is already signed in
     this.account = await this.$msal.getAllAccounts()[0];
+
+    // Print the login details to the console for debugging
+    console.log("Email:", this.account.idTokenClaims.email);
+    console.log("First name:", this.account.idTokenClaims.given_name);
+    console.log("Last name:", this.account.idTokenClaims.family_name);
   },
   methods: {
     async signIn() {
