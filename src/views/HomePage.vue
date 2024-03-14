@@ -1,18 +1,18 @@
 <template>
-  <AdminView/>
+   <NavBar/>
     <HomeVue/>
   </template>
 
 <script>
 
-import AdminView from '@/components/AdminView.vue'
+import NavBar from '@/components/NavBar.vue'
 import HomeVue from '@/components/HomeVue.vue'
 
 
 export default {
   name: 'HomePage',
   components: {
-    AdminView, HomeVue
+   NavBar, HomeVue
   },
   data() {
     return {
@@ -26,4 +26,4 @@ export default {
 
 
 
-</style>
+</style>@/components/NavBarvue

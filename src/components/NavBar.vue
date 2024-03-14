@@ -431,4 +431,4 @@ body.no-scroll {
   }
 }
 
-</style>
+</style>./NavBar.vue
