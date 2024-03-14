@@ -1,20 +1,29 @@
 <template>
-  <nav class="navbar">
-    <div class="navbar-brand">Saskatchewan Polytechnic</div>
-    <div class="navbar-menu">
-      <button v-if="account" @click="signOut">Sign Out</button>
-      <button v-else @click="signIn">Sign In</button>
-    </div>
-  </nav>
+  <div>
+    <nav class="navbar" v-if="!showAdminView">
+      <div class="navbar-brand">Welcome to ICT for Saskatchwan Polytechnic!</div>
+      <div class="navbar-menu">
+        <button v-if="account" @click="signOut">Sign Out</button>
+        <button v-else @click="signIn">Sign In</button>
+      </div>
+    </nav>
+    <AdminView v-if="showAdminView" />
+  </div>
 </template>
 
 <script>
+import AdminView from '@/components/AdminView.vue'; // Import AdminView component
+
 export default {
   name: 'HomeNavbar',
+  components: {
+    AdminView, // Register AdminView component
+  },
   data() {
     return {
       account: null, // Add this to track authentication status
       msalInitialized: false, // Track MSAL initialization status
+      showAdminView: false, // Flag to show/hide AdminView
     };
   },
   async mounted() {
@@ -33,6 +42,16 @@ export default {
       console.log("Email:", this.account.idTokenClaims.email);
       console.log("First name:", this.account.idTokenClaims.given_name);
       console.log("Last name:", this.account.idTokenClaims.family_name);
+
+      // Send request to API to get list of administrators
+      const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabaseAdministrators');
+      const administrators = await response.json();
+
+      // Check if logged-in user's email matches any of the administrators' emails
+      const isAdmin = administrators.some(admin => admin.Email === this.account.idTokenClaims.email);
+      if (isAdmin) {
+        this.showAdminView = true; // Show AdminView if user is an admin
+      }
     }
   },
   methods: {
@@ -81,7 +100,7 @@ export default {
   padding: 1rem;
   background-image: url(@/assets/img.png);
   color: #fff;
-  z-index: 1;
+  z-index: 10;
 }
 .navbar-brand {
   font-size: 1.5rem;
