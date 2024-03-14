@@ -385,8 +385,8 @@ export default {
   top: 50%; 
   left: 50%; 
   transform: translate(-50%, -50%);
-  width: 100%; /* Set the width of the form */
-  max-width: 800px; /* Set the maximum width of the form */
+  width: 100%;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -408,7 +408,7 @@ export default {
   gap: 10px;
   width: 45%;
 }
- 
+
 .email {
   display: flex;
   flex-direction: row;
@@ -432,7 +432,7 @@ export default {
  
 .orgName label, .contactName label, .email label, .phoneNumber label {
   margin-right: 5px;
-  font-size: 16px; /* Set the same font size for all labels */
+  font-size: 16px;
 }
 
 .email label {
@@ -440,9 +440,9 @@ export default {
 }
  
 .orgName input, .contactName input, .email input, .phoneNumber input {
-  padding: 5px; /* Set the same padding for all inputs */
-  margin: 0; /* Set the same margin for all inputs */
-  font-size: 16px; /* Set the same font size for all inputs */
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
 }
 
 .email input {
@@ -514,7 +514,7 @@ export default {
 }
 .Description label {
   margin-bottom: 5px;
-  margin-top: -100px; /* Adjust this value as needed */
+  margin-top: -100px;
 }
 .Title input {
   margin-left: 60px
