@@ -31,7 +31,6 @@
                 <label for="phoneNumber">Phone Number </label>
                 <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
                   :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
-                <!-- eslint-disable-next-line -->
               </div>
             </div>
             <div class="posting">
@@ -50,17 +49,7 @@
                 <label for="startDate">Start Date </label>
                 <div class="date-inputs">
                   <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
+                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
                   </select>
                   <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
                     <option value="Fall">Fall</option>
@@ -116,7 +105,7 @@ import Toast from 'primevue/toast';
 
 export default {
   components: {
-    Toast // Add Toast to the components object
+    Toast 
   },
   data() {
     return {
@@ -145,11 +134,21 @@ export default {
     const dateAdded = ref('');
     const submitted = ref(false);
     const emailIsValid = ref(true);
+    const years = ref([]);
 
-    const isValidEmail = (emailValue) => {
+     const isValidEmail = (emailValue) => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(emailValue);
     };
+
+    const generateYears = () => {
+      const currentYear = new Date().getFullYear();
+      for (let i = 0; i < 4; i++) {
+        years.value.push(currentYear + i);
+      }
+    };
+
+    generateYears();
 
     const validateEmail = () => {
   console.log('Email:', email.value);
@@ -219,7 +218,7 @@ export default {
     };
 
     const getFileSize = (index) => {
-      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
+      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; 
     };
 
     const onFileChange = (e) => {
@@ -233,23 +232,21 @@ export default {
           fileDataUrl.value.push(e.target.result);
         };
         reader.readAsDataURL(file);
-        fileObjects.value.push(file); // Store the File object
+        fileObjects.value.push(file); 
       });
       toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
     };
 
-    console.log('orgName:', orgName.value); // Log the value of orgName to the console
+    console.log('orgName:', orgName.value); 
 
     const submitForm = () => {
       submitted.value = true;
 
-      // Initial validation check for required fields
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please make sure the field is filled out correctly.', life: 3000 });
         return;
       }
 
-      // Validate email
       if (!isValidEmail(email.value)) {
         emailIsValid.value = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
@@ -356,6 +353,7 @@ export default {
     validateEmail,
     toast,
     submitted,
+    years,
     emailIsValid
     };
   }
@@ -395,7 +393,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
   gap: 20px; 
   padding-bottom: 20px;
 }
@@ -435,20 +432,26 @@ export default {
   font-size: 16px;
 }
 
-.email label {
-  margin-left: 20px;
+.orgName label {
+  text-align: left;
 }
- 
+
+.contactName label, .phoneNumber label{
+  text-align: left;
+}
+
+
 .orgName input, .contactName input, .email input, .phoneNumber input {
   padding: 5px;
   margin: 0;
   font-size: 16px;
 }
 
+
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 53px;
+  margin-left: 71px;
   font-size: 16px;
 }
  
