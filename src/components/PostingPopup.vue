@@ -34,7 +34,10 @@
               </div>
             </div>
             <div class="posting">
-              <label for="postingType">Type of Posting</label>
+              <label>Type of</label>
+              <div class="posting-label">
+                <label for="postingType">Posting</label>
+              </div>
               <div class="select-container">
                 <select id="postingType" name="postingType" v-model="programType"
                   :class="{ error: submitted && !programType }">
@@ -440,14 +443,15 @@ export default {
   text-align: left;
 }
 
-
 .orgName input, .contactName input, .email input, .phoneNumber input {
   padding: 5px;
   margin: 0;
   font-size: 16px;
 }
 
-
+.Description textarea {
+  resize: none; 
+}
 .email input {
   padding: 5px;
   margin: 0;
@@ -464,16 +468,31 @@ export default {
  
 .posting {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   padding-bottom: 20px;
-  margin-left: -3px;
+  margin-top: -15px;
 }
 
 .posting .select-container {
   display: flex;
-  margin-left: 20px;
+  align-items: center; 
 }
+
+.posting-label {
+  margin-top: 5px;
+}
+
+.posting label {
+  margin-right: 5px;
+}
+
+.select-container {
+  margin-left: 110px;
+  margin-top: -20px;
+  flex: 1; 
+}
+
 
 .startDate {
   display: flex;
