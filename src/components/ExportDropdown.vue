@@ -1,6 +1,5 @@
 <template>
   <div class="dropdown" v-bind:class="{ 'dropdown-show': show }">
-    
     <PanelMenu :model="items" class="dropdown-option"></PanelMenu>
     <div v-if="showDateExport" class="date-export-dropdown">
       <h4>Start date</h4>
@@ -14,9 +13,9 @@
 
 <script>
 import Calendar from 'primevue/calendar';
-import 'primevue/resources/themes/saga-blue/theme.css'       //theme
-import 'primevue/resources/primevue.min.css'                 //core css
-import 'primeicons/primeicons.css'                           //icons
+import 'primevue/resources/themes/saga-blue/theme.css'; // theme
+import 'primevue/resources/primevue.min.css'; // core css
+import 'primeicons/primeicons.css'; // icons
 import PanelMenu from 'primevue/panelmenu';
 
 export default {
@@ -51,14 +50,38 @@ export default {
         {
           label: 'Export by date',
           icon: 'pi pi-fw pi-calendar',
-          command: () => { this.showDateExport = !this.showDateExport },
-        },
-          
-        
+          command: () => { this.showDateExport = !this.showDateExport; },
+        }
       ]
+    };
+  },
+  methods: {
+    async exportData() {
+      const filteredData = await this.fetchAndFilterData();
+      this.downloadCSV(filteredData);
+    },
+    async fetchAndFilterData() {
+      const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings');
+      const data = await response.json();
+      const startDate = new Date(this.startDate);
+      const endDate = new Date(this.endDate);
+      return data.filter(item => {
+        const itemDate = new Date(item.StartDate);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+    },
+    downloadCSV(data) {
+      const csvContent = 'data:text/csv;charset=utf-8,' + 
+                        data.map(row => Object.values(row).join(',')).join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'exported_data.csv');
+      document.body.appendChild(link);
+      link.click();
     }
   }
-}
+};
 </script>
 
 <style scoped>
