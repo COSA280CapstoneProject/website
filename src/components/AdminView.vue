@@ -15,7 +15,7 @@
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
             <!-- Account Management Popup Trigger -->
             <div class="account-man" @click="openPopup">Account Management</div>
-            <div class="logout" @click="toggleSettings">Logout</div>
+            <div class="logout" @click="logout">Logout</div>
           </div>
         </transition>
       </div>
@@ -103,6 +103,10 @@ export default {
       this.showPopup = false;
     },
 
+    logout() {
+      this.$msal.logoutRedirect();
+    },
+
     outsideClick(event) {
       if (!this.showPopup && this.showSettings && this.$refs.dropdown && this.$refs.settings &&
           !this.$refs.dropdown.contains(event.target) &&
@@ -129,16 +133,10 @@ export default {
         // Reset selected admin
         this.selectedAdmin = null;
 
-        // logout() {
-        //   const tenantID = 'azure sucks ass'; // Replace with your Azure tenant ID
-        //   const postLogoutRedirectUri = encodeURIComponent('http://localhost:8080/'); // Replace with the URL to redirect after logout
-
-        //   const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/logout?post_logout_redirect_uri=${postLogoutRedirectUri}`;
-
-        //   window.location.href = logoutUrl;
-        // },
+        // Logout
+        this.$msal.logoutRedirect();
       }
-    },
+    }
   }
 }
 </script>

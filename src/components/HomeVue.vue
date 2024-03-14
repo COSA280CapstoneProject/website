@@ -212,7 +212,7 @@ export default {
   margin: 0;
   padding-top: 125px;
   padding-bottom: 10px;
-  margin-top: -100px;
+  margin-top: -51px;
   z-index: 1;
 }
 
