@@ -31,11 +31,13 @@
                 <label for="phoneNumber">Phone Number </label>
                 <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
                   :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
-                <!-- eslint-disable-next-line -->
               </div>
             </div>
             <div class="posting">
-              <label for="postingType">Type of Posting</label>
+              <label>Type of</label>
+              <div class="posting-label">
+                <label for="postingType">Posting</label>
+              </div>
               <div class="select-container">
                 <select id="postingType" name="postingType" v-model="programType"
                   :class="{ error: submitted && !programType }">
@@ -50,17 +52,7 @@
                 <label for="startDate">Start Date </label>
                 <div class="date-inputs">
                   <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
+                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
                   </select>
                   <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
                     <option value="Fall">Fall</option>
@@ -78,8 +70,7 @@
             </div>
             <div class="Description">
               <label for="Description">Description </label>
-              <input type="text" id="Description" name="Description" v-model="postDesc"
-                :class="{ error: submitted && !postDesc }" />
+              <textarea id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }"></textarea>
             </div>
             <div class="FileUpload">
               <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop"
@@ -117,7 +108,7 @@ import Toast from 'primevue/toast';
 
 export default {
   components: {
-    Toast // Add Toast to the components object
+    Toast 
   },
   data() {
     return {
@@ -146,11 +137,21 @@ export default {
     const dateAdded = ref('');
     const submitted = ref(false);
     const emailIsValid = ref(true);
+    const years = ref([]);
 
-    const isValidEmail = (emailValue) => {
+     const isValidEmail = (emailValue) => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(emailValue);
     };
+
+    const generateYears = () => {
+      const currentYear = new Date().getFullYear();
+      for (let i = 0; i < 4; i++) {
+        years.value.push(currentYear + i);
+      }
+    };
+
+    generateYears();
 
     const validateEmail = () => {
   console.log('Email:', email.value);
@@ -220,7 +221,7 @@ export default {
     };
 
     const getFileSize = (index) => {
-      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
+      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; 
     };
 
     const onFileChange = (e) => {
@@ -234,23 +235,21 @@ export default {
           fileDataUrl.value.push(e.target.result);
         };
         reader.readAsDataURL(file);
-        fileObjects.value.push(file); // Store the File object
+        fileObjects.value.push(file); 
       });
       toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
     };
 
-    console.log('orgName:', orgName.value); // Log the value of orgName to the console
+    console.log('orgName:', orgName.value); 
 
     const submitForm = () => {
       submitted.value = true;
 
-      // Initial validation check for required fields
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please make sure the field is filled out correctly.', life: 3000 });
         return;
       }
 
-      // Validate email
       if (!isValidEmail(email.value)) {
         emailIsValid.value = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
@@ -357,6 +356,7 @@ export default {
     validateEmail,
     toast,
     submitted,
+    years,
     emailIsValid
     };
   }
@@ -385,8 +385,8 @@ export default {
   top: 50%; 
   left: 50%; 
   transform: translate(-50%, -50%);
-  width: 100%; /* Set the width of the form */
-  max-width: 800px; /* Set the maximum width of the form */
+  width: 100%;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -396,7 +396,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
   gap: 20px; 
   padding-bottom: 20px;
 }
@@ -408,12 +407,13 @@ export default {
   gap: 10px;
   width: 45%;
 }
- 
+
 .email {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between; 
+  margin-bottom: -10px;
   width: 45.6%;
 }
 
@@ -432,23 +432,30 @@ export default {
  
 .orgName label, .contactName label, .email label, .phoneNumber label {
   margin-right: 5px;
-  font-size: 16px; /* Set the same font size for all labels */
+  font-size: 16px;
 }
 
-.email label {
-  margin-left: 20px;
+.orgName label {
+  text-align: left;
 }
- 
+
+.contactName label, .phoneNumber label{
+  text-align: left;
+}
+
 .orgName input, .contactName input, .email input, .phoneNumber input {
-  padding: 5px; /* Set the same padding for all inputs */
-  margin: 0; /* Set the same margin for all inputs */
-  font-size: 16px; /* Set the same font size for all inputs */
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
 }
 
+.Description textarea {
+  resize: none; 
+}
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 53px;
+  margin-left: 71px;
   font-size: 16px;
 }
  
@@ -461,16 +468,31 @@ export default {
  
 .posting {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   padding-bottom: 20px;
-  margin-left: -3px;
+  margin-top: -15px;
 }
 
 .posting .select-container {
   display: flex;
-  margin-left: 20px;
+  align-items: center; 
 }
+
+.posting-label {
+  margin-top: 5px;
+}
+
+.posting label {
+  margin-right: 5px;
+}
+
+.select-container {
+  margin-left: 110px;
+  margin-top: -20px;
+  flex: 1; 
+}
+
 
 .startDate {
   display: flex;
@@ -499,11 +521,11 @@ export default {
   flex-direction: row;
   align-items: center;
   gap: 10px;
+  padding-bottom: 20px;
 }
  
 .Title label, .Description label {
   margin-right: 5px;
-
 }
 
 .Title {
@@ -511,10 +533,22 @@ export default {
 }
 .Title input, .Description input {
   width: 605px;
+  height: 25px;
+  font-size: 16px;
+  font-family: Gotham;
+  font-weight: normal;
+}
+
+.Description textarea {
+  width: 605px;
+  height: 120px;
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
 }
 .Description label {
   margin-bottom: 5px;
-  margin-top: -100px; /* Adjust this value as needed */
+  margin-top: -100px;
 }
 .Title input {
   margin-left: 60px
@@ -551,6 +585,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  height: 100px
 }
  
 .drag-drop-box:hover {
@@ -577,8 +612,9 @@ export default {
   background-color: #732181; 
   color: white;
   border: 2px solid black; 
-  padding: 8px 20px; 
+  padding: 10px 32px; 
   cursor: pointer; 
+  
 }
  
 .close-button {
