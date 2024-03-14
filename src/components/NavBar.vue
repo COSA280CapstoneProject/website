@@ -12,8 +12,8 @@
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
             <div v-if="isLoggedIn" class="account-man" @click="openPopup">Account Management</div>
-            <div v-if="isLoggedIn" class="logout" @click="handleLogout">Logout</div>
-            <div v-else class="login" @click="promptForLogin">Login</div>
+            <div v-if="isLoggedIn" class="logout" @click="Logout">Logout</div>
+            <div v-else class="login" @click="Login">Login</div>
           </div>
         </transition>
       </div>
@@ -93,25 +93,6 @@ export default {
       this.showSettings = !this.showSettings;
     },
 
-    promptForLogin() {
-      const code = prompt("Enter the 4 digit login code:");
-      this.login(code);
-    },
-
-    handleLogout() {
-      this.isLoggedIn = false;
-      // Additional logout logic if needed
-    },
-
-    login(code) {
-      if (code === '1234') {
-        this.isLoggedIn = true;
-        // You can add more login logic here
-      } else {
-        alert("Incorrect login code.");
-      }
-    },
-
     openPopup() {
       this.showSettings = false;
       this.showPopup = true;
@@ -146,15 +127,6 @@ export default {
         console.log("Removing admin:", this.admins[this.selectedAdmin]);
         // Reset selected admin
         this.selectedAdmin = null;
-
-        // logout() {
-        //   const tenantID = 'azure sucks ass'; // Replace with your Azure tenant ID
-        //   const postLogoutRedirectUri = encodeURIComponent('http://localhost:8080/'); // Replace with the URL to redirect after logout
-
-        //   const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/logout?post_logout_redirect_uri=${postLogoutRedirectUri}`;
-
-        //   window.location.href = logoutUrl;
-        // },
       }
     },
   }
