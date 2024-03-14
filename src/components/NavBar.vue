@@ -1,81 +1,106 @@
 <template>
   <div>
     <nav class="navbar">
-      <!-- ... other navbar content ... -->
-      <div class="user-info" v-if="isLoggedIn">
+      <div class="title">Welcome to ICT for Saskatchewan Polytechnic!</div>
+      <!-- Conditional Rendering Based on Logged In Status -->
+      <div v-if="isLoggedIn" class="user-info">
         {{ firstName }} {{ lastName }}
       </div>
-      <div class="settings" ref="settings" @click="toggleSettings">
+      <div v-if="isLoggedIn" class="settings" ref="settings" @click="toggleSettings">
         <button :class="{ 'spin-animation': showSettings }">
           <i class="pi pi-cog"></i>
         </button>
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
-            <div v-if="isLoggedIn" class="account-man" @click="openPopup">Account Management</div>
-            <div v-if="isLoggedIn" class="logout" @click="Logout">Logout</div>
-            <div v-else class="login" @click="Login">Login</div>
+            <div class="account-man" @click="openPopup($event)">Account Management</div>
+            <div class="logout" @click="Logout">Logout</div>
           </div>
         </transition>
       </div>
+      <!-- Simple Login Button for Logged Out Users -->
+      <div v-else class="login-button">
+        <button @click="Login">Login</button>
+      </div>
       <div class="form-page">
-          <!-- Form Page button -->
-          <button @click="goToFormPage">Form Page</button>
+        <!-- Form Page button -->
+        <button @click="goToFormPage">Form Page</button>
+      </div>
+    </nav>
+    <!-- Popup Overlay and Content -->
+    <div v-show="showPopup" class="overlay">
+      <div class="popup">
+        <div class="popup-header">
+          <span>Admin Management</span>
+          <!-- Close Button -->
+          <button class="close-button" @click="closePopup">X</button>
         </div>
-      </nav>
-      <!-- Popup Overlay and Content -->
-      <div v-show="showPopup" class="overlay">
-        <div class="popup">
-          <div class="popup-header">
-            <span>Admin Management</span>
-            <!-- Close Button -->
-            <button class="close-button" @click="closePopup">X</button>
-          </div>
-          <div class="popup-content">
-            <!-- Popup Form -->
-            <button class="add-admin" @click="addAdmin">Add Admin</button>
-          </div>
-          <!-- Admin List -->
-          <div class ="admin-list-container">
+        <div class="popup-content">
+          <!-- Popup Form -->
+          <button class="add-admin" @click="addAdmin">Add Admin</button>
+        </div>
+        <!-- Admin List -->
+        <div class ="admin-list-container">
           <div class="admin-list">
-            <div v-for="(admin, index) in admins" :key="index" class="admin-item" :class = "{ 'admin-selected': selectedAdmin === index}" @click="selectAdmin(index)">
+            <div v-for="(admin, index) in admins" :key="admin.email" class="admin-item" :class="{ 'admin-selected': selectedAdmin === index}" @click="selectAdmin(index)">
               <p>{{ admin.name }} ({{ admin.email }})</p>
             </div>
-            </div>
           </div>
-            <button class="remove-admin" @click="removeAdmin" :disabled="selectedAdmin === null">Remove Admin</button>
-          </div>
+          <button class="remove-admin" @click="removeAdmin" :disabled="selectedAdmin === null">Remove Admin</button>
         </div>
       </div>
+    </div>
+  </div>
 </template>
 
 
 
 
-<script>
-import 'primeicons/primeicons.css';
 
+<script>
 export default {
   data() {
     return {
       isLoggedIn: false,
-      firstName: 'Carter',
-      lastName: 'Gorski',
+      firstName: null,
+      lastName: null,
+      msalInstance: false,
       showSettings: false,
       showPopup: false,
-      admins: [
-        { name: 'Rylan Copeland', email: 'admin1@example.com' },
-        { name: 'Triston Lloyd', email: 'admin2@example.com' },
-        { name: 'Javin', email: 'admin2@example.com' },
-        { name: 'Arrsh', email: 'admin2@example.com' },
-        { name: 'Admin Two', email: 'admin2@example.com' },
-        // ... rest of the admins ...
-      ],
-      selectedAdmin: null
+      showAdminView: false,
+      admins: [],
+      selectedAdmin: null,
     };
   },
 
-  mounted() {
+  async mounted() {
     document.addEventListener('click', this.outsideClick);
+
+    await this.$msal.handleRedirectPromise();
+    this.msalInstance = true;
+    
+    this.account = await this.$msal.getAllAccounts()[0];
+
+      if (this.account) {
+        this.isLoggedIn = true;
+        this.firstName = this.account.idTokenClaims.name;
+        this.lastName = "(" + this.account.idTokenClaims.email + ")";
+        //this.firstName = this.account.idTokenClaims.given_name;
+        //this.lastName = this.account.idTokenClaims.family_name;
+
+        const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabaseAdministrators');
+        const administrators = await response.json();
+        const isAdmin = administrators.some(admin => admin.Email === this.account.idTokenClaims.email);
+
+        const adjustedAdmins = administrators.map(admin => ({
+        email: admin.Email,
+        name: admin.Name
+        }));
+        this.admins.push(...adjustedAdmins, { email: this.account.idTokenClaims.email, name: this.account.idTokenClaims.name });
+        
+      if (isAdmin) {
+        this.showAdminView = true;
+      }
+    }
   },
 
   beforeUnmount() {
@@ -89,17 +114,9 @@ export default {
   },
 
   methods: {
-    toggleSettings() {
+
+  toggleSettings() {
       this.showSettings = !this.showSettings;
-    },
-
-    openPopup() {
-      this.showSettings = false;
-      this.showPopup = true;
-    },
-
-    closePopup() {
-      this.showPopup = false;
     },
 
     outsideClick(event) {
@@ -108,24 +125,58 @@ export default {
           !this.$refs.settings.contains(event.target)) {
         this.showSettings = false;
       }
-      if (this.showPopup && this.$refs.popup && !this.$refs.popup.contains(event.target)) {
-        this.closePopup();
-      }
     },
 
     goToFormPage() {
       this.$router.push('/form');
     },
 
+    async Login() {
+      await this.$msal.loginRedirect({
+        scopes: ["user.read", "email", "profile"],
+      });
+
+      const account = await this.$msal.getAllAccounts()[0];
+
+      this.account = {
+        username: account.username,
+        name: account.name,
+        email: account.idTokenClaims.email,
+        firstName: account.idTokenClaims.given_name,
+        lastName: account.idTokenClaims.family_name
+      };
+
+      if (this.account) {
+        this.isLoggedIn = true;
+      }
+    },
+
+    async Logout() {
+      await this.$msal.logoutRedirect();
+      this.isLoggedIn = false;
+    },
+
+    openPopup() {
+        this.showPopup = true;
+        this.showSettings = false;
+        event.stopPropagation();
+    },
+
+    closePopup() {
+      this.showPopup = false;
+    },
+
     addAdmin() {
       // Add admin logic
+    },
+
+    selectAdmin(index) {
+      this.selectedAdmin = index;
     },
 
     removeAdmin() {
       if (this.selectedAdmin !== null) {
         // Remove admin logic
-        console.log("Removing admin:", this.admins[this.selectedAdmin]);
-        // Reset selected admin
         this.selectedAdmin = null;
       }
     },
@@ -145,6 +196,11 @@ export default {
 html, body {
   width: 100%;
   height: 100%;
+}
+
+.title {
+  font-size: 24px;
+  margin-right: auto;
 }
 
 .form-page button {
@@ -194,6 +250,32 @@ html, body {
   margin-left: 15px;
 }
 
+.login-button button {
+  background-color: #c56eff;
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 5px;
+}
+
+.login-button button:hover {
+  background-color: #a51eff;
+  color: rgb(255, 255, 255);
+}
+
+.login-button button:active {
+  transform: scale(0.98);
+  box-shadow: inset 0 0 2px #000000;
+}
 
 .settings {
   position: relative;
@@ -364,6 +446,7 @@ body.no-scroll {
 .remove-admin {
   width: 30%;
   font-size: small;
+  margin: auto;
 }
 
 .popup .add-admin:hover, .popup .remove-admin:hover{
@@ -403,4 +486,4 @@ body.no-scroll {
   }
 }
 
-</style>./NavBar.vue
+</style>
