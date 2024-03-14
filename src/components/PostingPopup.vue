@@ -78,8 +78,7 @@
             </div>
             <div class="Description">
               <label for="Description">Description </label>
-              <input type="text" id="Description" name="Description" v-model="postDesc"
-                :class="{ error: submitted && !postDesc }" />
+              <textarea id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }"></textarea>
             </div>
             <div class="FileUpload">
               <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop"
@@ -414,6 +413,7 @@ export default {
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between; 
+  margin-bottom: -10px;
   width: 45.6%;
 }
 
@@ -499,11 +499,11 @@ export default {
   flex-direction: row;
   align-items: center;
   gap: 10px;
+  padding-bottom: 20px;
 }
  
 .Title label, .Description label {
   margin-right: 5px;
-
 }
 
 .Title {
@@ -511,6 +511,16 @@ export default {
 }
 .Title input, .Description input {
   width: 605px;
+  height: 25px;
+  font-size: 16px;
+}
+
+.Description textarea {
+  width: 605px;
+  height: 120px;
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
 }
 .Description label {
   margin-bottom: 5px;
@@ -551,6 +561,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  height: 100px
 }
  
 .drag-drop-box:hover {
@@ -577,8 +588,9 @@ export default {
   background-color: #732181; 
   color: white;
   border: 2px solid black; 
-  padding: 8px 20px; 
+  padding: 10px 32px; 
   cursor: pointer; 
+  
 }
  
 .close-button {
