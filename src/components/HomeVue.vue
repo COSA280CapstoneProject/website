@@ -1,4 +1,5 @@
 <template>
+  <HomeNavbar />
   <PostingPopup v-if="showPopup" @close="showPopup = false" />
   
   
@@ -112,12 +113,14 @@
 
 <script>
 import PostingPopup from '@/components/PostingPopup.vue'
+import HomeNavbar from './HomeNavbar.vue'; // Import the HomeNavbar component
 
 
 export default {
   name: 'HomeVue',
   components: {
-    PostingPopup
+    PostingPopup,
+    HomeNavbar
   },
   data() {
     return {
@@ -147,7 +150,6 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure the container takes at least the height of the viewport */
-  margin-top: 50px;
 }
 
 /* Banner styles */
@@ -168,7 +170,6 @@ export default {
   transform: translate(-50%, -50%);
   font-size: 2rem;
 }
-
 
 /* Common styles for trapezoidal sections */
 .trapezoid {

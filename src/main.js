@@ -11,6 +11,13 @@ import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import './assets/fonts.css';
 
+// MSAL imports
+import { PublicClientApplication } from '@azure/msal-browser';
+import { msalConfig } from './authConfig'; // Ensure this path is correct
+
+// Create and initialize MSAL instance
+const msalInstance = new PublicClientApplication(msalConfig);
+msalInstance.initialize();
 
 // Define your routes
 const routes = [
@@ -19,26 +26,27 @@ const routes = [
       name: 'HomePage',
       component: HomePage
     },
-
-    { path: '/form',
+    {
+      path: '/form',
       name: 'Form',
       component: Form
-     },
-  
-  
+    },
     // Define other routes as needed
-  ];
-  
-  // Create the router instance and pass the `routes` option
-  const router = createRouter({
+];
+
+// Create the router instance and pass the `routes` option
+const router = createRouter({
     history: createWebHistory(process.env.BASE_URL), // Use history mode
     routes,
-  });
+});
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(PrimeVue)
-app.use(ToastService)
-app.use(router) // Use the router
+// Make MSAL instance available to all components
+app.config.globalProperties.$msal = msalInstance;
 
-app.mount('#app')
+app.use(PrimeVue);
+app.use(ToastService);
+app.use(router); // Use the router
+
+app.mount('#app');
