@@ -535,6 +535,8 @@ export default {
   width: 605px;
   height: 25px;
   font-size: 16px;
+  font-family: Gotham;
+  font-weight: normal;
 }
 
 .Description textarea {
