@@ -147,6 +147,7 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure the container takes at least the height of the viewport */
+  margin-top: 50px;
 }
 
 /* Banner styles */
@@ -213,14 +214,14 @@ export default {
   z-index: 1;
 }
 
-/* .introduction-bg { /* Background image for the introduction section 
+.introduction-bg { /* Background image for the introduction section */
   background-image: url('@/assets/stock-image.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   z-index: 1;
 } 
-*/
+
 
 /* Specific styles for each section */
 .introduction .content {
