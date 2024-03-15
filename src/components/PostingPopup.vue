@@ -488,7 +488,7 @@ export default {
 }
 
 .select-container {
-  margin-left: 110px;
+  margin-left: 111px;
   margin-top: -20px;
   flex: 1; 
 }
