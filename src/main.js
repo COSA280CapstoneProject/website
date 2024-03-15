@@ -13,7 +13,7 @@ import './assets/fonts.css';
 
 // MSAL imports
 import { PublicClientApplication } from '@azure/msal-browser';
-import { msalConfig } from './authConfig'; // Ensure this path is correct
+import { msalConfig } from '@/router/authConfig.js';
 
 // Create and initialize MSAL instance
 const msalInstance = new PublicClientApplication(msalConfig);
