@@ -1,6 +1,11 @@
 <template>
   <div>
-    <nav class="navbar">
+    <nav class="navbar" style="z-index: 10;">
+      <div class="logo-container">
+        <a href="https://saskpolytech.ca/" target="_blank">
+          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" class="logo" />
+        </a>
+        </div>
       <!-- ... other navbar content ... -->
     <div class="user-info">
       {{ firstName }} {{ lastName }}
@@ -156,6 +161,28 @@ html, body {
   width: 100%;
   height: 100%;
 }
+.navbar {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 1000;
+  background-image: url(~@/assets/header.jpg);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Adjusted to space between */
+  padding: 15px 30px; /* Adjusted padding */
+}
+
+.logo-container {
+  margin-right: auto; /* Pushes the logo to the far left */
+}
+
+.logo {
+  width: 50px; /* Ensure the logo fits the container */
+}
 
 .form-page button {
   background-color: #ffffff;
@@ -237,7 +264,9 @@ html, body {
 
 .dropdown-menu {
   position: absolute;
+  top: calc(100% + 5px);
   left: 50%;
+  right: 0;
   transform: translateX(-50%);
   top: calc(100% + 5px);
   background-color: #f9f9f9;
