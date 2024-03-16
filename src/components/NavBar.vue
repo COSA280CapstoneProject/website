@@ -1,7 +1,13 @@
 <template>
   <div>
     <nav class="navbar">
-      <div class="title">Welcome to ICT for Saskatchewan Polytechnic!</div>
+      <!-- Image Logo and Title -->
+      <div class="logo-title">
+        <a href="https://saskpolytech.ca/" target="_blank">
+          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Logo" class="logo">
+        </a>
+        <div class="title">Welcome to ICT for Saskatchewan Polytechnic!</div>
+      </div>
       <!-- Conditional Rendering Based on Logged In Status -->
       <div v-if="isLoggedIn" class="user-info">
         {{ firstName }} {{ lastName }}
@@ -39,9 +45,10 @@
           <button class="add-admin" @click="addAdmin">Add Admin</button>
         </div>
         <!-- Admin List -->
-        <div class ="admin-list-container">
+        <div class="admin-list-container">
           <div class="admin-list">
-            <div v-for="(admin, index) in admins" :key="admin.email" class="admin-item" :class="{ 'admin-selected': selectedAdmin === index}" @click="selectAdmin(index)">
+            <div v-for="(admin, index) in admins" :key="admin.email" class="admin-item"
+              :class="{ 'admin-selected': selectedAdmin === index}" @click="selectAdmin(index)">
               <p>{{ admin.name }} ({{ admin.email }})</p>
             </div>
           </div>
@@ -195,6 +202,19 @@ export default {
 html, body {
   width: 100%;
   height: 100%;
+}
+
+.logo-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 749px;
+}
+
+.logo {
+  height: 70px;
+  width: 70px;
+  margin-right: 10px;
 }
 
 .title {
