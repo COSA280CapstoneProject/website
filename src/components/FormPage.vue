@@ -18,7 +18,7 @@
       </div>
       <div class="file">
         <h2>File</h2>
-        <button @click="downloadFile(detail.FileID)" class="download-button">Download File</button>
+        <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(detail.FileID)" />
       </div>
     </div>
     <!-- Error Popup -->
@@ -164,6 +164,12 @@ export default {
   margin-top: 5px;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
+}
+.download-icon {
+  width: 40%; /* Set width relative to the container */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 60px; /* Maximum size to avoid too large icon */
   cursor: pointer;
 }
 
