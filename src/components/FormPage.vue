@@ -1,8 +1,8 @@
 <template>
   <div class="container">
+    <!-- Existing Content Display -->
     <div v-if="error" class="error-message">{{ error }}</div>
     <div v-if="!postingDetails.length && !error" class="loading-message">Loading posting details...</div>
-
     <div class="posting-row" v-for="(detail, index) in postingDetails" :key="index">
       <div class="organization">
         <h2>Organization</h2>
@@ -12,23 +12,24 @@
         <p>Post type: {{ detail.PostType }}</p>
         <p>Program: {{ detail.ProgramType }}</p>
       </div>
-
       <div class="job-description">
         <h2>Job description</h2>
         <p>{{ detail.PostDesc }}</p>
       </div>
-<div class="File">
-  <h2>File</h2>
-      <div v-if="detail.FileID" class="file-download">
+      <div class="file">
+        <h2>File</h2>
         <button @click="downloadFile(detail.FileID)" class="download-button">Download File</button>
       </div>
     </div>
+    <!-- Error Popup -->
+    <div v-if="showErrorPopup" class="error-popup">
+      <div class="error-content">
+        <span>{{ errorMessage }}</span>
+        <button @click="closePopup" class="close-button">Close</button>
+      </div>
     </div>
-    <br><br><br><br>
   </div>
-  
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -36,41 +37,44 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      postingDetails: [], // Now expects an array
-      isSidebarOpen: false,
+      postingDetails: [],
       error: null,
+      showErrorPopup: false, // Controls the visibility of the error popup
+      errorMessage: '', // Stores the error message
     };
   },
   methods: {
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    },
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
         .then(response => {
-          this.postingDetails = response.data; // Assuming the API returns an array
+          this.postingDetails = response.data;
         })
         .catch(error => {
-          this.error = 'Failed to load posting details: ' + error.message;
+          this.errorMessage = 'Failed to load posting details: ' + error.message;
+          this.showErrorPopup = true;
         });
     },
     downloadFile(fileID) {
-      const fileName = 'downloaded_file'; // Placeholder file name
+      const fileName = fileID ? `file_${fileID}.pdf` : 'downloaded_file.pdf';
       axios({
-        url: `https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload/${fileID}`, // Adjusted to a hypothetical download endpoint
+        url: `https://ictdatabasefileupload.azurewebsites.net/api/downloadFile/${fileID}`,
         method: 'GET',
         responseType: 'blob',
       }).then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', fileName); // Can adjust fileName based on response if needed
+        link.setAttribute('download', fileName);
         document.body.appendChild(link);
         link.click();
         link.remove();
       }).catch(error => {
-        this.error = 'Failed to download the file: ' + error.message;
+        this.errorMessage = 'Failed to download the file: ' + error.message;
+        this.showErrorPopup = true;
       });
+    },
+    closePopup() {
+      this.showErrorPopup = false;
     },
   },
   mounted() {
@@ -78,9 +82,6 @@ export default {
   },
 };
 </script>
-
-
-  
   
   
 <style scoped>
@@ -92,6 +93,7 @@ export default {
   font-family: 'Roboto', sans-serif;
   width: 100%;
   padding: 5%;
+  float: left;
 }
 
 .posting-row {
@@ -104,7 +106,7 @@ export default {
   border-bottom: 1px solid #eee; /* Adds a line to separate postings */
 }
 
-.organization, .job-description ,.File{
+.organization, .job-description ,.file{
   flex: 1; /* Allows these sections to grow and take equal space */
   margin-right: 20px; /* Adds spacing between organization and job description sections */
   color: #5a1c7a;
@@ -167,5 +169,32 @@ export default {
 
 .sidebar-button:hover {
   background-color: #5a1c7a;
+}
+.error-popup {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: black;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 100;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.close-button {
+  margin-top: 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>
