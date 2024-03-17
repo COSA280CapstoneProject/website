@@ -29,19 +29,21 @@
 
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
-    <div class="content">
-      <div class="inner-content">
-        <h2>Submit a Post</h2>
-        <button @click="showPopup = true">Create Posting</button>
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-        </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-        </p>
-        <p><em>We will be evaluating your posting</em></p>
+      <div class="content">
+        <div class="inner-content">
+          <h2>Submit a Post</h2>
+          <!-- Add your text blurb here -->
+          <p>Your posting will be viewed by many students!</p>
+          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          </p>
+          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+          </p>
+          <p><em>We will be evaluating your posting</em></p>
+          <button @click="showPopup = true">Create Posting</button>
+        </div>
       </div>
-    </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials Section -->
@@ -226,6 +228,7 @@ export default {
   display: flex;
   align-items: center;
   transform: skewY(-3deg); /* Counter-skew the content */
+  font-size: large;
 }
 
 .submit-post {
