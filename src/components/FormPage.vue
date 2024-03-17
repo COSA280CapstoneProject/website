@@ -24,7 +24,9 @@
       </div>
     </div>
     </div>
+    <br><br><br><br>
   </div>
+  
 </template>
 
 
@@ -55,7 +57,7 @@ export default {
     downloadFile(fileID) {
       const fileName = 'downloaded_file'; // Placeholder file name
       axios({
-        url: `https://ictdatabasefileupload.azurewebsites.net/api/downloadFile/${fileID}`, // Adjusted to a hypothetical download endpoint
+        url: `https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload/${fileID}`, // Adjusted to a hypothetical download endpoint
         method: 'GET',
         responseType: 'blob',
       }).then(response => {
