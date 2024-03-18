@@ -267,42 +267,46 @@ export default {
       });
 
       axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
-          console.log(response);
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+          .then(response => {
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
 
-          const postID = Math.floor(100000 + Math.random() * 900000);
-          const status = 'Open';
-          const dateAdded = new Date().toLocaleString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-          });
+            const postID = Math.floor(100000 + Math.random() * 900000);
+            const status = 'Open';
+            const dateAdded = new Date().toLocaleString('en-GB', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: false
+            });
 
-          const postData = {
-            orgName: orgName.value,
-            contactName: contactName.value,
-            phoneNum: phoneNum.value,
-            startDate: startDate.value,
-            postID: postID,
-            postTitle: postTitle.value,
-            postDesc: postDesc.value,
-            programType: programType.value,
-            postType: programType.value,
-            files: filesToUpload.join(','),
-            status: status,
-            email: email.value,
-            season: season.value,
-            dateAdded: dateAdded,
-          };
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const blobUrl = response.data.match(urlRegex)[0]; // Extract the URL from the response data
+
+            const postData = {
+              orgName: orgName.value,
+              contactName: contactName.value,
+              phoneNum: phoneNum.value,
+              startDate: startDate.value,
+              postID: postID,
+              postTitle: postTitle.value,
+              postDesc: postDesc.value,
+              programType: programType.value,
+              postType: programType.value,
+              files: filesToUpload.join(','),
+              status: status,
+              email: email.value,
+              season: season.value,
+              dateAdded: dateAdded,
+              blobUrl: blobUrl
+            };
 
           console.log(JSON.stringify(postData));
 
