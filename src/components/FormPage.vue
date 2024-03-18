@@ -16,7 +16,7 @@
         <h2>Job description</h2>
         <p>{{ detail.PostDesc }}</p>
       </div>
-      <div class="file">
+      <div class="file" v-if="detail.BlobURL">
         <h2>File</h2>
         <img 
           src="@/assets/file.png" 
