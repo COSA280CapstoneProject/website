@@ -53,25 +53,16 @@ export default {
           this.showErrorPopup = true;
         });
     },
-    downloadFile(fileID) {
-      const fileName = fileID ? `file_${fileID}.pdf` : 'downloaded_file.pdf';
-      axios({
-        url: `https://ictdatabasefileupload.azurewebsites.net/api/downloadFile/${fileID}`,
-        method: 'GET',
-        responseType: 'blob',
-      }).then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      }).catch(error => {
-        this.errorMessage = 'Failed to download the file: ' + error.message;
-        this.showErrorPopup = true;
-      });
-    },
+    downloadFile(blobUrl, fileName) {
+  // Directly use the BlobURL for downloading
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+},
+
     closePopup() {
       this.showErrorPopup = false;
     },
@@ -201,12 +192,14 @@ display: flex;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
+  border: 1px solid gray; /* Adds a black border */
   padding: 20px;
   border-radius: 10px;
   z-index: 100;
 }
+
 
 .error-content {
   display: flex;
