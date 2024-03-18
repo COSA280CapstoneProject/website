@@ -22,4 +22,5 @@ workflows:
       - build:
           filters:
             branches:
-              only: main
+              ignore: # List of branches to ignore
+                - gh-pages
