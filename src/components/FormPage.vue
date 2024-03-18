@@ -11,14 +11,20 @@
         <p>Phone number: {{ formatPhoneNumber(detail.PhoneNum) }}</p>
         <p>Post type: {{ detail.PostType }}</p>
         <p>Program: {{ detail.ProgramType }}</p>
-         </div>
+      </div>
       <div class="job-description">
         <h2>Job description</h2>
         <p>{{ detail.PostDesc }}</p>
       </div>
       <div class="file">
         <h2>File</h2>
-        <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(detail.FileID)" />
+        <img 
+          src="@/assets/file.png" 
+          alt="Download file" 
+          class="download-icon" 
+          @click="downloadFile(detail.BlobURL, detail.FileName)" 
+        />
+        <div class="file-name">{{ detail.FileName }}</div>
       </div>
     </div>
     <div v-if="showErrorPopup" class="error-popup">
@@ -29,6 +35,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -54,14 +61,14 @@ export default {
         });
     },
     downloadFile(blobUrl, fileName) {
-  // Directly use the BlobURL for downloading
   const link = document.createElement('a');
   link.href = blobUrl;
-  link.setAttribute('download', fileName);
+  link.setAttribute('download', fileName); // Use the actual file name
   document.body.appendChild(link);
   link.click();
   link.remove();
 },
+
 
     closePopup() {
       this.showErrorPopup = false;
