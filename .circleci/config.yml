@@ -13,15 +13,8 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Check if build is a pull request
-          command: |
-            if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              echo "This build is a pull request. Running specific jobs..."
-              # Add your specific jobs here
-              npm run build
-            else
-              echo "This build is not a pull request. Skipping specific jobs..."
-            fi
+          name: Build
+          command: npm run build
 
 workflows:
   run npm run build:
@@ -29,5 +22,4 @@ workflows:
       - build:
           filters:
             branches:
-              ignore: # List of branches to ignore
-                - gh-pages
+              only: main
