@@ -1,0 +1,25 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.2
+
+jobs:
+  build:
+    executor:
+      name: node/default
+      tag: '16.10'
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Build
+          command: npm run build
+
+workflows:
+  run npm run build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: main

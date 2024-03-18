@@ -1,35 +1,29 @@
 <template>
-  <div class="center-container">
-    <button class="center-button" @click="showPopup = true">Click Me</button>
-    <PostingPopup v-if="showPopup" @close="showPopup = false" />
-  </div>
-</template>
+  <NavBar/>
+   <HomeVue/>
+ </template>
 
 <script>
-import PostingPopup from '@/components/PostingPopup.vue'
+
+import NavBar from '@/components/NavBar.vue'
+import HomeVue from '@/components/HomeVue.vue'
+
 
 export default {
-  name: 'HomePage',
-  components: {
-    PostingPopup
-  },
-  data() {
-    return {
-      showPopup: false
-    }
-  }
+ name: 'HomePage',
+ components: {
+  NavBar, HomeVue
+ },
+ data() {
+   return {
+     showPopup: false
+   }
+ },
 }
 </script>
 
 <style scoped>
-.center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 
-.center-button {
-  padding: 10px 20px;
-}
+
+
 </style>

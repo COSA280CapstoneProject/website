@@ -1,4 +1,7 @@
-# ict-portal
+# ICT Agency Portal 
+
+## Passing Badge
+[![Azure Static Web Apps CI/CD](https://github.com/COSA280CapstoneProject/ICTWebsite/actions/workflows/azure-static-web-apps-mango-flower-0b6583a10.yml/badge.svg?branch=main)](https://github.com/COSA280CapstoneProject/ICTWebsite/actions/workflows/azure-static-web-apps-mango-flower-0b6583a10.yml)
 
 ## Project setup
 ```
