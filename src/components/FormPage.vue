@@ -15,9 +15,9 @@
         <p>Post ID: {{ detail.PostID }}</p>
         <p>Post Title: {{ detail.PostTitle }}</p>
         <p>Job Description: {{ detail.PostDesc }}</p>
-        <p>Status: {{ detail.Status }}</p>
         <p>Season: {{ detail.Season }}</p>
         <p>Date Added: {{ detail.DateAdded }}</p>
+        <p>Status: {{ detail.Status }}</p>
       </div>
       <div class="job-description">
         <h2>{{ detail.PostTitle }}</h2>
