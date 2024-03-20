@@ -20,6 +20,7 @@
     </button>
     <ExportDropdown :show="showDropdown" />
     <SortingMenu v-if="showSorting" />
+    <StatsDropdown v-if="showStatsDropdown" />
     </div>
     </div>
     
@@ -28,26 +29,30 @@
   <script>
   import ExportDropdown from '@/components/ExportDropdown.vue'
   import SortingMenu from '@/components/SortingDropdown.vue'
+  import StatsDropdown from '@/components/StatsDropdown.vue'
 
   export default {
     name: 'SearchAndSort',
     components: {
       ExportDropdown,
       SortingMenu,
+      StatsDropdown
     },
     data() {
       return {
       showDropdown: false,
+      showStatsDropdown: false,
       showSorting: false
     }
     },
     methods: {
     toggleMenu() {
       console.log('toggleMenu');
+    },
+    Statspopup() {
+      this.showStatsDropdown = !this.showStatsDropdown;
     }
-    // ...existing methods...
   }
-    // You can add methods to handle search and sorting here
   };
   </script>
   
