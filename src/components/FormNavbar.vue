@@ -1,6 +1,11 @@
 <template>
-    <div class="Navbar">
+    <div class="Navbar" style="z-index: 10;">
         <div class="Navbar-container">
+          <div class="logo-container">
+        <a href="https://saskpolytech.ca/" target="_blank">
+          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" class="logo" />
+        </a>
+        </div>
         <button class="hamburger" @click="Statspopup">
       <i class="fas fa-bars"></i>
     </button>
@@ -52,7 +57,6 @@
   </script>
   
   <style>
-
 .Navbar {
   position: fixed;
   top: 0;
@@ -62,28 +66,40 @@
   align-items: center;
   justify-content: center; /* Center the container */
   height: 60px;
+  z-index: 1000;
   background-image: url("@/assets/header.jpg");
 }
 
 .Navbar-container {
-  width: 90%; /* Reduce the width to create space on the sides */
+  width: calc(100% - 10mm); /* Reduce the width to create space on the sides */
   display: flex;
-  justify-content: space-between; /* Distribute the items equally */
+  align-items: center; 
+  justify-content:space-between; /* Distribute the items equally */
 }
-    .hamburger {
+
+.logo-container {
+  width: 50px; /* Set the width of the logo container */
+}
+
+.logo {
+  width: 100%; /* Ensure the logo fits the container */
+}
+
+.hamburger {
   position: relative;
   display: inline-block;
   cursor: pointer;
   transition: 0.5s;
-    border: none;
-    background-color: transparent;
+  border: none;
+  background-color: transparent;
+  margin-left: 0px; /* Adjust margin to move the hamburger closer to the logo */
 }
 
 .hamburger i {
   font-size: 35px;
 }
 .sorting {
-  margin-left: 10px;
+  margin-left: 5mm;
   cursor: pointer;
   border: none;
   background-color: transparent;
@@ -92,7 +108,8 @@
 }
 .search-bar {
   position: relative;
-  margin-left: 10px;
+  margin-left: 5mm;
+
 }
 
 .search-bar i {
@@ -134,6 +151,5 @@
 .more-options i {
   font-size: 35px;
 }
- 
   </style>
   

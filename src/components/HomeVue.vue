@@ -1,7 +1,20 @@
 <template>
   <PostingPopup v-if="showPopup" @close="showPopup = false" />
   
-  
+  <navbar />
+
+   <!-- Main banner -->
+   <div class="main-banner" style="z-index: 5; padding-bottom: 20px;">
+      <div class="image-carousel">
+        <!-- Implement your image carousel here -->
+        <img v-for="(image, index) in images" :key="index" :src="image.src" :alt="'Image ' + (index + 1)" :class="{ 'active': index === currentIndex }" />
+      </div>
+    </div>
+    
+
+    <hr class="separator-line">
+      
+
   <div class="home">
     <section class="banner">
     </section>
@@ -9,11 +22,6 @@
     <!-- Introduction Section -->
     <section class="introduction trapezoid introduction-bg">
       <div class="content">
-        <div class="logo">
-        <a href="https://saskpolytech.ca/" target="_blank">
-          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
-        </a>
-        </div>
         <div class="text">
           <h1>Introduction</h1>
           <h2>
@@ -112,23 +120,37 @@
 
 <script>
 import PostingPopup from '@/components/PostingPopup.vue'
-
+import navbar from '@/components/AdminView.vue'
 
 export default {
   name: 'HomeVue',
   components: {
-    PostingPopup
+    PostingPopup,
+    navbar,
   },
   data() {
     return {
       showText: true,
-      showPopup: false
+      showPopup: false,
+      images: [
+        { src: require('@/assets/banner1.png') },
+        { src: require('@/assets/banner2.png') },
+        { src: require('@/assets/banner3.png') }
+      ],
+      currentIndex: 0
     };
   },
   methods: {
-    
+   
+
+ startSlideshow() {
+      setInterval(() => {
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+      }, 3000); // Change image every 3 seconds
+    }
   },
   mounted() {
+    this.startSlideshow();
   },
 };
 </script>
@@ -140,14 +162,80 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-.logo {
-  padding-bottom: 50px;
+.introduction h1 {
+  font-size: 1.2rem; /* Adjusted font size for the heading */
 }
+
+.introduction h2 {
+  font-size: 0.8rem; /* Adjusted font size for the paragraph */
+}
+
 .home {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure the container takes at least the height of the viewport */
   margin-top: 50px;
+}
+
+/* Styles for Main Banner Section */
+/* Thin line to separate navbar from main banner */
+.separator-line {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 0;
+}
+
+/* Main banner styles */
+.main-banner {
+  /* Style as a rectangle */
+  height: 200px; /* Adjust height as needed */
+  background-color: #f0f0f0; /* Background color */
+  padding-top: 20px; /* Reduce padding top */
+}
+
+.image-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.image-carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.image-carousel img.active {
+  opacity: 1;
+}
+
+/* Slideshow styles */
+.slideshow {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slideshow img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.slideshow img.active {
+  opacity: 1;
 }
 
 /* Banner styles */
@@ -172,9 +260,10 @@ export default {
 
 /* Common styles for trapezoidal sections */
 .trapezoid {
+  background-color: white;
   position: relative;
   overflow: hidden;
-  margin: 2rem 0;
+  margin: 0 0 2rem; /* Adjusted margin to remove gap between sections */
 }
 
 .trapezoid:before {
@@ -207,16 +296,14 @@ export default {
 
 .introduction {
   transform: skewY(3deg); /* Skew the background */
-  background-color: lightgray;
-  margin: 0;
-  padding-top: 125px;
-  padding-bottom: 10px;
-  margin-top: -100px;
+  background-color: white;
+  padding: 0; /* Adjusted padding to remove the gap */
+  margin: 0; /* Remove margin */
   z-index: 1;
 }
 
 .introduction-bg { /* Background image for the introduction section */
-  background-image: url('@/assets/stock-image.png');
+  background-color: white;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -226,6 +313,8 @@ export default {
 .introduction .content {
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 20px;
   transform: skewY(-3deg); /* Counter-skew the content */
 }
 
@@ -281,7 +370,7 @@ export default {
 }
 
 .testimonials-section {
-  background-color: lightgray;
+  background-color: white;
   padding-top: 50px;
   padding-bottom: 50px;
   z-index: 2;
@@ -292,7 +381,7 @@ export default {
 .testimonials-section .content {
   display: flex;
   justify-content: center;
-  background-color: lightgray;
+  background-color: white;
   padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
