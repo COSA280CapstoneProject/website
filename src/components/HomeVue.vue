@@ -6,23 +6,20 @@
     <section class="banner">
     </section>
 
-    <!-- Introduction Section -->
+    <!-- Introduction Image Section -->
+    <section class="introduction trapezoid introduction-bg">
+      <div class="content">
+      </div>
+    </section>
+
+    <!-- Introduction Text Section -->
     <section class="introduction trapezoid">
       <div class="content">
-        <div class="logo">
-        <a href="https://saskpolytech.ca/" target="_blank">
-          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
-        </a>
-        </div>
-        <div class="text">
-          <h1>Introduction</h1>
-          <h2>
-            ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
-            The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
-          </h2>
-          <h2> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
-            The submit a post section, designed as an inclined trapeze, presents a sleek button inviting users to create postings, redirecting them to the relevant form page.
-          </h2>
+        <div class="inner-content">
+          <h2>Welcome to ICT Regina</h2>
+          <p>ICT Regina is a leading platform that connects employers with top-tier talent in the tech industry. Our innovative approach to recruitment leverages advanced algorithms to match employers with the right candidates, ensuring that businesses can access the best talent to drive success and growth.</p>
+          <p>Our platform is designed to simplify the hiring process, providing employers with a streamlined solution to connect with skilled professionals who align with their specific industry needs. By leveraging ICT Regina, employers can access a diverse range of qualified candidates and make data-driven decisions to build high-performing teams.</p>
+          <p>Discover the power of ICT Regina and elevate your recruitment strategy to unlock the potential of your business.</p>
         </div>
       </div>
     </section>
@@ -32,19 +29,21 @@
 
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
-    <div class="content">
-      <div class="inner-content">
-        <h2>Submit a Post</h2>
-        <button @click="showPopup = true">Create Posting</button>
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-        </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-        </p>
-        <p><em>We will be evaluating your posting</em></p>
+      <div class="content">
+        <div class="inner-content">
+          <h2>Submit a Post</h2>
+          <!-- Add your text blurb here -->
+          <p>Your posting will be viewed by many students!</p>
+          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          </p>
+          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+          </p>
+          <p><em>We will be evaluating your posting</em></p>
+          <button @click="showPopup = true">Create Posting</button>
+        </div>
       </div>
-    </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials Section -->
@@ -91,7 +90,7 @@
         </div>
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
-          <p>123 Main Street, Regina, SK S4P 3Y2</p>
+          <p><a href="https://maps.app.goo.gl/kQPc3ypHg8xk8xdW7" target="_blank" rel="noopener noreferrer">4500 Wascana Pkwy, Regina, SK S4S 5X1</a></p>
           <p>Email: <a href="mailto:info@ictregina.com">info@ictregina.com</a> | Phone: <a href="tel:1234567890">(123) 456-7890</a></p>
         </div>
         <div class="footer-social">
@@ -169,7 +168,6 @@ export default {
   font-size: 2rem;
 }
 
-
 /* Common styles for trapezoidal sections */
 .trapezoid {
   position: relative;
@@ -209,17 +207,28 @@ export default {
   transform: skewY(3deg); /* Skew the background */
   background-color: lightgray;
   margin: 0;
-  padding-top: 125px;
-  padding-bottom: 10px;
-  margin-top: -100px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-top: -51px;
   z-index: 1;
 }
+
+.introduction-bg { /* Background image for the introduction section */
+  background-image: url('@/assets/stock-image.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+  padding-bottom: 388px;
+} 
+
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
   transform: skewY(-3deg); /* Counter-skew the content */
+  font-size: large;
 }
 
 .submit-post {
@@ -266,6 +275,11 @@ export default {
 .subtitle {
   font-style: italic;
   margin: 0;
+}
+
+.text {
+  color: #000;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .testimonials-section {

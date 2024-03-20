@@ -273,61 +273,77 @@ export default {
         filesToUpload.push(fileName.value[index]);
       });
 
-      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
-          console.log(response);
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+      const postID = Math.floor(100000 + Math.random() * 900000);
+      const status = 'Open';
+      const dateAdded = new Date().toLocaleString('en-GB', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
 
-          const postID = Math.floor(100000 + Math.random() * 900000);
-          const status = 'Open';
-          const dateAdded = new Date().toLocaleString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-          });
+      const postData = {
+        orgName: orgName.value,
+        contactName: contactName.value,
+        phoneNum: phoneNum.value,
+        startDate: startDate.value,
+        postID: postID,
+        postTitle: postTitle.value,
+        postDesc: postDesc.value,
+        programType: programType.value,
+        postType: programType.value,
+        files: filesToUpload.join(','),
+        status: status,
+        email: email.value,
+        season: season.value,
+        dateAdded: dateAdded,
+        blobUrl: ''
+      };
 
-          const postData = {
-            orgName: orgName.value,
-            contactName: contactName.value,
-            phoneNum: phoneNum.value,
-            startDate: startDate.value,
-            postID: postID,
-            postTitle: postTitle.value,
-            postDesc: postDesc.value,
-            programType: programType.value,
-            postType: programType.value,
-            files: filesToUpload.join(','),
-            status: status,
-            email: email.value,
-            season: season.value,
-            dateAdded: dateAdded,
-          };
-
-          console.log(JSON.stringify(postData));
-
-          return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
+      const uploadFiles = () => {
+        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         })
-        .then(response => {
-          console.log(response);
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
-          clearForm();
+          .then(response => {
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            postData.blobUrl = response.data.match(urlRegex)[0]; // Update blobUrl with the URL from the response data
+          })
+          .catch(error => {
+            console.error(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+          });
+      };
+
+      const insertData = () => {
+        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         })
-        .catch(error => {
-          console.error(error);
-          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
-        });
+          .then(response => {
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+            clearForm();
+          })
+          .catch(error => {
+            console.error(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+          });
+      };
+
+      if (fileObjects.value.length > 0) {
+        uploadFiles().then(insertData);
+      } else {
+        insertData();
+      }
     };
 
     return {
