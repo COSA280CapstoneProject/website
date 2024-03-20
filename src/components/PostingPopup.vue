@@ -228,10 +228,15 @@ export default {
   const files = e.target.files || e.dataTransfer.files;
   if (!files.length) return;
 
+  if (fileObjects.value.length + files.length > 3) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'You can only upload a maximum of 3 files.', life: 3000 });
+    return;
+  }
+
   Array.from(files).forEach(file => {
     if (file.size > 15 * 1024 * 1024) {
       toast.add({ severity: 'error', summary: 'Error', detail: 'File size exceeds the maximum limit of 15MB.', life: 3000 });
-      return; 
+      return;
     }
 
     fileName.value.push(file.name);
@@ -241,7 +246,7 @@ export default {
       fileDataUrl.value.push(e.target.result);
     };
     reader.readAsDataURL(file);
-    fileObjects.value.push(file); 
+    fileObjects.value.push(file);
   });
 
   toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
@@ -273,77 +278,61 @@ export default {
         filesToUpload.push(fileName.value[index]);
       });
 
-      const postID = Math.floor(100000 + Math.random() * 900000);
-      const status = 'Open';
-      const dateAdded = new Date().toLocaleString('en-GB', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
+      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(response => {
+          console.log(response);
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
 
-      const postData = {
-        orgName: orgName.value,
-        contactName: contactName.value,
-        phoneNum: phoneNum.value,
-        startDate: startDate.value,
-        postID: postID,
-        postTitle: postTitle.value,
-        postDesc: postDesc.value,
-        programType: programType.value,
-        postType: programType.value,
-        files: filesToUpload.join(','),
-        status: status,
-        email: email.value,
-        season: season.value,
-        dateAdded: dateAdded,
-        blobUrl: ''
-      };
-
-      const uploadFiles = () => {
-        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-          .then(response => {
-            console.log(response);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
-
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            postData.blobUrl = response.data.match(urlRegex)[0]; // Update blobUrl with the URL from the response data
-          })
-          .catch(error => {
-            console.error(error);
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+          const postID = Math.floor(100000 + Math.random() * 900000);
+          const status = 'Open';
+          const dateAdded = new Date().toLocaleString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
           });
-      };
 
-      const insertData = () => {
-        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-          .then(response => {
-            console.log(response);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
-            clearForm();
-          })
-          .catch(error => {
-            console.error(error);
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+          const postData = {
+            orgName: orgName.value,
+            contactName: contactName.value,
+            phoneNum: phoneNum.value,
+            startDate: startDate.value,
+            postID: postID,
+            postTitle: postTitle.value,
+            postDesc: postDesc.value,
+            programType: programType.value,
+            postType: programType.value,
+            files: filesToUpload.join(','),
+            status: status,
+            email: email.value,
+            season: season.value,
+            dateAdded: dateAdded,
+          };
+
+          console.log(JSON.stringify(postData));
+
+          return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
           });
-      };
-
-      if (fileObjects.value.length > 0) {
-        uploadFiles().then(insertData);
-      } else {
-        insertData();
-      }
+        })
+        .then(response => {
+          console.log(response);
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+          clearForm();
+        })
+        .catch(error => {
+          console.error(error);
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+        });
     };
 
     return {
