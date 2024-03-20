@@ -228,12 +228,12 @@ export default {
   const files = e.target.files || e.dataTransfer.files;
   if (!files.length) return;
 
-  if (fileDataUrl.value.length + files.length > 3) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'You can only upload up to 3 files.', life: 3000 });
-    return;
-  }
-
   Array.from(files).forEach(file => {
+    if (file.size > 15 * 1024 * 1024) {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'File size exceeds the maximum limit of 15MB.', life: 3000 });
+      return; 
+    }
+
     fileName.value.push(file.name);
     fileSize.value.push(file.size);
     const reader = new FileReader();
@@ -603,7 +603,7 @@ export default {
   text-align: center;
   align-self: center;
   position: absolute;
-  padding-bottom: 15%; /* Adjust padding as needed */
+  padding-bottom: 15%; 
   top: 1%;
   left: 50%;
   transform: translateX(-50%);
@@ -614,7 +614,7 @@ export default {
   flex-direction: row;
   align-items: left;
   gap: 10px;
-  margin-top: 10px; /* Adjust margin to create space between files */
+  margin-top: 10px; 
 }
  
 .drag-drop-box:hover {
