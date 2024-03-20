@@ -1,36 +1,25 @@
 <template>
   <PostingPopup v-if="showPopup" @close="showPopup = false" />
   
-  <navbar />
-
-   <!-- Main banner -->
-   <div class="main-banner" style="z-index: 5; padding-bottom: 20px;">
-      <div class="image-carousel">
-        <!-- Implement your image carousel here -->
-        <img v-for="(image, index) in images" :key="index" :src="image.src" :alt="'Image ' + (index + 1)" :class="{ 'active': index === currentIndex }" />
-      </div>
-    </div>
-    
-
-    <hr class="separator-line">
-      
-
+  
   <div class="home">
     <section class="banner">
     </section>
 
-    <!-- Introduction Section -->
+    <!-- Introduction Image Section -->
     <section class="introduction trapezoid introduction-bg">
       <div class="content">
-        <div class="text">
-          <h1>Introduction</h1>
-          <h2>
-            ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
-            The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
-          </h2>
-          <h2> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
-            The submit a post section, designed as an inclined trapeze, presents a sleek button inviting users to create postings, redirecting them to the relevant form page.
-          </h2>
+      </div>
+    </section>
+
+    <!-- Introduction Text Section -->
+    <section class="introduction trapezoid">
+      <div class="content">
+        <div class="inner-content">
+          <h2>Welcome to ICT Regina</h2>
+          <p>ICT Regina is a leading platform that connects employers with top-tier talent in the tech industry. Our innovative approach to recruitment leverages advanced algorithms to match employers with the right candidates, ensuring that businesses can access the best talent to drive success and growth.</p>
+          <p>Our platform is designed to simplify the hiring process, providing employers with a streamlined solution to connect with skilled professionals who align with their specific industry needs. By leveraging ICT Regina, employers can access a diverse range of qualified candidates and make data-driven decisions to build high-performing teams.</p>
+          <p>Discover the power of ICT Regina and elevate your recruitment strategy to unlock the potential of your business.</p>
         </div>
       </div>
     </section>
@@ -40,19 +29,21 @@
 
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
-    <div class="content">
-      <div class="inner-content">
-        <h2>Submit a Post</h2>
-        <button @click="showPopup = true">Create Posting</button>
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-        </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-        </p>
-        <p><em>We will be evaluating your posting</em></p>
+      <div class="content">
+        <div class="inner-content">
+          <h2>Submit a Post</h2>
+          <!-- Add your text blurb here -->
+          <p>Your posting will be viewed by many students!</p>
+          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          </p>
+          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+          </p>
+          <p><em>We will be evaluating your posting</em></p>
+          <button @click="showPopup = true">Create Posting</button>
+        </div>
       </div>
-    </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials Section -->
@@ -120,37 +111,23 @@
 
 <script>
 import PostingPopup from '@/components/PostingPopup.vue'
-import navbar from '@/components/AdminView.vue'
+
 
 export default {
   name: 'HomeVue',
   components: {
-    PostingPopup,
-    navbar,
+    PostingPopup
   },
   data() {
     return {
       showText: true,
-      showPopup: false,
-      images: [
-        { src: require('@/assets/banner1.png') },
-        { src: require('@/assets/banner2.png') },
-        { src: require('@/assets/banner3.png') }
-      ],
-      currentIndex: 0
+      showPopup: false
     };
   },
   methods: {
-   
-
- startSlideshow() {
-      setInterval(() => {
-        this.currentIndex = (this.currentIndex + 1) % this.images.length;
-      }, 3000); // Change image every 3 seconds
-    }
+    
   },
   mounted() {
-    this.startSlideshow();
   },
 };
 </script>
@@ -162,80 +139,14 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-.introduction h1 {
-  font-size: 1.2rem; /* Adjusted font size for the heading */
+.logo {
+  padding-bottom: 50px;
 }
-
-.introduction h2 {
-  font-size: 0.8rem; /* Adjusted font size for the paragraph */
-}
-
 .home {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure the container takes at least the height of the viewport */
   margin-top: 50px;
-}
-
-/* Styles for Main Banner Section */
-/* Thin line to separate navbar from main banner */
-.separator-line {
-  border: none;
-  border-top: 1px solid #ccc;
-  margin: 0;
-}
-
-/* Main banner styles */
-.main-banner {
-  /* Style as a rectangle */
-  height: 200px; /* Adjust height as needed */
-  background-color: #f0f0f0; /* Background color */
-  padding-top: 20px; /* Reduce padding top */
-}
-
-.image-carousel {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.image-carousel img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-
-.image-carousel img.active {
-  opacity: 1;
-}
-
-/* Slideshow styles */
-.slideshow {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.slideshow img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
-
-.slideshow img.active {
-  opacity: 1;
 }
 
 /* Banner styles */
@@ -257,13 +168,11 @@ export default {
   font-size: 2rem;
 }
 
-
 /* Common styles for trapezoidal sections */
 .trapezoid {
-  background-color: white;
   position: relative;
   overflow: hidden;
-  margin: 0 0 2rem; /* Adjusted margin to remove gap between sections */
+  margin: 2rem 0;
 }
 
 .trapezoid:before {
@@ -296,26 +205,30 @@ export default {
 
 .introduction {
   transform: skewY(3deg); /* Skew the background */
-  background-color: white;
-  padding: 0; /* Adjusted padding to remove the gap */
-  margin: 0; /* Remove margin */
+  background-color: lightgray;
+  margin: 0;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-top: -51px;
   z-index: 1;
 }
 
 .introduction-bg { /* Background image for the introduction section */
-  background-color: white;
+  background-image: url('@/assets/stock-image.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-}
+  z-index: 1;
+  padding-bottom: 388px;
+} 
+
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
   transform: skewY(-3deg); /* Counter-skew the content */
+  font-size: large;
 }
 
 .submit-post {
@@ -370,7 +283,7 @@ export default {
 }
 
 .testimonials-section {
-  background-color: white;
+  background-color: lightgray;
   padding-top: 50px;
   padding-bottom: 50px;
   z-index: 2;
@@ -381,7 +294,7 @@ export default {
 .testimonials-section .content {
   display: flex;
   justify-content: center;
-  background-color: white;
+  background-color: lightgray;
   padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
