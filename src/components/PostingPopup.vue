@@ -225,20 +225,27 @@ export default {
     };
 
     const onFileChange = (e) => {
-      const files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        fileName.value.push(file.name);
-        fileSize.value.push(file.size);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          fileDataUrl.value.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-        fileObjects.value.push(file); 
-      });
-      toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
+  const files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+
+  if (fileDataUrl.value.length + files.length > 3) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'You can only upload up to 3 files.', life: 3000 });
+    return;
+  }
+
+  Array.from(files).forEach(file => {
+    fileName.value.push(file.name);
+    fileSize.value.push(file.size);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      fileDataUrl.value.push(e.target.result);
     };
+    reader.readAsDataURL(file);
+    fileObjects.value.push(file); 
+  });
+
+  toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
+};
 
     console.log('orgName:', orgName.value); 
 
@@ -567,13 +574,10 @@ export default {
   text-align: center;
 }
  
-.remove-instruction {
-  color: #732181;
-  font-size: 12px;
-  text-align: center;
-  align-self: center;
+.drag-drop-container {
+  position: relative; /* Ensure relative positioning for containing the box and files */
 }
- 
+
 .drag-drop-box {
   border: 2px dashed #732181;
   padding: 20px;
@@ -585,7 +589,32 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  height: 100px
+  min-height: 100px; /* Set a minimum height to prevent collapsing */
+  position: relative; /* Ensure relative positioning */
+}
+
+.drag-drop-box:hover {
+  color: #732181; 
+}
+
+.remove-instruction {
+  color: #732181;
+  font-size: 12px;
+  text-align: center;
+  align-self: center;
+  position: absolute;
+  padding-bottom: 15%; /* Adjust padding as needed */
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.file-info {
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10px;
+  margin-top: 10px; /* Adjust margin to create space between files */
 }
  
 .drag-drop-box:hover {
