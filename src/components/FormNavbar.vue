@@ -1,58 +1,55 @@
 <template>
-  <div class="Navbar">
-    <div class="Navbar-container">
-      <button class="hamburger" @click="Statspopup">
-        <i class="fas fa-bars"></i>
-      </button>
-      <button class="sorting" @click="showSorting = !showSorting">
+    <div class="Navbar">
+        <div class="Navbar-container">
+        <button class="hamburger" @click="Statspopup">
+      <i class="fas fa-bars"></i>
+    </button>
+    <button class="sorting" @click="showSorting = !showSorting">
         Sorting &#9660; <!-- This is a Unicode character for a down arrow -->
       </button>
-      <div class="search-bar">
-        <i class="fa fa-search"></i>
-        <input type="text" placeholder="Search..." />
-      </div>
-      <button class="four-square">
-        <i class="fa-solid fa-table-cells-large"></i>
-      </button>
-      <button class="more-options" @click="showDropdown = !showDropdown">
-        <i class="fas fa-ellipsis-v"></i>
-      </button>
-      <ExportDropdown :show="showDropdown" />
-      <SortingMenu v-if="showSorting" />
-      <StatsDropdown v-if="showStatsDropdown" /> <!-- Conditionally render StatsDropdown -->
+      
+    <div class="search-bar">
+      <i class="fa fa-search"></i>
+      <input type="text" placeholder="Search..." />
     </div>
-  </div>
-</template>
+    <button class="four-square">
+      <i class="fa-solid fa-table-cells-large"></i>
+    </button>
+    <button class="more-options" @click="showDropdown = !showDropdown">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+    <ExportDropdown :show="showDropdown" />
+    <SortingMenu v-if="showSorting" />
+    </div>
+    </div>
+    
+  </template>
   
-<script>
-import ExportDropdown from '@/components/ExportDropdown.vue'
-import SortingMenu from '@/components/SortingDropdown.vue'
-import StatsDropdown from '@/components/StatsDropdown.vue'
+  <script>
+  import ExportDropdown from '@/components/ExportDropdown.vue'
+  import SortingMenu from '@/components/SortingDropdown.vue'
 
-export default {
-  name: 'SearchAndSort',
-  components: {
-    ExportDropdown,
-    SortingMenu,
-    StatsDropdown
-  },
-  data() {
-    return {
+  export default {
+    name: 'SearchAndSort',
+    components: {
+      ExportDropdown,
+      SortingMenu,
+    },
+    data() {
+      return {
       showDropdown: false,
-      showStatsDropdown: false,
       showSorting: false
     }
-  },
-  methods: {
+    },
+    methods: {
     toggleMenu() {
       console.log('toggleMenu');
-    },
-    Statspopup() {
-      this.showStatsDropdown = !this.showStatsDropdown;
-    },
-  },
-};
-</script>
+    }
+    // ...existing methods...
+  }
+    // You can add methods to handle search and sorting here
+  };
+  </script>
   
   <style>
 
