@@ -99,7 +99,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 import { ref, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
@@ -228,11 +228,6 @@ export default {
   const files = e.target.files || e.dataTransfer.files;
   if (!files.length) return;
 
-  if (fileObjects.value.length + files.length > 3) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'You can only upload a maximum of 3 files.', life: 3000 });
-    return;
-  }
-
   Array.from(files).forEach(file => {
     if (file.size > 15 * 1024 * 1024) {
       toast.add({ severity: 'error', summary: 'Error', detail: 'File size exceeds the maximum limit of 15MB.', life: 3000 });
@@ -278,15 +273,6 @@ export default {
         filesToUpload.push(fileName.value[index]);
       });
 
-      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
-          console.log(response);
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
-
           const postID = Math.floor(100000 + Math.random() * 900000);
           const status = 'Open';
           const dateAdded = new Date().toLocaleString('en-GB', {
@@ -314,16 +300,34 @@ export default {
             email: email.value,
             season: season.value,
             dateAdded: dateAdded,
-          };
+            blobUrl: ''
+    };
 
-          console.log(JSON.stringify(postData));
+    const uploadFiles = () => {
+      return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(response => {
+          console.log(response);
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
 
+          const urlRegex = /(https?:\/\/[^\s]+)/g;
+          postData.blobUrl = response.data.match(urlRegex)[0]; // Update blobUrl with the URL from the response data
+        })
+        .catch(error => {
+          console.error(error);
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+        });
+    };
+
+    const insertData = () => {
           return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
             headers: {
               'Content-Type': 'application/json'
             }
-          });
-        })
+                    })
         .then(response => {
           console.log(response);
           toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
@@ -333,6 +337,13 @@ export default {
           console.error(error);
           toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
         });
+};
+
+    if (fileObjects.value.length > 0) {
+      uploadFiles().then(insertData);
+    } else {
+      insertData();
+    }
     };
 
     return {
@@ -438,7 +449,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 25px;
+  gap: 13%;
   width: 45%;
 }
  
@@ -682,6 +693,100 @@ export default {
   border-bottom: 1px solid red;
   border-right: 1px solid red;
 }
+
+@media only screen and (max-width: 600px) {
+  .Postings {
+    width: 100vw; /* Make popup width equal to viewport width */
+    height: 100vh; /* Make popup height equal to viewport height */
+    padding: 20px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Include padding in the total width and height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .org-contact-container,
+  .contact-info-container {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 5px; /* Adjust spacing between containers */
+  }
+
+  .orgName,
+  .contactName,
+  .email,
+  .phoneNumber {
+    width: 100%;
+  }
+
+  .orgName label,
+  .contactName label,
+  .email label,
+  .phoneNumber label {
+    margin-right: 0;
+    text-align: left;
+    width: 50%;
+    font-size: 14px;
+    margin-bottom: 5px; /* Add margin-bottom for spacing */
+  }
+
+  .email {
+  display: flex;
+  flex-direction: row; /* Ensure inline display for label and input */
+  align-items: center; /* Align items vertically */
+  justify-content: space-between; /* Align items with space between */
+  width: 100%;
+}
+
+.email input {
+  width: 100%; /* Adjust width as needed */
+  font-size: 14px;
+  margin-top: -5px; /* Adjust the margin-top to align input box with label */
+  margin-left: -45%;
+}
+
+  .posting,
+  .startDate,
+  .Title,
+  .Description {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px; /* Adjust spacing between sections */
+  }
+
+  .Title input,
+  .Description textarea {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .select-container {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .submit button {
+    padding: 12px 24px;
+  }
+
+  .close-button {
+    top: 5px;
+    right: 5px;
+    font-size: 16px;
+  }
+
+  .remove-instruction {
+    padding-bottom: 10%;
+  }
+}
+
+
+
+
 
 
 </style>
