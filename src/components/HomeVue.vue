@@ -56,29 +56,20 @@
       </div>
       <div class="content testimonials-container">
         <!-- Written Testimonials -->
-        <div class="testimonials">
+        <div class="carousel-container">
+    <div class="carousel-slide" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+      <div class="carousel-item" v-for="(testimonial, index) in testimonials" :key="index">
+        <h4>{{ testimonial.name }}</h4>
+        <h5 class="subtitle">{{ testimonial.subtitle }}</h5>
+        <p>{{ testimonial.review }}</p>
+      </div>
+    </div>
+    <div class="controls">
+      <button @click="prev">Prev</button>
+      <button @click="next">Next</button>
+    </div>
+  </div>
 
-          <div class="employerReview">
-            <h4>Audrey K:</h4>
-            <h5 class="subtitle">CST Student</h5>
-          </div>
-
-          <p>
-            "Working with ICT has been a transformative experience for our HR team.
-            The platform's extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company's culture and values.
-            The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."
-          </p>
-
-          <div class="employerReview">
-            <h4>Spencer Nikkel:</h4>
-            <h5 class="subtitle">Client</h5>
-          </div>
-          <p>
-            "Choosing ICT for our hiring needs was a strategic move that paid off immensely.
-            The platform's innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals.
-            ICT has become an indispensable ally in our quest for building a high-performing team."
-          </p>
-        </div>
       </div>
     </section>
 
@@ -110,8 +101,8 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import PostingPopup from '@/components/PostingPopup.vue'
-
 
 export default {
   name: 'HomeVue',
@@ -124,6 +115,32 @@ export default {
       showPopup: false
     };
   },
+  setup() {
+    const testimonials = [
+      {
+        name: 'Audrey K:',
+        subtitle: 'CST Student',
+        review: 'Working with ICT has been a transformative experience for our HR team. The platform\'s extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company\'s culture and values. The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes.'
+      },
+      {
+        name: 'Spencer Nikkel:',
+        subtitle: 'Client',
+        review: 'Choosing ICT for our hiring needs was a strategic move that paid off immensely. The platform\'s innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals. ICT has become an indispensable ally in our quest for building a high-performing team.'
+      }
+    ];
+
+    const currentIndex = ref(0);
+
+    const next = () => {
+      currentIndex.value = (currentIndex.value + 1) % testimonials.length;
+    };
+
+    const prev = () => {
+      currentIndex.value = (currentIndex.value - 1 + testimonials.length) % testimonials.length;
+    };
+
+    return { testimonials, currentIndex, next, prev };
+  },
   methods: {
     
   },
@@ -131,6 +148,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .home {
@@ -205,7 +223,7 @@ export default {
 
 .introduction {
   transform: skewY(3deg); /* Skew the background */
-  background-color: lightgray;
+  background-color: rgb(255, 255, 255);
   margin: 0;
   padding-top: 50px;
   padding-bottom: 50px;
@@ -229,16 +247,19 @@ export default {
   align-items: center;
   transform: skewY(-3deg); /* Counter-skew the content */
   font-size: large;
+  width: 75%;
+  margin: 0 auto;
 }
 
 .submit-post {
-  background-color: #8D68AB;
+  background-color: #763c97;
+  color: #fff;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
   padding-top: 150px;
-  padding-left: 400px;
-  padding-right: 400px;
+  padding-left: 20%;
+  padding-right: 20%;
   padding-bottom: 150px;
   z-index: 0;
 }
@@ -247,6 +268,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 
@@ -256,13 +278,6 @@ export default {
   margin-right: 1rem;
 }
 
-.submit-post button {
-  background-color: #3498db;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
 
 .employerReview {
   text-align: center;
@@ -283,7 +298,7 @@ export default {
 }
 
 .testimonials-section {
-  background-color: lightgray;
+  background-color: rgb(255, 255, 255);
   padding-top: 50px;
   padding-bottom: 50px;
   z-index: 2;
@@ -294,7 +309,7 @@ export default {
 .testimonials-section .content {
   display: flex;
   justify-content: center;
-  background-color: lightgray;
+  background-color: rgb(255, 255, 255);
   padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
@@ -352,5 +367,75 @@ footer {
 .footer-social img {
   width: 30px;
   margin-right: 10px;
+}
+.footer, a{
+  color: #fff;
+  text-decoration: none;
+}
+
+.carousel-container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+}
+
+.carousel-slide {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+  min-width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+.controls button  {
+  background-color: #c56eff;
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 5px;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+.controls button:hover .submit-post button:hover  {
+  background-color: #a51eff;
+  color: rgb(255, 255, 255);
+}
+
+.submit-post button{
+  background-color: #c56eff;
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 5px;
+  margin: 0 auto;
 }
 </style>
