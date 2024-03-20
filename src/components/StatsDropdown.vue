@@ -72,6 +72,25 @@ export default {
       }
     },
   },
+  created() {
+    fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(posting => {
+          if (posting.Status === 'Open') {
+            this.openCount++;
+            if (posting.PostType === 'Job Placement') this.jobPlacementOpenCount++;
+            if (posting.PostType === 'Internships') this.internshipsOpenCount++;
+            if (posting.PostType === 'Student Projects') this.studentProjectsOpenCount++;
+          } else if (posting.Status === 'Closed') {
+            this.totalFilledCount++;
+            if (posting.PostType === 'Job Placement') this.jobPlacementFilledCount++;
+            if (posting.PostType === 'Internships') this.internshipsFilledCount++;
+            if (posting.PostType === 'Student Projects') this.studentProjectsFilledCount++;
+          }
+        });
+      });
+  },
 };
 </script>
 
