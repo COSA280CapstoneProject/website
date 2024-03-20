@@ -6,20 +6,20 @@
     <section class="banner">
     </section>
 
-    <!-- Introduction Section -->
+    <!-- Introduction Image Section -->
+    <section class="introduction trapezoid introduction-bg">
+      <div class="content">
+      </div>
+    </section>
+
+    <!-- Introduction Text Section -->
     <section class="introduction trapezoid">
       <div class="content">
-        <div class="logo">
-          <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Introduction Image" style="width: 65%;" />
-        </div>
-        <div class="text">
-          <p>
-            ICT Regina is a dynamic and innovative platform dedicated to connecting companies with top-tier resources across diverse industries.
-            The revamped homepage showcases a visually striking design with three distinct trapezoidal sections, each contributing to an engaging and seamless user experience.
-          </p>
-          <p> The introduction section, styled as a trapeze, features an image on the left and a comprehensive text on the right, providing users with an overview of ICT's mission and history.
-            The submit a post section, designed as an inclined trapeze, presents a sleek button inviting users to create postings, redirecting them to the relevant form page.
-          </p>
+        <div class="inner-content">
+          <h2>Welcome to ICT Regina</h2>
+          <p>ICT Regina is a leading platform that connects employers with top-tier talent in the tech industry. Our innovative approach to recruitment leverages advanced algorithms to match employers with the right candidates, ensuring that businesses can access the best talent to drive success and growth.</p>
+          <p>Our platform is designed to simplify the hiring process, providing employers with a streamlined solution to connect with skilled professionals who align with their specific industry needs. By leveraging ICT Regina, employers can access a diverse range of qualified candidates and make data-driven decisions to build high-performing teams.</p>
+          <p>Discover the power of ICT Regina and elevate your recruitment strategy to unlock the potential of your business.</p>
         </div>
       </div>
     </section>
@@ -31,24 +31,29 @@
     <section class="submit-post trapezoid">
       <div class="content">
         <div class="inner-content">
-        <h2>Submit a Post</h2>
-        <button @click="showPopup = true">Create Posting</button>
-        
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-        </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-        </p>
-      </div>
+          <h2>Submit a Post</h2>
+          <!-- Add your text blurb here -->
+          <p>Your posting will be viewed by many students!</p>
+          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          </p>
+          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+          </p>
+          <p><em>We will be evaluating your posting</em></p>
+          <button @click="showPopup = true">Create Posting</button>
         </div>
+      </div>
     </section>
 
-    <!-- Line Between Submit a Post and Testimonials/Video Section -->
+    <!-- Line Between Submit a Post and Testimonials Section -->
     <div class="line line-2"></div>
 
-    <!-- Testimonials and Video Section -->
-    <section class="testimonials-video trapezoid">
+    <!-- Testimonials Section -->
+    <section class="testimonials-section trapezoid">
+      <div class="testimonials-header-text">
+        <h2>What people are saying</h2>
+      </div>
       <div class="content testimonials-container">
         <!-- Written Testimonials -->
         <div class="testimonials">
@@ -61,7 +66,8 @@
           <p>
             "Working with ICT has been a transformative experience for our HR team.
             The platform's extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company's culture and values.
-            The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."</p>
+            The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."
+          </p>
 
           <div class="employerReview">
             <h4>Spencer Nikkel:</h4>
@@ -70,17 +76,8 @@
           <p>
             "Choosing ICT for our hiring needs was a strategic move that paid off immensely.
             The platform's innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals.
-            ICT has become an indispensable ally in our quest for building a high-performing team."</p>
-          <!-- Add more testimonials as needed -->
-        </div>
-
-        <!-- Video Advertisement -->
-        <div class="video-ad">
-          <h2>What Employers Have To Say About ICT</h2>
-          <video controls>
-            <source src="path-to-your-video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
+            ICT has become an indispensable ally in our quest for building a high-performing team."
+          </p>
         </div>
       </div>
     </section>
@@ -93,19 +90,19 @@
         </div>
         <div class="footer-info">
           <p>&copy; 2024 ICT Regina. All rights reserved.</p>
-          <p>123 Main Street, Regina, SK S4P 3Y2</p>
-          <p>Email: info@ictregina.com | Phone: (123) 456-7890</p>
+          <p><a href="https://maps.app.goo.gl/kQPc3ypHg8xk8xdW7" target="_blank" rel="noopener noreferrer">4500 Wascana Pkwy, Regina, SK S4S 5X1</a></p>
+          <p>Email: <a href="mailto:info@ictregina.com">info@ictregina.com</a> | Phone: <a href="tel:1234567890">(123) 456-7890</a></p>
         </div>
         <div class="footer-social">
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="Facebook Icon" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="Twitter Icon" />
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
-            <img src="@/assets/logo.png" alt="LinkedIn Icon" />
-          </a>
+        <a href="https://www.facebook.com/saskpolytech/" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/facebook.png" alt="Facebook Icon" />
+        </a>
+        <a href="https://x.com/SaskPolytech" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/x.png" alt="Twitter (X) Icon" />
+        </a>
+        <a href="https://www.linkedin.com/school/saskpolytech" target="_blank" rel="noopener noreferrer">
+          <img src="@/assets/linkedin.png" alt="LinkedIn Icon" />
+        </a>
         </div>
       </div>
     </footer>
@@ -159,7 +156,7 @@ export default {
 }
 
 .banner img {
-  width: 100%; /* Adjust as needed */
+  width: 100%;
   max-height: 200px
 }
 
@@ -168,9 +165,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2rem; /* Adjust as needed */
+  font-size: 2rem;
 }
-
 
 /* Common styles for trapezoidal sections */
 .trapezoid {
@@ -182,9 +178,9 @@ export default {
 .trapezoid:before {
   content: '';
   position: absolute;
-  top: -40px; /* adjust as needed */
+  top: -40px;
   left: 20%;
-  width: 60%; /* adjust as needed */
+  width: 60%;
   height: 0;
   border-bottom: 40px solid transparent; /* Transparent border */
   border-left: 10px solid transparent;
@@ -195,9 +191,9 @@ export default {
 .trapezoid:after {
   content: '';
   position: absolute;
-  bottom: -40px; /* adjust as needed */
+  bottom: -40px;
   left: 10%;
-  width: 70%; /* adjust as needed */
+  width: 70%;
   height: 0;
   border-top: 40px solid transparent; /* Transparent border */
   border-left: 20px solid transparent;
@@ -211,17 +207,28 @@ export default {
   transform: skewY(3deg); /* Skew the background */
   background-color: lightgray;
   margin: 0;
-  padding-top: 125px;
-  padding-bottom: 10px;
-  margin-top: -100px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-top: -51px;
   z-index: 1;
 }
+
+.introduction-bg { /* Background image for the introduction section */
+  background-image: url('@/assets/stock-image.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+  padding-bottom: 388px;
+} 
+
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
   transform: skewY(-3deg); /* Counter-skew the content */
+  font-size: large;
 }
 
 .submit-post {
@@ -258,7 +265,7 @@ export default {
 }
 
 .employerReview {
-  text-align: left;
+  text-align: center;
 }
 
 .employerReview p {
@@ -270,7 +277,12 @@ export default {
   margin: 0;
 }
 
-.testimonials-video {
+.text {
+  color: #000;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+}
+
+.testimonials-section {
   background-color: lightgray;
   padding-top: 50px;
   padding-bottom: 50px;
@@ -279,12 +291,21 @@ export default {
   margin-bottom: -50px;
 }
 
-.testimonials-video .content {
+.testimonials-section .content {
   display: flex;
+  justify-content: center;
   background-color: lightgray;
-  padding-top: 50px;
+  padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
+  transform: skewY(3deg); /* Counter-skew the content */
+  z-index: 2;
+}
+
+.testimonials-header-text {
+  display: flex;
+  justify-content: center;
+  padding-left: 50px;
   transform: skewY(3deg); /* Counter-skew the content */
   z-index: 2;
 }
@@ -298,7 +319,7 @@ export default {
 }
 
 .video-ad {
-  margin-left: 2rem; /* Adjust as needed for spacing */
+  margin-left: 2rem;
 }
 
 .video-ad h2 {
@@ -325,7 +346,7 @@ footer {
 }
 
 .footer-info {
-  max-width: 300px;
+  width: 80%;
 }
 
 .footer-social img {

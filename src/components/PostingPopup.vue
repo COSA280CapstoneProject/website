@@ -2,122 +2,119 @@
   <div class="background" @click="goBack">
     <div v-if="isPopupActive" class="overlay"></div>
     <div v-bind:class="{ 'Postings': isPopupActive }">
-      <div class="Postings" @click.stop> 
-  <div class="Postings">
-    <Toast v-model="toast" position="top-right" />
-    <h1>Create Posting</h1>
-    <div class="input-group">
-      <div class="org-contact-container">
-        <div class="orgName">
-          <label for="orgName">Organization Name </label>
-          <input type="text" id="orgName" name="orgName" v-model="orgName">
-        </div>
-        <div class="contactName">
-          <label for="contactName">Contact Name </label>
-          <input type="text" id="contactName" name="contactName" v-model="contactName">
-        </div>
-      </div>
-      <div class="contact-info-container">
-        <div class="email">
-          <label for="email">Email </label>
-          <input type="text" id="email" name="email" v-model="email">
-        </div>
-        <div class="phoneNumber">
-          <label for="phoneNumber">Phone Number </label>
-          <input type="text" id="phoneNum" name="phoneNum" v-model="phoneNum">
-        </div>
-      </div>
-      <div class="posting type">
-        <div>
-          <label for="postingType">Type of Posting </label>
-          <select id="postingType" name="postingType" v-model="programType">
-            <option value="Student Projects">Student Projects</option>
-            <option value="Internships">Internships</option>
-            <option value="Job Placements">Job Placements</option>
-          </select>
-        </div>
-      </div>
-      <div class="startDate">
-        <div class="start-date-container">
-          <label for="startDate">Start Date </label>
-          <div class="date-inputs">
-            <select id="Year" name="Year" v-model="startDate">
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-              <option value="2030">2030</option>
-            </select>
-            <select id="Season" name="Season" v-model="season">
-              <option value="Fall">Fall</option>
-              <option value="Winter">Winter</option>
-              <option value="Spring">Spring</option>
-              <option value="Summer">Summer</option>
-            </select>
+      <div class="Postings" @click.stop>
+        <div class="Postings">
+          <Toast v-model="toast" position="top-right" />
+          <h1>Create Posting</h1>
+          <div class="input-group">
+            <div class="org-contact-container">
+              <div class="orgName">
+                <label for="orgName">Organization Name </label>
+                <input type="text" v-model="orgName" :class="{ error: submitted && !orgName.trim() }" />
+              </div>
+              <div class="contactName">
+                <label for="contactName">Contact Name </label>
+                <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" />
+              </div>
+            </div>
+            <div class="contact-info-container">
+              <div class="contact-info-container">
+                <div class="email">
+                  <label for="email">Email </label>
+                  <div>
+                    <input type="text" v-model="email" @input="validateEmail" :class="{ error: submitted && (!emailIsValid || !email) }" />
+                    <span v-if="submitted && (!emailIsValid || (!email && !emailIsValid)) " class="error-message">Please enter a valid email address.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="phoneNumber">
+                <label for="phoneNumber">Phone Number </label>
+                <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
+                  :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
+              </div>
+            </div>
+            <div class="posting">
+              <label>Type of</label>
+              <div class="posting-label">
+                <label for="postingType">Posting</label>
+              </div>
+              <div class="select-container">
+                <select id="postingType" name="postingType" v-model="programType"
+                  :class="{ error: submitted && !programType }">
+                  <option value="Student Projects">Student Project</option>
+                  <option value="Internships">Internship</option>
+                  <option value="Job Placements">Job Placement</option>
+                </select>
+              </div>
+            </div>
+            <div class="startDate">
+              <div class="start-date-container">
+                <label for="startDate">Start Date </label>
+                <div class="date-inputs">
+                  <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
+                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                  </select>
+                  <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
+                    <option value="Fall">Fall</option>
+                    <option value="Winter">Winter</option>
+                    <option value="Spring">Spring</option>
+                    <option value="Summer">Summer</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="Title">
+              <label for="Title">Title </label>
+              <input type="text" id="Title" name="Title" v-model="postTitle"
+                :class="{ error: submitted && !postTitle }" />
+            </div>
+            <div class="Description">
+              <label for="Description">Description </label>
+              <textarea id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }"></textarea>
+            </div>
+            <div class="FileUpload">
+              <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop"
+                @click="$refs.fileUpload.click()">
+                <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
+                <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
+                <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
+                  <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]"
+                    @click="removeFile(index, $event)" />
+                  <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
+                </div>
+              </div>
+              <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange"
+                style="display: none" multiple :class="{ error: submitted && !fileDataUrl.length }" />
+              <!-- eslint-disable-next-line -->
+            </div>
+            <div class="submit">
+              <button @click="submitForm">Submit</button>
+            </div>
+            <div class="close-button">
+              <button class="close-button" @click="goBack">X</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="Title">
-        <label for="Title">Title </label>
-        <input type="text" id="Title" name="Title" v-model="postTitle">
-      </div>
-      <div class="Description">
-        <label for="Description">Description </label>
-        <input type="text" id="Description" name="Description" v-model="postDesc">
-      </div>
-      <div class="FileUpload">
-        <div class="drag-drop-box" @dragover.prevent="onDragOver" @drop.prevent="onDrop" @click="$refs.fileUpload.click()">
-          <p class="remove-instruction" v-if="fileDataUrl.length">Tap on the icon to remove file from box</p>
-          <div class="center-text" v-if="!fileDataUrl.length">Drag & Drop Image Here or Choose</div>
-          <div class="file-info" v-for="(url, index) in fileDataUrl" :key="index">
-            <img :src="getPreviewImage(index)" class="preview-image" :title="fileName[index]" @click="removeFile(index, $event)" />
-            <p>{{ fileName[index] }} ({{ getFileSize(index) }})</p>
-          </div>
-        </div>
-        <input type="file" id="fileUpload" name="fileUpload" ref="fileUpload" @change="onFileChange" style="display: none" multiple>
-      </div>
-      <div class="submit">
-        <button @click="submitForm">Submit</button>
-      </div>
-      <div class="close-button">
-        <button class="close-button" @click="goBack">X</button>
       </div>
     </div>
   </div>
-  </div>
-</div>
-</div>
 </template>
  
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import Toast from 'primevue/toast';
 
 export default {
-    data() {
+  components: {
+    Toast 
+  },
+  data() {
     return {
-      isPopupActive: false,
+      isPopupActive: false
     };
   },
-  methods: {
-    openPopup() {
-      this.isPopupActive = true;
-    },
-    closePopup() {
-      this.isPopupActive = false;
-    },
-  },
-  components: {
-      Toast
-    },
   setup(props, { emit }) {
     const toast = useToast();
     const fileName = ref([]);
@@ -138,6 +135,33 @@ export default {
     const email = ref('');
     const season = ref('');
     const dateAdded = ref('');
+    const submitted = ref(false);
+    const emailIsValid = ref(true);
+    const years = ref([]);
+
+     const isValidEmail = (emailValue) => {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(emailValue);
+    };
+
+    const generateYears = () => {
+      const currentYear = new Date().getFullYear();
+      for (let i = 0; i < 4; i++) {
+        years.value.push(currentYear + i);
+      }
+    };
+
+    generateYears();
+
+    const validateEmail = () => {
+  console.log('Email:', email.value);
+  if (!email.value) {
+    emailIsValid.value = false;
+  } else {
+    emailIsValid.value = isValidEmail(email.value);
+  }
+  console.log('Email is valid:', emailIsValid.value);
+};
 
     const goBack = () => {
       emit('close');
@@ -152,15 +176,21 @@ export default {
       onFileChange(e);
     };
 
+    const formattedPhoneNumber = computed(() => {
+      return phoneNum.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    });
+    const updatePhoneNumber = (event) => {
+      phoneNum.value = event.target.value.replace(/\D/g, '');
+    };
+
     const getPreviewImage = (index) => {
       if (fileDataUrl.value[index].startsWith('data:image')) {
         return fileDataUrl.value[index];
       } else {
-        return require('@/assets/file.png'); 
+        return require('@/assets/file.png');
       }
     };
 
-    // Clear the form when the user submits the form
     const clearForm = () => {
       orgName.value = '';
       contactName.value = '';
@@ -187,11 +217,11 @@ export default {
       fileDataUrl.value.splice(index, 1);
       fileName.value.splice(index, 1);
       fileSize.value.splice(index, 1);
-      toast.add({severity:'warn', summary: 'File Removed', detail:'Your file has been removed.', life: 3000});
+      toast.add({ severity: 'warn', summary: 'File Removed', detail: 'Your file has been removed.', life: 3000 });
     };
 
     const getFileSize = (index) => {
-      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; // Convert bytes to MB
+      return (fileSize.value[index] / 1024 / 1024).toFixed(2) + ' MB'; 
     };
 
     const onFileChange = (e) => {
@@ -205,130 +235,151 @@ export default {
           fileDataUrl.value.push(e.target.result);
         };
         reader.readAsDataURL(file);
-        fileObjects.value.push(file); // Store the File object
+        fileObjects.value.push(file); 
       });
       toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
     };
 
-    console.log('orgName:', orgName.value); // Log the value of orgName to the console
+    console.log('orgName:', orgName.value); 
 
     const submitForm = () => {
-      if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.', life: 3000 });
-      } else {
-        const formData = new FormData();
-        let files = []; // Create an array to store file names
-        fileObjects.value.forEach((file, index) => {
-          formData.append('file', file, fileName.value[index]); // Append the File object
-          files.push(fileName.value[index]); // Add the file name to the array
-        });
+      submitted.value = true;
 
-        axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+      if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please make sure the field is filled out correctly.', life: 3000 });
+        return;
+      }
+
+      if (!isValidEmail(email.value)) {
+        emailIsValid.value = false;
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a valid email address.', life: 3000 });
+        return;
+      } else {
+        emailIsValid.value = true;
+      }
+
+      const formData = new FormData();
+      const filesToUpload = [];
+
+      fileObjects.value.forEach((file, index) => {
+        formData.append('file', file, fileName.value[index]);
+        filesToUpload.push(fileName.value[index]);
+      });
+
+      const postID = Math.floor(100000 + Math.random() * 900000);
+      const status = 'Open';
+      const dateAdded = new Date().toLocaleString('en-GB', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+
+      const postData = {
+        orgName: orgName.value,
+        contactName: contactName.value,
+        phoneNum: phoneNum.value,
+        startDate: startDate.value,
+        postID: postID,
+        postTitle: postTitle.value,
+        postDesc: postDesc.value,
+        programType: programType.value,
+        postType: programType.value,
+        files: filesToUpload.join(','),
+        status: status,
+        email: email.value,
+        season: season.value,
+        dateAdded: dateAdded,
+        blobUrl: ''
+      };
+
+      const uploadFiles = () => {
+        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
           .then(response => {
-            // Handle success
             console.log(response);
             toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
 
-            // Generate a random 6 digit number for the PostID
-            const postID = Math.floor(100000 + Math.random() * 900000);
-
-            // Automatically set the status to "Open" when the form is submitted
-            const status = 'Open';
-
-            // Log the value of orgName
-            console.log('orgName:', orgName.value);
-
-            // Get the current date and time
-            const dateAdded = new Date().toLocaleString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-          });
-
-            // Send another POST request to the Azure Function URL
-            const postData = {
-              orgName: orgName.value,
-              contactName: contactName.value,
-              phoneNum: phoneNum.value,
-              startDate: startDate.value,
-              postID: postID,
-              postTitle: postTitle.value,
-              postDesc: postDesc.value,
-              programType: programType.value,
-              postType: programType.value,
-              files: files.join(','), // Send the file names as a comma-separated string
-              status: status,
-              email: email.value,
-              season: season.value,
-              dateAdded: dateAdded,
-            };
-
-            // Print the POST data to the console
-            console.log(JSON.stringify(postData));
-
-            return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-          })
-          .then(response => {
-            // Handle success of the second POST request
-            console.log(response);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
-            clearForm(); // Clear the form
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            postData.blobUrl = response.data.match(urlRegex)[0]; // Update blobUrl with the URL from the response data
           })
           .catch(error => {
-            // Handle error
-            console.log(error);
+            console.error(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+          });
+      };
+
+      const insertData = () => {
+        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => {
+            console.log(response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+            clearForm();
+          })
+          .catch(error => {
+            console.error(error);
             toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
           });
+      };
+
+      if (fileObjects.value.length > 0) {
+        uploadFiles().then(insertData);
+      } else {
+        insertData();
       }
     };
 
     return {
-      fileName,
-      fileDataUrl,
-      fileSize,
-      fileObjects,
-      goBack,
-      onDragOver,
-      onDrop,
-      onFileChange,
-      getPreviewImage,
-      removeFile,
-      getFileSize,
-      submitForm,
-      orgName,
-      contactName,
-      phoneNum,
-      startDate,
-      postID,
-      postTitle,
-      postDesc,
-      programType,
-      postType,
-      files,
-      status,
-      email,
-      season,
-      dateAdded,
-      toast
+    fileName,
+    fileDataUrl,
+    fileSize,
+    fileObjects,
+    goBack,
+    onDragOver,
+    onDrop,
+    onFileChange,
+    getPreviewImage,
+    removeFile,
+    getFileSize,
+    submitForm,
+    orgName,
+    contactName,
+    phoneNum,
+    startDate,
+    postID,
+    postTitle,
+    postDesc,
+    programType,
+    postType,
+    files,
+    status,
+    email,
+    season,
+    dateAdded,
+    formattedPhoneNumber,
+    updatePhoneNumber,
+    isValidEmail,
+    validateEmail,
+    toast,
+    submitted,
+    years,
+    emailIsValid
     };
-  
-    }
   }
-
-
+};
 </script>
+
+
  
 <style scoped>
 .overlay {
@@ -340,7 +391,7 @@ export default {
   background: rgba(0, 0, 0, 0.5);
   z-index: 10000;
 }
-
+ 
 .Postings {
   z-index: 10001;
   border: 1px solid black;
@@ -350,135 +401,238 @@ export default {
   top: 50%; 
   left: 50%; 
   transform: translate(-50%, -50%);
-  width: 100%; /* Set the width of the form */
-  max-width: 800px; /* Set the maximum width of the form */
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+ 
 .org-contact-container, .contact-info-container {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 20px; 
   padding-bottom: 20px;
 }
-.orgName {
-  margin-left: -5px;
-  transform: translateX(10px);
+ 
+.orgName, .contactName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 45%;
 }
+
 .email {
-  transform: translateX(px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between; 
+  margin-bottom: -10px;
+  width: 45.6%;
+}
+
+.email div {
+  display: flex;
+  flex-direction: column;
+}
+ 
+.phoneNumber {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 25px;
+  width: 45%;
+}
+ 
+.orgName label, .contactName label, .email label, .phoneNumber label {
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.orgName label {
+  text-align: left;
+}
+
+.contactName label, .phoneNumber label{
+  text-align: left;
+}
+
+.orgName input, .contactName input, .email input, .phoneNumber input {
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
+}
+
+.Description textarea {
+  resize: none; 
 }
 .email input {
-  margin-left: 95px;
-  transform: translateX(22px);
+  padding: 5px;
+  margin: 0;
+  margin-left: 71px;
+  font-size: 16px;
 }
-.phoneNumber {
-  transform: translateX(12px);
+ 
+.Description input {
+  height: 120px;
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
 }
-.contactName input {
-  transform: translateX(5px);
-}
+ 
 .posting {
-  margin-left: -380px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding-bottom: 20px;
-  transform: translateX(-8px);
+  margin-top: -15px;
 }
-.posting select {
-  transform: translateX(32px);
+
+.posting .select-container {
+  display: flex;
+  align-items: center; 
 }
+
+.posting-label {
+  margin-top: 5px;
+}
+
+.posting label {
+  margin-right: 5px;
+}
+
+.select-container {
+  margin-left: 110px;
+  margin-top: -20px;
+  flex: 1; 
+}
+
+
 .startDate {
   display: flex;
   flex-direction: row; 
   align-items: center; 
-  transform: translateX(22px);
 }
  
 .start-date-container {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
+  gap: 16px;
 }
  
 .startDate label {
   margin-right: 10px; 
-  transform: translateX(10px);
 }
+ 
 .date-inputs {
   display: flex;
   gap: 10px; 
-  transform: translateX(83px);
 }
-.Title {
-  transform: translateX(-67px);
+ 
+.Title, .Description {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
   padding-bottom: 20px;
+}
+ 
+.Title label, .Description label {
+  margin-right: 5px;
+}
+
+.Title {
+  padding-bottom: 20px;
+}
+.Title input, .Description input {
+  width: 605px;
+  height: 25px;
+  font-size: 16px;
+  font-family: Gotham;
+  font-weight: normal;
+}
+
+.Description textarea {
+  width: 605px;
+  height: 120px;
+  padding: 5px;
+  margin: 0;
+  font-size: 16px;
+}
+.Description label {
+  margin-bottom: 5px;
+  margin-top: -100px;
 }
 .Title input {
-  transform: translateX(127px);
-  width: 480px;
+  margin-left: 60px
 }
-.Description {
-  transform: translateX(-38px);
-  padding-bottom: 20px;
-}
-.Description input {
-  transform: translateX(68px);
-  width: 480px;
-  padding-bottom: 80px;
-}
+
 .FileUpload {
-  transform: translateX(-150px);
   padding-bottom: 20px;
 } 
+ 
 .FileUpload input {
-  transform: translateX(63px);
   cursor: pointer; 
 }
+ 
 .center-text {
   width: 100%;
   text-align: center;
 }
+ 
 .remove-instruction {
-color: #732181;
-font-size: 12px;
-text-align: center;
-align-self: center;
-transform: translateY(-15px);
+  color: #732181;
+  font-size: 12px;
+  text-align: center;
+  align-self: center;
 }
+ 
 .drag-drop-box {
-border: 2px dashed #732181;
-padding: 20px;
-margin-top: 10px;
-text-align: center;
-cursor: pointer;
-color: black;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: flex-start;
+  border: 2px dashed #732181;
+  padding: 20px;
+  margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100px
 }
+ 
 .drag-drop-box:hover {
-color: #732181; 
+  color: #732181; 
 }
-
+ 
 .FileUpload {
-transform: translateX(5px);
-padding-bottom: 20px;
+  padding-bottom: 20px;
 }
+ 
 .preview-image {
-width: 50px;
-height: 50px;
+  width: 50px;
+  height: 50px;
 }
+ 
 .file-info {
-display: flex;
-flex-direction: row;
-align-items: left;
-gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10px;
 }
+ 
 .submit button {
   background-color: #732181; 
   color: white;
   border: 2px solid black; 
-  padding: 8px 20px; 
+  padding: 10px 32px; 
   cursor: pointer; 
+  
 }
+ 
 .close-button {
   position: absolute;
   top: 10px;
@@ -488,10 +642,12 @@ gap: 10px;
   font-size: 20px;
   cursor: pointer;
 }
+ 
 .close-button:hover {
   color: white;
   background-color: red;
 }
+ 
 .background {
   position: fixed;
   top: 0;
@@ -501,4 +657,13 @@ gap: 10px;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 4; 
 }
+
+.error {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-bottom: 1px solid red;
+  border-right: 1px solid red;
+}
+
+
 </style>
