@@ -1,22 +1,21 @@
 <template>
   <div class="dropdown" v-bind:class="{ 'dropdown-show': show }">
-    
     <PanelMenu :model="items" class="dropdown-option"></PanelMenu>
     <div v-if="showDateExport" class="date-export-dropdown">
       <h4>Start date</h4>
       <Calendar v-model="startDate" showIcon />
       <h4>End date</h4>
       <Calendar v-model="endDate" showIcon />
-      <button @click="exportData">Export</button>
+      <button @click="exportDataByDate">Export</button>
     </div>
   </div>
 </template>
 
 <script>
 import Calendar from 'primevue/calendar';
-import 'primevue/resources/themes/saga-blue/theme.css'       //theme
-import 'primevue/resources/primevue.min.css'                 //core css
-import 'primeicons/primeicons.css'                           //icons
+import 'primevue/resources/themes/saga-blue/theme.css'; 
+import 'primevue/resources/primevue.min.css'; 
+import 'primeicons/primeicons.css'; 
 import PanelMenu from 'primevue/panelmenu';
 
 export default {
@@ -39,36 +38,110 @@ export default {
         {
           label: 'Export all',
           icon: 'pi pi-fw pi-file',
+          command: () => { this.exportAllData(); }
         },
         {
           label: 'Export open',
           icon: 'pi pi-fw pi-file',
+          command: () => { this.exportDataByStatus('Open'); }
         },
         {
-          label: 'Export filled',
+          label: 'Export Closed',
           icon: 'pi pi-fw pi-file',
+          command: () => { this.exportDataByStatus('Closed'); }
         },
         {
           label: 'Export by date',
           icon: 'pi pi-fw pi-calendar',
-          command: () => { this.showDateExport = !this.showDateExport },
-        },
-          
-        
+          command: () => { this.showDateExport = !this.showDateExport; },
+        }
       ]
+    };
+  },
+  methods: {
+    async exportDataByDate() {
+      const filteredData = await this.fetchAndFilterData();
+      if (filteredData.length > 0) {
+        this.downloadCSV(filteredData);
+      } else {
+        alert('No posting found for the dates selected. Please, select other dates.');
+      }
+    },
+    async exportAllData() {
+      const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings');
+      const data = await response.json();
+      this.downloadCSV(data);
+    },
+    async exportDataByStatus(status) {
+  const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings');
+  const data = await response.json();
+  const filteredData = data.filter(item => item.Status === status);
+  if (filteredData.length > 0) {
+    this.downloadCSV(filteredData);
+  } else {
+    alert(`No ${status.toLowerCase()} posting found.`);
+  }
+},
+
+    async fetchAndFilterData() {
+      const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings');
+      const data = await response.json();
+      const startDate = new Date(this.startDate);
+      const endDate = new Date(this.endDate);
+
+      // Adjusting user dates to match database date format (DD/MM/YYYY)
+      const startDateFormatted = `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`;
+      const endDateFormatted = `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
+
+      // Filtering data based on the modified date format and the DateAdded column
+      return data.filter(item => {
+        // Parsing database date string to ensure accurate date comparison
+        const itemDateParts = item.DateAdded.split('/');
+        const itemDate = new Date(`${itemDateParts[1]}/${itemDateParts[0]}/${itemDateParts[2]}`);
+        
+        // Checking if the parsed date is valid
+        if (isNaN(itemDate.getTime())) {
+          console.error(`Invalid date format for item with DateAdded: ${item.DateAdded}`);
+          return false;
+        }
+
+        // Adjusted date format for comparison
+        const dbDateFormatted = `${itemDate.getMonth() + 1}/${itemDate.getDate()}/${itemDate.getFullYear()}`;
+        return dbDateFormatted >= startDateFormatted && dbDateFormatted <= endDateFormatted;
+      });
+    },
+    downloadCSV(data) {
+      // Extracting headers from the first row of data
+      const headers = Object.keys(data[0]);
+      
+      // Creating CSV content with headers
+      let csvContent = 'data:text/csv;charset=utf-8,';
+      csvContent += headers.join(',') + '\n';
+
+      // Adding data rows
+      csvContent += data.map(row => Object.values(row).join(',')).join('\n');
+
+      // Encoding URI, creating link, and triggering download
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'exported_data.csv');
+      document.body.appendChild(link);
+      link.click();
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .dropdown {
   position: absolute;
   right: 0;
+  top: 60px;
   background-color: #f9f9f9;
   width: 300px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 999;
   margin-top: 50px;
   max-height: 0;
   
@@ -134,5 +207,4 @@ export default {
   background-color: #732181;
   border: #732181;
 }
-
 </style>
