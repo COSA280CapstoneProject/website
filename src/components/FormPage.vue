@@ -4,16 +4,23 @@
     <div v-if="!postingDetails.length && !error" class="loading-message">Loading posting details...</div>
     <div class="posting-row" v-for="(detail, index) in postingDetails" :key="index">
       <div class="organization">
-        <h2>Organization</h2>
-        <p>Organization name: {{ detail.OrgName }}</p>
+        <h2>{{ detail.OrgName }}</h2>
+        <!-- <p>Organization name: {{ detail.OrgName }}</p> -->
         <p>Contact name: {{ detail.ContactName }}</p>
         <p>Contact email: {{ detail.Email }}</p>
         <p>Phone number: {{ formatPhoneNumber(detail.PhoneNum) }}</p>
         <p>Post type: {{ detail.PostType }}</p>
         <p>Program: {{ detail.ProgramType }}</p>
+        <p>Start Date: {{ detail.StartDate }}</p>
+        <p>Post ID: {{ detail.PostID }}</p>
+        <p>Post Title: {{ detail.PostTitle }}</p>
+        <p>Job Description: {{ detail.PostDesc }}</p>
+        <p>Season: {{ detail.Season }}</p>
+        <p>Date Added: {{ detail.DateAdded }}</p>
+        <p>Status: {{ detail.Status }}</p>
       </div>
       <div class="job-description">
-        <h2>Job description</h2>
+        <h2>{{ detail.PostTitle }}</h2>
         <p>{{ detail.PostDesc }}</p>
       </div>
       <div class="file" v-if="detail.BlobURL">
