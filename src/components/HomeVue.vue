@@ -32,7 +32,6 @@
       <div class="content">
         <div class="inner-content">
           <h2>Submit a Post</h2>
-          <!-- Add your text blurb here -->
           <p>Your posting will be viewed by many students!</p>
           <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
             By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
@@ -55,7 +54,6 @@
         <h2>What people are saying</h2>
       </div>
       <div class="content testimonials-container">
-        <!-- Written Testimonials -->
         <div class="carousel-container">
     <div class="carousel-slide" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
       <div class="carousel-item" v-for="(testimonial, index) in testimonials" :key="index">
@@ -116,7 +114,7 @@ export default {
     };
   },
   setup() {
-    const testimonials = [
+    const testimonials = [ // Testimonials carousel information 
       {
         name: 'Audrey K:',
         subtitle: 'CST Student',
