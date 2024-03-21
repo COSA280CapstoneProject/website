@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="Title">
-              <label for="Title">Title </label>
+              <label for="Title" id="TitleL">Title </label>
               <input type="text" id="Title" name="Title" v-model="postTitle"
                 :class="{ error: submitted && !postTitle }" />
             </div>
@@ -482,6 +482,7 @@ export default {
   font-size: 16px;
 }
 
+
 .Description textarea {
   resize: none; 
 }
@@ -581,10 +582,10 @@ export default {
 }
 .Description label {
   margin-bottom: 5px;
-  margin-top: -100px;
+  margin-top: -14%;
 }
 .Title input {
-  margin-left: 60px
+  
 }
 
 .FileUpload {
@@ -687,6 +688,10 @@ export default {
   background-color: red;
 }
  
+#TitleL {
+  margin-right: 65px;
+}
+
 .background {
   position: fixed;
   top: 0;
@@ -719,7 +724,6 @@ export default {
   .org-contact-container,
   .contact-info-container {
     flex-direction: column;
-    gap: 10px;
     width: 100%;
     margin-top: 5px; /* Adjust spacing between containers */
   }
@@ -751,10 +755,11 @@ export default {
 }
 
 .email input {
-  width: 100%; /* Adjust width as needed */
+  width: 115%; /* Adjust width as needed */
   font-size: 14px;
   margin-top: -5px; /* Adjust the margin-top to align input box with label */
   margin-left: -45%;
+  transform: translateX(27%);
 }
 
   .posting,
@@ -763,11 +768,13 @@ export default {
   .Description {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
     width: 100%;
     margin-top: 10px; /* Adjust spacing between sections */
   }
 
+  .Description label{
+    padding-top: 10%;
+  }
   .Title input,
   .Description textarea {
     width: 100%;
@@ -775,7 +782,7 @@ export default {
   }
 
   .select-container {
-    margin-left: 0;
+    margin-top: -8%;
     width: 100%;
   }
 
@@ -793,7 +800,11 @@ export default {
     padding-bottom: 10%;
   }
 }
-
+.TitleL {
+  margin-right: 5px;
+  
+  
+}
 
 
 
