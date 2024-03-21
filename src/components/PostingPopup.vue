@@ -304,23 +304,33 @@ export default {
     };
 
     const uploadFiles = () => {
-      return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
-          console.log(response);
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
+        const promises = fileObjects.value.map((file, index) => {
+          const formData = new FormData();
+          formData.append('file', file, fileName.value[index]);
 
-          const urlRegex = /(https?:\/\/[^\s]+)/g;
-          postData.blobUrl = response.data.match(urlRegex)[0]; // Update blobUrl with the URL from the response data
-        })
-        .catch(error => {
-          console.error(error);
-          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+          return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+            .then(response => {
+              console.log(response);
+              toast.add({ severity: 'success', summary: 'Success', detail: 'File uploaded successfully.', life: 3000 });
+
+              const urlRegex = /(https?:\/\/[^\s]+)/g;
+              return response.data.match(urlRegex)[0]; // Return the URL from the response data
+            })
+            .catch(error => {
+              console.error(error);
+              toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+            });
         });
-    };
+
+        return Promise.all(promises)
+          .then(urls => {
+            postData.blobUrl = urls.join(','); // Join the URLs into a string and update blobUrl
+          });
+      };
 
     const insertData = () => {
           return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
