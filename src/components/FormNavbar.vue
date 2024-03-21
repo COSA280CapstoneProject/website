@@ -1,138 +1,144 @@
 <template>
-  <div class="Navbar">
-      <div class="Navbar-container">
-      <button class="hamburger" @click="Statspopup">
-    <i class="fas fa-bars"></i>
-  </button>
-  <button class="sorting" @click="showSorting = !showSorting">
-      Sorting &#9660; <!-- This is a Unicode character for a down arrow -->
+    <div class="Navbar">
+        <div class="Navbar-container">
+        <button class="hamburger" @click="Statspopup">
+      <i class="fas fa-bars"></i>
     </button>
+    <button class="sorting" @click="showSorting = !showSorting">
+        Sorting &#9660; <!-- This is a Unicode character for a down arrow -->
+      </button>
+      
+    <div class="search-bar">
+      <i class="fa fa-search"></i>
+      <input type="text" placeholder="Search..." />
+    </div>
+    <button class="four-square">
+      <i class="fa-solid fa-table-cells-large"></i>
+    </button>
+    <button class="more-options" @click="showDropdown = !showDropdown">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+    <ExportDropdown :show="showDropdown" />
+    <SortingMenu v-if="showSorting" />
+    <StatsDropdown v-if="showStatsDropdown" />
+    </div>
+    </div>
     
-  <div class="search-bar">
-    <i class="fa fa-search"></i>
-    <input type="text" placeholder="Search..." />
-  </div>
-  <button class="four-square">
-    <i class="fa-solid fa-table-cells-large"></i>
-  </button>
-  <button class="more-options" @click="showDropdown = !showDropdown">
-    <i class="fas fa-ellipsis-v"></i>
-  </button>
-  <ExportDropdown :show="showDropdown" />
-  <SortingMenu v-if="showSorting" />
-  </div>
-  </div>
+  </template>
   
-</template>
+  <script>
+  import ExportDropdown from '@/components/ExportDropdown.vue'
+  import SortingMenu from '@/components/SortingDropdown.vue'
+  import StatsDropdown from '@/components/StatsDropdown.vue'
 
-<script>
-import ExportDropdown from '@/components/ExportDropdown.vue'
-import SortingMenu from '@/components/SortingDropdown.vue'
-
-export default {
-  name: 'SearchAndSort',
-  components: {
-    ExportDropdown,
-    SortingMenu,
-  },
-  data() {
-    return {
-    showDropdown: false,
-    showSorting: false
+  export default {
+    name: 'SearchAndSort',
+    components: {
+      ExportDropdown,
+      SortingMenu,
+      StatsDropdown
+    },
+    data() {
+      return {
+      showDropdown: false,
+      showStatsDropdown: false,
+      showSorting: false
+    }
+    },
+    methods: {
+    toggleMenu() {
+      console.log('toggleMenu');
+    },
+    Statspopup() {
+      this.showStatsDropdown = !this.showStatsDropdown;
+    }
   }
-  },
-  methods: {
-  toggleMenu() {
-    console.log('toggleMenu');
-  }
-  // ...existing methods...
-}
-  // You can add methods to handle search and sorting here
-};
-</script>
-
-<style>
+  };
+  </script>
+  
+  <style>
 
 .Navbar {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: center; /* Center the container */
-height: 60px;
-background-image: url("@/assets/header.jpg");
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the container */
+  height: 60px;
+  background-image: url("@/assets/header.jpg");
 }
 
 .Navbar-container {
-width: 90%; /* Reduce the width to create space on the sides */
-display: flex;
-justify-content: space-between; /* Distribute the items equally */
+  width: 90%; /* Reduce the width to create space on the sides */
+  display: flex;
+  justify-content: space-between; /* Distribute the items equally */
 }
-  .hamburger {
-position: relative;
-display: inline-block;
-cursor: pointer;
-transition: 0.5s;
-  border: none;
-  background-color: transparent;
+    .hamburger {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: 0.5s;
+    border: none;
+    background-color: transparent;
 }
 
 .hamburger i {
-font-size: 35px;
+  font-size: 35px;
 }
 .sorting {
-margin-left: 10px;
-cursor: pointer;
-border: none;
-background-color: transparent;
-font-size: 20px; /* Increase the font size of the sorting icon */
+  margin-left: 10px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  font-size: 20px; /* Increase the font size of the sorting icon */
 
 }
 .search-bar {
-position: relative;
-margin-left: 10px;
+  position: relative;
+  margin-left: 10px;
 }
 
 .search-bar i {
-position: absolute;
-left: 10px;
-top: 50%;
-transform: translateY(-50%);
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .search-bar input {
-padding-left: 30px;
-width: 300px; /* Increase the width of the search bar */
-height: 40px; /* Increase the height of the search bar */
+  padding-left: 30px;
+  width: 300px; /* Increase the width of the search bar */
+  height: 40px; /* Increase the height of the search bar */
 
 }
 .four-square {
-position: relative;
-display: inline-block;
-cursor: pointer;
-transition: 0.5s;
-  border: none;
-  background-color: transparent;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: 0.5s;
+    border: none;
+    background-color: transparent;
 }
 
 .four-square i {
-font-size: 35px;
+  font-size: 35px;
 }
+  
 
-
-.more-options {
-position: relative;
-display: inline-block;
-cursor: pointer;
-transition: 0.5s;
-border: none;
-  background-color: transparent;
+  .more-options {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: 0.5s;
+  border: none;
+    background-color: transparent;
 }
 
 .more-options i {
-font-size: 35px;
+  font-size: 35px;
 }
-
-</style>
+ 
+  </style>
+  
