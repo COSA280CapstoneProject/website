@@ -55,19 +55,18 @@
       </div>
       <div class="content testimonials-container">
         <div class="carousel-container">
-    <div class="carousel-slide" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
-      <div class="carousel-item" v-for="(testimonial, index) in testimonials" :key="index">
-        <h4>{{ testimonial.name }}</h4>
-        <h5 class="subtitle">{{ testimonial.subtitle }}</h5>
-        <p>{{ testimonial.review }}</p>
-      </div>
-    </div>
-    <div class="controls">
-      <button @click="prev">Prev</button>
-      <button @click="next">Next</button>
-    </div>
-  </div>
-
+          <div class="carousel-slide" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+            <div class="carousel-item" v-for="(testimonial, index) in testimonials" :key="index">
+              <h4>{{ testimonial.name }}</h4>
+              <h5 class="subtitle">{{ testimonial.subtitle }}</h5>
+              <p>{{ testimonial.review }}</p>
+            </div>
+          </div>
+          <div class="controls">
+            <button @click="prev"><i class="fas fa-arrow-left"></i></button>
+            <button @click="next"><i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
       </div>
     </section>
 
