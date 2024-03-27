@@ -19,7 +19,7 @@
       <i class="fas fa-ellipsis-v"></i>
     </button>
     <ExportDropdown :show="showDropdown" />
-    <SortingMenu v-if="showSorting" />
+    <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" />
     <StatsDropdown v-if="showStatsDropdown" />
     </div>
     </div>
@@ -51,7 +51,12 @@
     },
     Statspopup() {
       this.showStatsDropdown = !this.showStatsDropdown;
-    }
+    },
+    updateSortKeys(newSortKeys) {
+      this.sortKey = newSortKeys; // Update sortKey when it changes
+
+      this.$emit('navbar-sort-key-changed', newSortKeys);
+    },
   }
   };
   </script>
