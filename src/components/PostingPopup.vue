@@ -154,14 +154,14 @@ export default {
     generateYears();
 
     const validateEmail = () => {
-  console.log('Email:', email.value);
-  if (!email.value) {
-    emailIsValid.value = false;
-  } else {
-    emailIsValid.value = isValidEmail(email.value);
-  }
-  console.log('Email is valid:', emailIsValid.value);
-};
+      console.log('Email:', email.value);
+      if (!email.value) {
+        emailIsValid.value = false;
+      } else {
+        emailIsValid.value = isValidEmail(email.value);
+      }
+      console.log('Email is valid:', emailIsValid.value);
+    };
 
     const goBack = () => {
       emit('close');
@@ -549,6 +549,9 @@ export default {
   color: red;
   font-size: 10px;
   width: 123%;
+  position: absolute;
+  margin-left: -40%;
+  transform: translateY(155%);
 }
  
 .startDate label {
@@ -717,6 +720,7 @@ export default {
   border-left: 1px solid black;
   border-bottom: 1px solid red;
   border-right: 1px solid red;
+  display: block;
 }
 
 @media only screen and (max-width: 600px) {
@@ -815,9 +819,5 @@ export default {
   
   
 }
-
-
-
-
 
 </style>
