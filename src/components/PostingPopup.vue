@@ -738,6 +738,11 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-image: url('../assets/background 2.jpg'); /* Background image */
+    background-size: cover; /* Adjust background size as needed */
+    background-position: center; /* Adjust background position as needed */
+    background-repeat: no-repeat; /* Adjust background repeat as needed */
+    padding: 40px; /* Adjust padding as needed */
   }
 
   .org-contact-container,
@@ -774,10 +779,10 @@ export default {
 }
 
 .email input {
-  width: 115%; /* Adjust width as needed */
+  width: 117%; /* Adjust width as needed */
   font-size: 14px;
   margin-top: -5px; /* Adjust the margin-top to align input box with label */
-  margin-left: -45%;
+  margin-left: -49%;
   transform: translateX(27%);
 }
 
@@ -823,7 +828,5 @@ export default {
   margin-right: 5px;
 }
 
-.error-message {
-  margin-left: -45%;
-}
+
 </style>
