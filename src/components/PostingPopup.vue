@@ -252,6 +252,8 @@ export default {
     const submitForm = () => {
       submitted.value = true;
 
+      validateEmail(); // Validate the email
+
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please make sure the field is filled out correctly.', life: 3000 });
         return;
@@ -453,6 +455,7 @@ export default {
 .email div {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
  
 .phoneNumber {
@@ -539,6 +542,13 @@ export default {
   align-items: center;
   padding-bottom: 20px;
   gap: 16px;
+}
+
+.error-message {
+  height: 20px;
+  color: red;
+  font-size: 10px;
+  width: 123%;
 }
  
 .startDate label {
