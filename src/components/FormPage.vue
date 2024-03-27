@@ -104,6 +104,30 @@ export default {
       const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
       return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
     },
+
+    filterAndLogMatches() {
+  // Reset postingDetails from allPostings before filtering
+  this.postingDetails = [...this.allPostings];
+
+  // Check if there's a filter criteria in sortKey
+  if (this.sortKey && this.sortKey.PostType) {
+    console.log(`Filtering by PostType: ${this.sortKey.PostType}`);
+    this.postingDetails = this.postingDetails.filter(detail => {
+      // Adjusted to check if the detail.PostType is included in the sortKey.PostType array
+      const matchesFilter = this.sortKey.PostType.includes(detail.PostType);
+      console.log(`Checking PostType: ${detail.PostType}, matches filter: ${matchesFilter}`);
+      if (matchesFilter) {
+        console.log(`Match found for filter (PostType): ${detail.PostType}`);
+      }
+      return matchesFilter;
+    });
+  }
+
+  // Make sure to trigger reactivity in Vu
+  this.postingDetails = [...this.postingDetails];
+},
+
+
     getFileSize(url) {
       axios.head(url)
         .then(response => {
