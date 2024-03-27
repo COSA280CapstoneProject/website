@@ -154,14 +154,14 @@ export default {
     generateYears();
 
     const validateEmail = () => {
-  console.log('Email:', email.value);
-  if (!email.value) {
-    emailIsValid.value = false;
-  } else {
-    emailIsValid.value = isValidEmail(email.value);
-  }
-  console.log('Email is valid:', emailIsValid.value);
-};
+      console.log('Email:', email.value);
+      if (!email.value) {
+        emailIsValid.value = false;
+      } else {
+        emailIsValid.value = isValidEmail(email.value);
+      }
+      console.log('Email is valid:', emailIsValid.value);
+    };
 
     const goBack = () => {
       emit('close');
@@ -464,6 +464,11 @@ export default {
   align-items: center;
   gap: 13%;
   width: 45%;
+  margin-top: -1%;
+}
+
+.phoneNumber input {
+  transform: translateX(-1%);
 }
  
 .orgName label, .contactName label, .email label, .phoneNumber label {
@@ -492,7 +497,7 @@ export default {
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 71px;
+  margin-left: 72px;
   font-size: 16px;
 }
  
@@ -549,6 +554,9 @@ export default {
   color: red;
   font-size: 10px;
   width: 123%;
+  position: absolute;
+  margin-left: -40%;
+  transform: translateY(155%);
 }
  
 .startDate label {
@@ -717,6 +725,7 @@ export default {
   border-left: 1px solid black;
   border-bottom: 1px solid red;
   border-right: 1px solid red;
+  display: block;
 }
 
 @media only screen and (max-width: 600px) {
@@ -729,6 +738,11 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-image: url('../assets/background 2.jpg'); /* Background image */
+    background-size: cover; /* Adjust background size as needed */
+    background-position: center; /* Adjust background position as needed */
+    background-repeat: no-repeat; /* Adjust background repeat as needed */
+    padding: 40px; /* Adjust padding as needed */
   }
 
   .org-contact-container,
@@ -765,10 +779,10 @@ export default {
 }
 
 .email input {
-  width: 115%; /* Adjust width as needed */
+  width: 117%; /* Adjust width as needed */
   font-size: 14px;
   margin-top: -5px; /* Adjust the margin-top to align input box with label */
-  margin-left: -45%;
+  margin-left: -49%;
   transform: translateX(27%);
 }
 
@@ -812,12 +826,7 @@ export default {
 }
 .TitleL {
   margin-right: 5px;
-  
-  
 }
-
-
-
 
 
 </style>
