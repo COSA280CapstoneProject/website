@@ -110,7 +110,7 @@ export default {
     });
   }
 
-  // Make sure to trigger reactivity in Vue
+  // Make sure to trigger reactivity in Vu
   this.postingDetails = [...this.postingDetails];
 },
 
