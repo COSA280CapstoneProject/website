@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="Title">
-              <label for="Title">Title </label>
+              <label for="Title" id="TitleL">Title </label>
               <input type="text" id="Title" name="Title" v-model="postTitle"
                 :class="{ error: submitted && !postTitle }" />
             </div>
@@ -99,7 +99,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 import { ref, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
@@ -154,14 +154,14 @@ export default {
     generateYears();
 
     const validateEmail = () => {
-  console.log('Email:', email.value);
-  if (!email.value) {
-    emailIsValid.value = false;
-  } else {
-    emailIsValid.value = isValidEmail(email.value);
-  }
-  console.log('Email is valid:', emailIsValid.value);
-};
+      console.log('Email:', email.value);
+      if (!email.value) {
+        emailIsValid.value = false;
+      } else {
+        emailIsValid.value = isValidEmail(email.value);
+      }
+      console.log('Email is valid:', emailIsValid.value);
+    };
 
     const goBack = () => {
       emit('close');
@@ -231,7 +231,7 @@ export default {
   Array.from(files).forEach(file => {
     if (file.size > 15 * 1024 * 1024) {
       toast.add({ severity: 'error', summary: 'Error', detail: 'File size exceeds the maximum limit of 15MB.', life: 3000 });
-      return; 
+      return;
     }
 
     fileName.value.push(file.name);
@@ -241,7 +241,7 @@ export default {
       fileDataUrl.value.push(e.target.result);
     };
     reader.readAsDataURL(file);
-    fileObjects.value.push(file); 
+    fileObjects.value.push(file);
   });
 
   toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
@@ -275,37 +275,37 @@ export default {
         filesToUpload.push(fileName.value[index]);
       });
 
-      const postID = Math.floor(100000 + Math.random() * 900000);
-      const status = 'Open';
-      const dateAdded = new Date().toLocaleString('en-GB', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
+          const postID = Math.floor(100000 + Math.random() * 900000);
+          const status = 'Open';
+          const dateAdded = new Date().toLocaleString('en-GB', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          });
 
-      const postData = {
-        orgName: orgName.value,
-        contactName: contactName.value,
-        phoneNum: phoneNum.value,
-        startDate: startDate.value,
-        postID: postID,
-        postTitle: postTitle.value,
-        postDesc: postDesc.value,
-        programType: programType.value,
-        postType: programType.value,
-        files: filesToUpload.join(','),
-        status: status,
-        email: email.value,
-        season: season.value,
-        dateAdded: dateAdded,
-        blobUrl: ''
-      };
+          const postData = {
+            orgName: orgName.value,
+            contactName: contactName.value,
+            phoneNum: phoneNum.value,
+            startDate: startDate.value,
+            postID: postID,
+            postTitle: postTitle.value,
+            postDesc: postDesc.value,
+            programType: programType.value,
+            postType: programType.value,
+            files: filesToUpload.join(','),
+            status: status,
+            email: email.value,
+            season: season.value,
+            dateAdded: dateAdded,
+            blobUrl: ''
+    };
 
-      const uploadFiles = () => {
+    const uploadFiles = () => {
         const promises = fileObjects.value.map((file, index) => {
           const formData = new FormData();
           formData.append('file', file, fileName.value[index]);
@@ -334,28 +334,28 @@ export default {
           });
       };
 
-      const insertData = () => {
-        return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
+    const insertData = () => {
+          return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+                    })
+        .then(response => {
+          console.log(response);
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
+          clearForm();
         })
-          .then(response => {
-            console.log(response);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
-            clearForm();
-          })
-          .catch(error => {
-            console.error(error);
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
-          });
-      };
+        .catch(error => {
+          console.error(error);
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
+        });
+};
 
-      if (fileObjects.value.length > 0) {
-        uploadFiles().then(insertData);
-      } else {
-        insertData();
-      }
+    if (fileObjects.value.length > 0) {
+      uploadFiles().then(insertData);
+    } else {
+      insertData();
+    }
     };
 
     return {
@@ -462,8 +462,13 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 25px;
+  gap: 13%;
   width: 45%;
+  margin-top: -1%;
+}
+
+.phoneNumber input {
+  transform: translateX(-1%);
 }
  
 .orgName label, .contactName label, .email label, .phoneNumber label {
@@ -485,13 +490,14 @@ export default {
   font-size: 16px;
 }
 
+
 .Description textarea {
   resize: none; 
 }
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 71px;
+  margin-left: 72px;
   font-size: 16px;
 }
  
@@ -548,6 +554,9 @@ export default {
   color: red;
   font-size: 10px;
   width: 123%;
+  position: absolute;
+  margin-left: -40%;
+  transform: translateY(155%);
 }
  
 .startDate label {
@@ -591,10 +600,10 @@ export default {
 }
 .Description label {
   margin-bottom: 5px;
-  margin-top: -100px;
+  margin-top: -14%;
 }
 .Title input {
-  margin-left: 60px
+  
 }
 
 .FileUpload {
@@ -697,6 +706,10 @@ export default {
   background-color: red;
 }
  
+#TitleL {
+  margin-right: 65px;
+}
+
 .background {
   position: fixed;
   top: 0;
@@ -712,6 +725,107 @@ export default {
   border-left: 1px solid black;
   border-bottom: 1px solid red;
   border-right: 1px solid red;
+  display: block;
+}
+
+@media only screen and (max-width: 600px) {
+  .Postings {
+    width: 100vw; /* Make popup width equal to viewport width */
+    height: 100vh; /* Make popup height equal to viewport height */
+    padding: 20px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Include padding in the total width and height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../assets/background 2.jpg'); /* Background image */
+    background-size: cover; /* Adjust background size as needed */
+    background-position: center; /* Adjust background position as needed */
+    background-repeat: no-repeat; /* Adjust background repeat as needed */
+    padding: 40px; /* Adjust padding as needed */
+  }
+
+  .org-contact-container,
+  .contact-info-container {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 5px; /* Adjust spacing between containers */
+  }
+
+  .orgName,
+  .contactName,
+  .email,
+  .phoneNumber {
+    width: 100%;
+  }
+
+  .orgName label,
+  .contactName label,
+  .email label,
+  .phoneNumber label {
+    margin-right: 0;
+    text-align: left;
+    width: 50%;
+    font-size: 14px;
+    margin-bottom: 5px; /* Add margin-bottom for spacing */
+  }
+
+  .email {
+  display: flex;
+  flex-direction: row; /* Ensure inline display for label and input */
+  align-items: center; /* Align items vertically */
+  justify-content: space-between; /* Align items with space between */
+  width: 100%;
+}
+
+.email input {
+  width: 117%; /* Adjust width as needed */
+  font-size: 14px;
+  margin-top: -5px; /* Adjust the margin-top to align input box with label */
+  margin-left: -49%;
+  transform: translateX(27%);
+}
+
+  .posting,
+  .startDate,
+  .Title,
+  .Description {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 10px; /* Adjust spacing between sections */
+  }
+
+  .Description label{
+    padding-top: 10%;
+  }
+  .Title input,
+  .Description textarea {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .select-container {
+    margin-top: -8%;
+    width: 100%;
+  }
+
+  .submit button {
+    padding: 12px 24px;
+  }
+
+  .close-button {
+    top: 5px;
+    right: 5px;
+    font-size: 16px;
+  }
+
+  .remove-instruction {
+    padding-bottom: 10%;
+  }
+}
+.TitleL {
+  margin-right: 5px;
 }
 
 
