@@ -66,7 +66,8 @@ export default {
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
         .then(response => {
-          this.postingDetails = response.data;
+          this.allPostings = response.data; // Store all postings
+          this.postingDetails = [...this.allPostings]; // Copy all postings to postingDetails
           this.postingDetails.forEach(detail => {
             if (detail.BlobURL) {
               detail.BlobURL.split(',').forEach(url => {
@@ -74,6 +75,7 @@ export default {
               });
             }
           });
+          this.filterAndLogMatches(); // Call this after allPostings and postingDetails are populated
         })
         .catch(error => {
           this.errorMessage = 'Failed to load posting details: ' + error.message;
