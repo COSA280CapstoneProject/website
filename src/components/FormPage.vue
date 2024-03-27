@@ -25,13 +25,12 @@
       </div>
       <div class="file" v-if="detail.BlobURL">
         <h2>File</h2>
-        <img 
-          src="@/assets/file.png" 
-          alt="Download file" 
-          class="download-icon" 
-          @click="downloadFile(detail.BlobURL, detail.FileName)" 
-        />
-        <div class="file-name">{{ detail.FileName }}</div>
+        <div v-for="(url, fileIndex) in detail.BlobURL.split(',') " :key="fileIndex">
+          <img src="@/assets/file.png" alt="Download file" class="download-icon"
+            @click="downloadFile(url, getFileName(url))" />
+          <div class="file-name">{{ getFileName(url) }} (File {{ fileIndex + 1 }})</div>
+          <div class="file-size">{{ fileSizes[url] }}</div>
+        </div>
       </div>
     </div>
     <div v-if="showErrorPopup" class="error-popup">
@@ -59,6 +58,7 @@ export default {
       error: null,
       showErrorPopup: false,
       errorMessage: '',
+      fileSizes: {},
     };
   },
   
@@ -66,9 +66,14 @@ export default {
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
         .then(response => {
-          this.allPostings = response.data;
-          this.postingDetails = [...this.allPostings];
-          this.filterAndLogMatches();
+          this.postingDetails = response.data;
+          this.postingDetails.forEach(detail => {
+            if (detail.BlobURL) {
+              detail.BlobURL.split(',').forEach(url => {
+                this.getFileSize(url);
+              });
+            }
+          });
         })
         .catch(error => {
           this.errorMessage = 'Failed to load posting details: ' + error.message;
@@ -76,12 +81,20 @@ export default {
         });
     },
     downloadFile(blobUrl, fileName) {
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.setAttribute('download', fileName); // Use the actual file name
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      const urls = blobUrl.split(',').filter(url => url.trim() !== '');
+      urls.forEach((url, index) => {
+        const link = document.createElement('a');
+        link
+
+          .href
+
+          = url;
+        const downloadFileName = fileName || 'File';
+        link.setAttribute('download', `${downloadFileName} (File ${index + 1})`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      });
     },
     closePopup() {
       this.showErrorPopup = false;
@@ -91,30 +104,24 @@ export default {
       const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
       return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
     },
-
-    filterAndLogMatches() {
-  // Reset postingDetails from allPostings before filtering
-  this.postingDetails = [...this.allPostings];
-
-  // Check if there's a filter criteria in sortKey
-  if (this.sortKey && this.sortKey.PostType) {
-    console.log(`Filtering by PostType: ${this.sortKey.PostType}`);
-    this.postingDetails = this.postingDetails.filter(detail => {
-      // Adjusted to check if the detail.PostType is included in the sortKey.PostType array
-      const matchesFilter = this.sortKey.PostType.includes(detail.PostType);
-      console.log(`Checking PostType: ${detail.PostType}, matches filter: ${matchesFilter}`);
-      if (matchesFilter) {
-        console.log(`Match found for filter (PostType): ${detail.PostType}`);
-      }
-      return matchesFilter;
-    });
-  }
-
-  // Make sure to trigger reactivity in Vue
-  this.postingDetails = [...this.postingDetails];
-},
-
-
+    getFileSize(url) {
+      axios.head(url)
+        .then(response => {
+          const size = response.headers['content-length'];
+          this.fileSizes[url] = this.formatFileSize(size);
+        })
+        .catch(error => {
+          console.error('Failed to get file size: ' + error.message);
+          this.fileSizes[url] = 'Unknown size';
+        });
+    },
+    getFileName(url) {
+      return url.substring(url.lastIndexOf('/') + 1);
+    },
+    formatFileSize(size) {
+      const i = Math.floor(Math.log(size) / Math.log(1024));
+      return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    },
   },
 
   watch: {
@@ -143,11 +150,13 @@ export default {
   padding: 5%;
   float: left;
 }
+
 .p{
 text-align: left;
 display: flex;
   flex-direction: column;
 }
+
 .posting-row {
   display: flex;
   flex-direction: row; /* Change to row to align items side by side */
@@ -169,16 +178,33 @@ display: flex;
   padding: 10px; 
 }
 
+.organization {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 30%;
+}
+
+.job-description {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 40%;
+}
+
 .file-download-section {
   display: flex;
   align-items: center;
   margin-top: 10px;
 }
+
 .organization p, .job-description p {
   font-size: 1em;
   margin-bottom: 5px;
   color: black;
   float: left;
+}
+
+.file {
+  align-items: flex-end;
 }
 
 .download-button {
@@ -191,12 +217,14 @@ display: flex;
   font-size: 1em;
   transition: background-color 0.3s, transform 0.2s;
 }
+
 .left-align-text {
   text-align: left;
   display: inline-block; /* Treats the span more like a block for alignment purposes */
   text-align: left;
  
 }
+
 .download-button:hover {
   background-color: #5a1c7a;
   transform: scale(1.05);
@@ -229,6 +257,7 @@ display: flex;
   border-radius: 5px;
   cursor: pointer;
 }
+
 .download-icon {
   width: 40%; /* Set width relative to the container */
   height: auto; /* Maintain aspect ratio */
