@@ -19,7 +19,4 @@ jobs:
 workflows:
   run npm run build:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: main
+      - build

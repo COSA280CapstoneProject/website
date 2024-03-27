@@ -47,15 +47,21 @@
 import axios from 'axios';
 
 export default {
+  props: {
+    sortKey: Array,
+  },
+
   data() {
     return {
       postingDetails: [],
+      allPostings: [], // Store all postings without filtering
       error: null,
       showErrorPopup: false,
       errorMessage: '',
       fileSizes: {},
     };
   },
+  
   methods: {
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
@@ -117,6 +123,14 @@ export default {
       return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
     },
   },
+
+  watch: {
+    sortKey() {
+      console.log('sortKey changed:', this.sortKey);
+      this.filterAndLogMatches();
+    },
+  },
+
   mounted() {
     this.fetchPostingDetails();
   },
