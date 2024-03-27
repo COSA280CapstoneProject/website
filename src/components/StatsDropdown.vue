@@ -29,14 +29,6 @@
     <div class="stats-line">
       <p>Student Projects Filled: {{ studentProjectsFilledCount }}</p>
     </div>
-    <div class="date-range">
-      <label for="from">From:</label>
-      <input type="text" id="from" v-model="fromDate" />
-      <label for="to">To:</label>
-      <input type="text" id="to" v-model="toDate" />
-      <span class="calendar-icon"></span>
-      <span class="calendar-icon"></span>
-    </div>
   </div>
 </template>
 
@@ -58,8 +50,6 @@ export default {
       jobPlacementFilledCount: 0,
       internshipsFilledCount: 0,
       studentProjectsFilledCount: 0,
-      fromDate: '',
-      toDate: ''
     };
   },
   methods: {
@@ -123,15 +113,4 @@ export default {
   background-color: #999;
 }
 
-.stats-line {
-  /* Add your styles here */
-}
-
-.date-range {
-  /* Add your styles here */
-}
-
-.calendar-icon {
-  /* Add your styles here */
-}
 </style>
