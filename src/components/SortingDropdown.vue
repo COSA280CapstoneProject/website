@@ -8,12 +8,15 @@
     <Calendar v-model="startDate" showIcon />
     <h4>End Date</h4>
     <Calendar v-model="endDate" showIcon />
+    <h4>Deadline</h4>
+    <MultiSelect class="Deadline" v-model="DeadlineY" :options="Years" placeholder="Select Year"  />
+    <MultiSelect class="Deadline" v-model="DeadlineS" :options="Season" placeholder="Select Season"  />
     <h4>Program Types</h4>
     <MultiSelect class="multi-select" v-model="ProgramTypes" :options="ProgramType" placeholder="Select Program Types" />
     <h4>Posting Types</h4>
     <MultiSelect class="multi-select" v-model="PostType" :options="PostingType" placeholder="Select Posting Types" />
     <h4> 
-      
+
     </h4>
 
     <button @click="submitSort" class="submitbtn">Submit Sort</button>
@@ -45,6 +48,9 @@ export default {
       endDate: null,
       ProgramTypes: null,
       PostType: null,
+      DeadlineS: null,
+      DeadlineY: null,
+
       ProgramType: [
       'Software Development',
       'Network Technician',
@@ -64,6 +70,21 @@ export default {
       'Internships',
       'Student Projects',
       // Add more posting types as needed
+    ],
+    Years: [
+      '2021',
+      '2022',
+      '2023',
+      '2024',
+      '2025',
+      // Add more years as needed
+    ],
+    Season: [
+      'Spring',
+      'Summer',
+      'Fall',
+      'Winter',
+      // Add more seasons as needed
     ],
     sortKeys: {},
     };
@@ -92,7 +113,7 @@ export default {
 
 <style scoped>
 .sorting-dropdown {
-  position: absolute;
+  position: fixed;
   border: 1px solid black;
   width: 500px;
   z-index: 1;
@@ -128,7 +149,9 @@ border: #732181;
 .submitbtn:hover {
   background-color: #5a1c7a;
 }
-
+.Deadline {
+  margin-right: 5%;
+}
 
 
 </style>
