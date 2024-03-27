@@ -821,8 +821,9 @@ export default {
 }
 .TitleL {
   margin-right: 5px;
-  
-  
 }
 
+.error-message {
+  margin-left: -45%;
+}
 </style>
