@@ -48,19 +48,27 @@
 import axios from 'axios';
 
 export default {
+  props: {
+    sortKey: Array,
+  },
+
   data() {
     return {
       postingDetails: [],
+      allPostings: [], // Store all postings without filtering
       error: null,
       showErrorPopup: false,
       errorMessage: '',
     };
   },
+  
   methods: {
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
         .then(response => {
-          this.postingDetails = response.data;
+          this.allPostings = response.data;
+          this.postingDetails = [...this.allPostings];
+          this.filterAndLogMatches();
         })
         .catch(error => {
           this.errorMessage = 'Failed to load posting details: ' + error.message;
@@ -68,15 +76,13 @@ export default {
         });
     },
     downloadFile(blobUrl, fileName) {
-  const link = document.createElement('a');
-  link.href = blobUrl;
-  link.setAttribute('download', fileName); // Use the actual file name
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-},
-
-
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', fileName); // Use the actual file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    },
     closePopup() {
       this.showErrorPopup = false;
     },
@@ -85,7 +91,39 @@ export default {
       const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
       return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
     },
+
+    filterAndLogMatches() {
+  // Reset postingDetails from allPostings before filtering
+  this.postingDetails = [...this.allPostings];
+
+  // Check if there's a filter criteria in sortKey
+  if (this.sortKey && this.sortKey.PostType) {
+    console.log(`Filtering by PostType: ${this.sortKey.PostType}`);
+    this.postingDetails = this.postingDetails.filter(detail => {
+      // Adjusted to check if the detail.PostType is included in the sortKey.PostType array
+      const matchesFilter = this.sortKey.PostType.includes(detail.PostType);
+      console.log(`Checking PostType: ${detail.PostType}, matches filter: ${matchesFilter}`);
+      if (matchesFilter) {
+        console.log(`Match found for filter (PostType): ${detail.PostType}`);
+      }
+      return matchesFilter;
+    });
+  }
+
+  // Make sure to trigger reactivity in Vue
+  this.postingDetails = [...this.postingDetails];
+},
+
+
   },
+
+  watch: {
+    sortKey() {
+      console.log('sortKey changed:', this.sortKey);
+      this.filterAndLogMatches();
+    },
+  },
+
   mounted() {
     this.fetchPostingDetails();
   },

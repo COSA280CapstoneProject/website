@@ -1,15 +1,15 @@
 <template>
-    <div>
-        <FormNavbar @toggleDropdown="showDropdown = !showDropdown" />
-        <ExportDropdown v-if="showDropdown" />
-        <SortingMenu v-if="showSorting"/>
-        <br>
-        <br>
-        <div class="form-page-container">
-          <FormPage />
-        </div>
+  <div>
+    <FormNavbar @navbar-sort-key-changed="updateSortKey" />
+    <ExportDropdown v-if="showDropdown" />
+    <SortingMenu v-if="showSorting"/>
+    <br>
+    <br>
+    <div class="form-page-container">
+      <FormPage :sortKey="sortKey" />
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import FormNavbar from '@/components/FormNavbar.vue'
@@ -30,9 +30,16 @@
     return {
         showDropdown: false,
         showSorting: false,
+        sortKey: null,
     }
-  }
-}
+  },
+  methods: {
+    updateSortKey(newSortKey) {
+      this.sortKey = newSortKey;
+     
+    },
+  },
+  };
 
 
 

@@ -9,9 +9,14 @@
     <h4>End Date</h4>
     <Calendar v-model="endDate" showIcon />
     <h4>Program Types</h4>
-    <MultiSelect class="multi-select" v-model="selectedProgramTypes" :options="programTypes" placeholder="Select Program Types" />
+    <MultiSelect class="multi-select" v-model="ProgramTypes" :options="ProgramType" placeholder="Select Program Types" />
     <h4>Posting Types</h4>
-    <MultiSelect class="multi-select" v-model="selectedPostingTypes" :options="postingTypes" placeholder="Select Posting Types" />
+    <MultiSelect class="multi-select" v-model="PostType" :options="PostingType" placeholder="Select Posting Types" />
+    <h4> 
+      
+    </h4>
+
+    <button @click="submitSort" class="submitbtn">Submit Sort</button>
   </div>
 </template>
 
@@ -38,9 +43,9 @@ export default {
       showFilled: false,
       startDate: null,
       endDate: null,
-      selectedProgramTypes: null,
-      selectedPostingTypes: null,
-      programTypes: [
+      ProgramTypes: null,
+      PostType: null,
+      ProgramType: [
       'Software Development',
       'Network Technician',
       'Web Development',
@@ -54,14 +59,34 @@ export default {
       'Project Management',
       // Add more program types as needed
     ],
-    postingTypes: [
-      'Job Placement',
-      'Internship',
-      'Student Project',
+    PostingType: [
+      'Job Placements',
+      'Internships',
+      'Student Projects',
       // Add more posting types as needed
     ],
+    sortKeys: {},
     };
   },
+  methods: {
+    submitSort() {
+      this.$emit('sort-key-changed', this.sortKeys);
+    },
+  },
+  watch: {
+  startDate(newStartDate) {
+    this.sortKeys.startDate = newStartDate;
+  },
+  endDate(newEndDate) {
+    this.sortKeys.endDate = newEndDate;
+  },
+  ProgramTypes(newSelectedProgramTypes) {
+    this.sortKeys.ProgramType = newSelectedProgramTypes;
+  },
+  PostType(newPostType) {
+    this.sortKeys.PostType = newPostType;
+  },
+},
 };
 </script>
 
@@ -90,6 +115,20 @@ background-color: #732181;
 background-color: #732181;
 border: #732181;
 }
+.submitbtn {
+  background-color: #732181;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+
+}
+.submitbtn:hover {
+  background-color: #5a1c7a;
+}
+
 
 
 </style>
