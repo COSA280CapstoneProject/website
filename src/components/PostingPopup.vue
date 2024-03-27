@@ -464,6 +464,11 @@ export default {
   align-items: center;
   gap: 13%;
   width: 45%;
+  margin-top: -1%;
+}
+
+.phoneNumber input {
+  transform: translateX(-1%);
 }
  
 .orgName label, .contactName label, .email label, .phoneNumber label {
@@ -492,7 +497,7 @@ export default {
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 71px;
+  margin-left: 72px;
   font-size: 16px;
 }
  
