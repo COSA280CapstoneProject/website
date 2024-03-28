@@ -108,26 +108,40 @@ export default {
     },
 
     filterAndLogMatches() {
-  // Reset postingDetails from allPostings before filtering
-  this.postingDetails = [...this.allPostings];
+      // Reset postingDetails from allPostings before filtering
+      this.postingDetails = [...this.allPostings];
 
-  // Check if there's a filter criteria in sortKey
-  if (this.sortKey && this.sortKey.PostType) {
-    console.log(`Filtering by PostType: ${this.sortKey.PostType}`);
-    this.postingDetails = this.postingDetails.filter(detail => {
-      // Adjusted to check if the detail.PostType is included in the sortKey.PostType array
-      const matchesFilter = this.sortKey.PostType.includes(detail.PostType);
-      console.log(`Checking PostType: ${detail.PostType}, matches filter: ${matchesFilter}`);
-      if (matchesFilter) {
-        console.log(`Match found for filter (PostType): ${detail.PostType}`);
+      // Check if there's a filter criteria in sortKey
+      if (this.sortKey) {
+        if (this.sortKey.PostType) {
+          console.log(`Filtering by PostType: ${this.sortKey.PostType}`);
+          this.postingDetails = this.postingDetails.filter(detail => {
+            // Adjusted to check if the detail.PostType is included in the sortKey.PostType array
+            const matchesFilter = this.sortKey.PostType.includes(detail.PostType);
+            console.log(`Checking PostType: ${detail.PostType}, matches filter: ${matchesFilter}`);
+            if (matchesFilter) {
+              console.log(`Match found for filter (PostType): ${detail.PostType}`);
+            }
+            return matchesFilter;
+          });
+        }
+
+        if (this.sortKey.ProgramType) {
+          console.log(`Filtering by ProgramType: ${this.sortKey.ProgramType}`);
+          this.postingDetails = this.postingDetails.filter(detail => {
+            const matchesFilter = this.sortKey.ProgramType.includes(detail.ProgramType);
+            console.log(`Checking ProgramType: ${detail.ProgramType}, matches filter: ${matchesFilter}`);
+            if (matchesFilter) {
+              console.log(`Match found for filter (ProgramType): ${detail.ProgramType}`);
+            }
+            return matchesFilter;
+          });
+        }
       }
-      return matchesFilter;
-    });
-  }
 
-  // Make sure to trigger reactivity in Vu
-  this.postingDetails = [...this.postingDetails];
-},
+      // Make sure to trigger reactivity in Vue
+      this.postingDetails = [...this.postingDetails];
+    },
 
 
     getFileSize(url) {
