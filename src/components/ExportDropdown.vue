@@ -136,7 +136,7 @@ export default {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  link.setAttribute('download', 'exported_data.csv');
+  link.setAttribute('download', 'Job_Posting.csv');
   document.body.appendChild(link);
   link.click();
 }
