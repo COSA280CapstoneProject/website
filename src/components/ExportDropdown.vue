@@ -132,11 +132,18 @@ export default {
     }).join('\t');
   }).join('\n');
 
+  // Get the current date to include in the file name
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().slice(0,10);
+
+  // Constructing the file name with the current date
+  const fileName = `ICTIndustryPostings${formattedDate}.csv`;
+
   // Encoding URI, creating link, and triggering download
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  link.setAttribute('download', 'Job_Posting.csv');
+  link.setAttribute('download', fileName);
   document.body.appendChild(link);
   link.click();
 }
