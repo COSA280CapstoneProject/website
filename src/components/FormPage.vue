@@ -69,6 +69,7 @@ export default {
           this.allPostings = response.data; // Store all postings
           this.postingDetails = [...this.allPostings]; // Copy all postings to postingDetails
           this.postingDetails.forEach(detail => {
+            console.log('Detail:', detail);
             if (detail.BlobURL) {
               detail.BlobURL.split(',').forEach(url => {
                 this.getFileSize(url);
@@ -137,6 +138,74 @@ export default {
             return matchesFilter;
           });
         }
+        if (this.sortKey.DeadlineY) {
+          console.log(`Filtering by StartDate: ${this.sortKey.DeadlineY}`);
+          this.postingDetails = this.postingDetails.filter(detail => {
+            const matchesFilter = this.sortKey.DeadlineY.includes(detail.StartDate);
+            console.log(`Checking StartDate: ${detail.StartDate}, matches filter: ${matchesFilter}`);
+            if (matchesFilter) {
+              console.log(`Match found for filter (StartDate): ${detail.StartDate}`);
+            }
+            return matchesFilter;
+          });
+        }
+        if (this.sortKey.DeadlineS) {
+          console.log(`Filtering by Season: ${this.sortKey.DeadlineS}`);
+          this.postingDetails = this.postingDetails.filter(detail => {
+            const matchesFilter = this.sortKey.DeadlineS.includes(detail.Season);
+            console.log(`Checking Season: ${detail.Season}, matches filter: ${matchesFilter}`);
+            if (matchesFilter) {
+              console.log(`Match found for filter (Season): ${detail.Season}`);
+            }
+            return matchesFilter;
+          });
+        }
+        if (this.sortKey.startDate) {
+          console.log(`Filtering by startDate: ${this.sortKey.startDate}`);
+          const startDate = new Date(this.sortKey.startDate);
+          this.postingDetails = this.postingDetails.filter(detail => {
+            // Split the date and time parts
+            const [datePart, timePart] = detail.DateAdded.split(', ');
+
+            // Split the date into day, month, and year
+            const [day, month, year] = datePart.split('/');
+
+            // Combine the date and time into a format that JavaScript can understand
+            const detailDate = new Date(`${year}-${month}-${day}T${timePart}`);
+
+            const matchesFilter = detailDate >= startDate;
+            console.log(`Checking DateAdded: ${detail.DateAdded}, matches filter: ${matchesFilter}`);
+            if (matchesFilter) {
+              console.log(`Match found for filter (startDate): ${detail.DateAdded}`);
+            }
+            return matchesFilter;
+          });
+        }
+        if (this.sortKey.endDate) {
+          console.log(`Filtering by endDate: ${this.sortKey.endDate}`);
+          const endDate = new Date(this.sortKey.endDate);
+          this.postingDetails = this.postingDetails.filter(detail => {
+            // Split the date and time parts
+            const [datePart, timePart] = detail.DateAdded.split(', ');
+
+            // Split the date into day, month, and year
+            const [day, month, year] = datePart.split('/');
+
+            // Combine the date and time into a format that JavaScript can understand
+            const detailDate = new Date(`${year}-${month}-${day}T${timePart}`);
+
+            const matchesFilter = detailDate <= endDate;
+            console.log(`Checking DateAdded: ${detail.DateAdded}, matches filter: ${matchesFilter}`);
+            if (matchesFilter) {
+              console.log(`Match found for filter (endDate): ${detail.DateAdded}`);
+            }
+            return matchesFilter;
+          });
+        }
+
+        
+       
+        
       }
 
       // Make sure to trigger reactivity in Vue
@@ -173,6 +242,7 @@ export default {
 
   mounted() {
     this.fetchPostingDetails();
+    
   },
 };
 </script>

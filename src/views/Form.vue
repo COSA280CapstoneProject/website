@@ -2,7 +2,7 @@
   <div>
     <FormNavbar @navbar-sort-key-changed="updateSortKey" />
     <ExportDropdown v-if="showDropdown" />
-    <SortingMenu v-if="showSorting"/>
+    <SortingMenu v-if="showSorting" @close-Sort="closeSortingMenu"/>
     <br>
     <br>
     <div class="form-page-container">
@@ -38,6 +38,11 @@
       this.sortKey = newSortKey;
      
     },
+
+    closeSortingMenu() {
+      console.log('closeSortingMenu');
+    this.showSorting = false; // This will hide the SortingMenu component
+  },
   },
   };
 
