@@ -250,11 +250,9 @@ export default {
 
 .submit-post {
   background-color: #763c97;
-  background-image: url('@/assets/submitposting.png');
   background-repeat: repeat;
   background-size: 10%;
   color: black;
-  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
