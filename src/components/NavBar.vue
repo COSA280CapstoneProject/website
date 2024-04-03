@@ -483,6 +483,7 @@ body.no-scroll {
   border: 1px solid #eaeaea;
   padding: 10px;
   margin-bottom: 10px;
+  font-size: calc(8px + 0.5vmin);
 }
 
 /* Container for admin list and actions */
@@ -553,6 +554,7 @@ body.no-scroll {
   padding-right: 5px;
 }
 
+/* Hover effect for close button */
 .close-button:hover {
   color: white;
   background-color: red;
@@ -562,9 +564,31 @@ body.no-scroll {
 
 /* Media query for responsive adjustments */
 @media screen and (max-width: 950px) {
+  /* Adjustments for logo size in smaller screens */
+  .logo {
+    width: 70px;
+  }
+
+  /* Adjustments for user info font size in smaller screens */
+  .user-info {
+    font-size: 14px;
+  }
+
+  /* Adjustments for settings button icon size in smaller screens */
+  .form-page button {
+    font-size: 1px;
+  }
+
   /* Adjustments for remove admin button and close button in smaller screens */
   .remove-admin, .close-button {
     width: 50%;
+  }
+
+  /* Adjust position and size of close button for small screens */
+  .close-button {
+    font-size: 16px;
+    top: -10px;
+    margin-right: -50px;
   }
 
   /* Adjust position and size of close button for small screens */
