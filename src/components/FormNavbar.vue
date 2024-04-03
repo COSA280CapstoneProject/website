@@ -18,7 +18,7 @@
     <button class="more-options" @click="showDropdown = !showDropdown">
       <i class="fas fa-ellipsis-v"></i>
     </button>
-    <ExportDropdown :show="showDropdown" />
+    <ExportDropdown :show="showDropdown" @close-export="closeExportDropdown"/>
     <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" @close-Sort="closeSortingMenu"   />
     <StatsDropdown v-if="showStatsDropdown" />
     </div>
@@ -59,8 +59,12 @@
     },
     closeSortingMenu() {
       this.showSorting = false; // This will hide the SortingMenu component
-    
   },
+    closeExportDropdown() {
+    
+      this.showDropdown = false; // This will hide the ExportDropdown component
+    },
+
   },
   watch: {
     searchQuery(newQuery, oldQuery) {
@@ -68,7 +72,6 @@
     if (newQuery !== oldQuery) {
       
       this.$emit('search-query-updated', newQuery);
-    console.log('searchQuery updated');
       
     }
   }
