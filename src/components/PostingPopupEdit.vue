@@ -93,6 +93,11 @@
     import Toast from 'primevue/toast';
     
     export default {
+      data() {
+        return {
+          years: [2024, 2025, 2026],
+        }
+      },
       components: {
         Toast,
       },
