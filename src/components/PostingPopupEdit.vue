@@ -1,165 +1,222 @@
 <template>
-  <div class="background" @click="goBack">
-    <div v-if="isPopupActive" class="overlay"></div>
-    <div v-bind:class="{ 'Postings': isPopupActive }">
-      <div class="Postings" @click.stop>
-        <Toast v-model="toast" position="top-right" />
-        <h1>Edit Posting</h1>
-        <div class="input-group">
-          <div class="org-contact-container">
-            <div class="orgName">
-              <label for="orgName">Organization Name</label>
-              <input type="text" v-model="orgName" :class="{ error: submitted && !orgName.trim() }" />
+    <div class="background" @click="goBack">
+      <div v-if="isPopupActive" class="overlay"></div>
+      <div v-bind:class="{ 'Postings': isPopupActive }">
+        <div class="Postings" @click.stop>
+          <div class="Postings">
+            <Toast v-model="toast" position="top-right" />
+            <h1>Edit Posting</h1>
+            <div class="input-group">
+              <div class="org-contact-container">
+                <div class="orgName">
+                  <label for="orgName">Organization Name </label>
+                  <input type="text" v-model="orgName" :class="{ error: submitted && !orgName.trim() }" />
+                </div>
+                <div class="contactName">
+                  <label for="contactName">Contact Name </label>
+                  <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" />
+                </div>
+              </div>
+              <div class="contact-info-container">
+                <div class="contact-info-container">
+                  <div class="email">
+                    <label for="email">Email </label>
+                    <div>
+                      <input type="text" v-model="email" :class="{ error: submitted && !email }" />
+                      <span v-if="submitted && !email" class="error-message">Please enter a valid email address.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="phoneNumber">
+                  <label for="phoneNumber">Phone Number </label>
+                  <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
+                    :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
+                </div>
+              </div>
+              <div class="posting">
+                <label>Type of</label>
+                <div class="posting-label">
+                  <label for="postingType">Posting</label>
+                </div>
+                <div class="select-container">
+                  <select id="postingType" name="postingType" v-model="programType"
+                    :class="{ error: submitted && !programType }">
+                    <option value="Student Projects">Student Project</option>
+                    <option value="Internships">Internship</option>
+                    <option value="Job Placements">Job Placement</option>
+                  </select>
+                </div>
+              </div>
+              <div class="startDate">
+                <div class="start-date-container">
+                  <label for="startDate">Start Date </label>
+                  <div class="date-inputs">
+                    <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
+                      <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                    </select>
+                    <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
+                      <option value="Fall">Fall</option>
+                      <option value="Winter">Winter</option>
+                      <option value="Spring">Spring</option>
+                      <option value="Summer">Summer</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="Title">
+                <label for="Title" id="TitleL">Title </label>
+                <input type="text" id="Title" name="Title" v-model="postTitle"
+                  :class="{ error: submitted && !postTitle }" />
+              </div>
+              <div class="Description">
+                <label for="Description">Description </label>
+                <textarea id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }"></textarea>
+              </div>
+              <div class="submit">
+                <button @click="submitForm">Edit</button>
+              </div>
+              <div class="close-button">
+                <button class="close-button" @click="goBack">X</button>
+              </div>
             </div>
-            <div class="contactName">
-              <label for="contactName">Contact Name</label>
-              <input type="text" v-model="contactName" :class="{ error: submitted && !contactName.trim() }" />
-            </div>
-          </div>
-          <div class="contact-info-container">
-            <div class="email">
-              <label for="email">Email</label>
-              <input type="text" v-model="email" :class="{ error: submitted && !email.trim() }" />
-              <span v-if="submitted && !email.trim()" class="error-message">Please enter a valid email address.</span>
-            </div>
-            <div class="phoneNumber">
-              <label for="phoneNumber">Phone Number</label>
-              <input type="text" v-model="phoneNum" :class="{ error: submitted && !phoneNum.trim() }" />
-            </div>
-          </div>
-          <div class="posting">
-            <label>Type of Posting</label>
-            <select v-model="programType" :class="{ error: submitted && !programType }">
-              <option disabled value="">Please select one</option>
-              <option value="Student Projects">Student Project</option>
-              <option value="Internships">Internship</option>
-              <option value="Job Placements">Job Placement</option>
-            </select>
-          </div>
-          <div class="startDate">
-            <label for="startDate">Start Date</label>
-            <select v-model="startDate" :class="{ error: submitted && !startDate }">
-              <option disabled value="">Year</option>
-              <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-            </select>
-            <select v-model="season" :class="{ error: submitted && !season }">
-              <option disabled value="">Season</option>
-              <option value="Fall">Fall</option>
-              <option value="Winter">Winter</option>
-              <option value="Spring">Spring</option>
-              <option value="Summer">Summer</option>
-            </select>
-          </div>
-          <div class="Title">
-            <label for="Title">Title</label>
-            <input type="text" v-model="postTitle" :class="{ error: submitted && !postTitle.trim() }" />
-          </div>
-          <div class="Description">
-            <label for="Description">Description</label>
-            <textarea v-model="postDesc" :class="{ error: submitted && !postDesc.trim() }"></textarea>
-          </div>
-          <div class="submit">
-            <button @click.prevent="submitForm">Edit</button>
-          </div>
-          <div class="close-button">
-            <button @click.prevent="goBack">X</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</template>
-
+  </template>
   
-  <script>
-import { ref, /* onMounted, */ watch } from 'vue'; // Removed unused onMounted
-import { useToast } from 'primevue/usetoast';
-import axios from 'axios';
-import Toast from 'primevue/toast';
-
-export default {
-  components: {
-    Toast,
-  },
-  props: {
-    editingPosting: Object,
-  },
-  setup(props, { emit }) {
-    const toast = useToast();
-    const submitted = ref(false);
-    const orgName = ref('');
-    const contactName = ref('');
-    const phoneNum = ref('');
-    const email = ref('');
-    const programType = ref('');
-    const startDate = ref('');
-    const season = ref('');
-    const postTitle = ref('');
-    const postDesc = ref('');
-
-    // Assuming props.editingPosting is correctly populated. You might need to use onMounted or watchEffect if dynamic.
-    watch(() => props.editingPosting, (newValue) => {
-      if (newValue) {
-        orgName.value = newValue.orgName || '';
-        contactName.value = newValue.contactName || '';
-        phoneNum.value = newValue.phoneNum || '';
-        email.value = newValue.email || '';
-        programType.value = newValue.programType || '';
-        startDate.value = newValue.startDate || '';
-        season.value = newValue.season || '';
-        postTitle.value = newValue.postTitle || '';
-        postDesc.value = newValue.postDesc || '';
-      }
-    }, { immediate: true });
-
-    const submitForm = async () => {
-      submitted.value = true;
-      const fieldsToUpdate = { orgName, contactName, phoneNum, email, programType, startDate, season, postTitle, postDesc };
-
-      for (const [fieldName, fieldValue] of Object.entries(fieldsToUpdate)) {
-        if (fieldValue.value && props.editingPosting[fieldName] !== fieldValue.value) { // Only update if value has changed
-          await updateField(fieldName, fieldValue.value);
+  
+    <script>
+    import { ref, onMounted } from 'vue';
+    import { useToast } from 'primevue/usetoast';
+    import axios from 'axios';
+    import Toast from 'primevue/toast';
+    
+    export default {
+      data() {
+        return {
+          years: [2024, 2025, 2026],
         }
-      }
-    };
-    const endpointMap = {
-      orgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
-      contactName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsContactName',
-      phoneNum: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPhoneNum',
-      email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
-      programType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype',
-      startDate: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsStartDate',
-      season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
-      postTitle: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostTitle',
-      postDesc: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostDesc',
-    };
-
-    const updateField = async (fieldName, value) => {
-      const payload = { postID: props.editingPosting.postID, [fieldName]: value };
-
-      try {
-        await axios.post(endpointMap[fieldName], payload, {
-          headers: { 'Content-Type': 'application/json' },
+      },
+      components: {
+        Toast,
+      },
+      props: {
+        editingPosting: Object,
+        postID: {
+          type: String,
+          required: true,
+        }
+      },
+      setup(props, { emit }) {
+        const toast = useToast();
+    
+        // Initializing refs for form fields
+        const orgName = ref('');
+        const contactName = ref('');
+        const phoneNum = ref('');
+        const startDate = ref('');
+        const postTitle = ref('');
+        const postDesc = ref('');
+        const programType = ref('');
+        const postType = ref('');
+        const status = ref('');
+        const email = ref('');
+        const season = ref('');
+    
+        // Function to populate form fields from props
+        onMounted(() => {
+          const posting = props.editingPosting;
+          orgName.value = posting?.orgName || '';
+          contactName.value = posting?.contactName || '';
+          phoneNum.value = posting?.phoneNum || '';
+          startDate.value = posting?.startDate || '';
+          postTitle.value = posting?.postTitle || '';
+          postDesc.value = posting?.postDesc || '';
+          programType.value = posting?.programType || '';
+          postType.value = posting?.postType || '';
+          status.value = posting?.status || '';
+          email.value = posting?.email || '';
+          season.value = posting?.season || '';
         });
-        toast.add({ severity: 'success', summary: 'Update Successful', detail: `${fieldName} updated successfully.`, life: 3000 });
-      } catch (error) {
-        console.error(`Failed to update ${fieldName}:`, error);
-        toast.add({ severity: 'error', summary: 'Update Failed', detail: `Failed to update ${fieldName}.`, life: 3000 });
-      }
+    
+        // Define the endpoint map
+        const endpointMap = {
+          orgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
+          contactName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsContactName',
+          phoneNum: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPhoneNum',
+          startDate: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsStartDate',
+          postTitle: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostTitle',
+          postDesc: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostDesc',
+          programType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype',
+          postType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostType',
+          email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
+          season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
+        };
+
+        // Function to clear all fields
+        const clearFields = () => {
+          orgName.value = '';
+          contactName.value = '';
+          phoneNum.value = '';
+          startDate.value = '';
+          postTitle.value = '';
+          postDesc.value = '';
+          programType.value = '';
+          postType.value = '';
+          status.value = '';
+          email.value = '';
+          season.value = '';
+        };
+    
+        // SubmitForm method to trigger update for changed fields
+        const submitForm = async () => {
+          const fieldsToUpdate = {
+            orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season
+          };
+
+          for (const [fieldName, fieldValue] of Object.entries(fieldsToUpdate)) {
+            // Compare current value with initial value from props and update if different and not empty
+            if (props.editingPosting[fieldName] !== fieldValue.value && fieldValue.value.trim() !== '') {
+              await updateField(fieldName, fieldValue.value);
+            } else {
+              // If the value hasn't changed or is empty, keep the original value
+              fieldValue.value = props.editingPosting[fieldName];
+            }
+          }
+
+          // Clear all fields after updating
+          clearFields();
+        };
+
+        // Function to update a field, including postID in every request
+        const updateField = async (fieldName, value) => {
+          const payload = {
+            postID: props.postID,
+            [fieldName]: value,
+          };
+
+          try {
+            await axios.post(endpointMap[fieldName], payload, {
+              headers: { 'Content-Type': 'application/json' }
+            });
+            toast.add({ severity: 'success', summary: 'Update Successful', detail: `${fieldName} updated successfully.`, life: 3000 });
+          } catch (error) {
+            console.error(`Failed to update ${fieldName}:`, error);
+            toast.add({ severity: 'error', summary: 'Update Failed', detail: `Failed to update ${fieldName}.`, life: 3000 });
+          }
+        };
+    
+        const goBack = () => emit('close');
+    
+        return {
+          goBack,
+          submitForm,
+          orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season,
+        };
+      },
     };
-
-    const goBack = () => emit('close');
-
-    return {
-      goBack,
-      submitForm,
-      submitted,
-      orgName, contactName, phoneNum, email, programType, startDate, season, postTitle, postDesc,
-    };
-  },
-};
-</script>
-
+    </script>
   
    
   <style scoped>

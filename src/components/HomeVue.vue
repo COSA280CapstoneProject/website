@@ -154,9 +154,11 @@ export default {
   height: 100%;
   overflow: hidden;
 }
+
 .logo {
   padding-bottom: 50px;
 }
+
 .home {
   display: flex;
   flex-direction: column;
@@ -216,8 +218,6 @@ export default {
   z-index: 1;
 }
 
-
-
 .introduction {
   transform: skewY(3deg); /* Skew the background */
   background-color: rgb(255, 255, 255);
@@ -233,10 +233,10 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   z-index: 1;
   padding-bottom: 388px;
 } 
-
 
 /* Specific styles for each section */
 .introduction .content {
@@ -250,7 +250,9 @@ export default {
 
 .submit-post {
   background-color: #763c97;
-  color: #fff;
+  background-repeat: repeat;
+  background-size: 10%;
+  color: black;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
@@ -268,13 +270,11 @@ export default {
 
 }
 
-
 .introduction img {
   max-width: 100%;
   height: auto;
   margin-right: 1rem;
 }
-
 
 .employerReview {
   text-align: center;
@@ -338,7 +338,6 @@ export default {
   margin-top: 0; /* Remove top margin */
 }
 
-
 /* Footer styles */
 footer {
   background-color: #753C97;
@@ -349,7 +348,7 @@ footer {
 
 .footer-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
@@ -393,7 +392,6 @@ footer {
   margin-top: 20px;
 }
 
-
 .controls button  {
   background-color: #c56eff;
   border: none;
@@ -435,4 +433,5 @@ footer {
   border-radius: 5px;
   margin: 0 auto;
 }
+
 </style>
