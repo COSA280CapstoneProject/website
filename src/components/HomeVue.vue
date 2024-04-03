@@ -54,7 +54,10 @@
         <h2>What people are saying</h2>
       </div>
       <div class="content testimonials-container">
-        <div class="carousel-container">
+        <div class="carousel-container" 
+            @touchstart="handleTouchStart" 
+            @touchmove="handleTouchMove" 
+            @touchend="handleTouchEnd">
           <div class="carousel-slide" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
             <div class="carousel-item" v-for="(testimonial, index) in testimonials" :key="index">
               <h4>{{ testimonial.name }}</h4>
@@ -109,7 +112,9 @@ export default {
   data() {
     return {
       showText: true,
-      showPopup: false
+      showPopup: false,
+      xDown: null,
+      yDown: null,
     };
   },
   setup() {
@@ -139,7 +144,36 @@ export default {
     return { testimonials, currentIndex, next, prev };
   },
   methods: {
-    
+    handleTouchStart(evt) {
+      const firstTouch = evt.touches[0]; 
+      this.xDown = firstTouch.clientX;                                      
+      this.yDown = firstTouch.clientY;                                      
+    },                                                
+    handleTouchMove(evt) {
+      if (!this.xDown || !this.yDown) {
+        return;
+      }
+
+      var xUp = evt.touches[0].clientX;                                    
+      var yUp = evt.touches[0].clientY;
+
+      var xDiff = this.xDown - xUp;
+      var yDiff = this.yDown - yUp;
+
+      if (Math.abs(xDiff) > Math.abs(yDiff)) {
+        if (xDiff > 0) {
+          /* left swipe */ 
+          this.next();
+        } else {
+          /* right swipe */
+          this.prev();
+        }                       
+      } 
+      /* reset values */
+      this.xDown = null;
+      this.yDown = null;                                             
+    },
+
   },
   mounted() {
   },
@@ -393,9 +427,9 @@ footer {
 }
 
 .controls button  {
-  background-color: #c56eff;
+  background-color: transparent;
   border: none;
-  color: rgb(255, 255, 255);
+  color: #763c97;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -412,8 +446,7 @@ footer {
 }
 
 .controls button:hover .submit-post button:hover  {
-  background-color: #a51eff;
-  color: rgb(255, 255, 255);
+  color: #763c97;
 }
 
 .submit-post button{
