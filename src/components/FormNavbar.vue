@@ -19,7 +19,8 @@
       <i class="fas fa-ellipsis-v"></i>
     </button>
     <ExportDropdown :show="showDropdown" />
-    <SortingMenu v-if="showSorting" />
+    <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" />
+    <StatsDropdown v-if="showStatsDropdown" />
     </div>
     </div>
     
@@ -28,26 +29,35 @@
   <script>
   import ExportDropdown from '@/components/ExportDropdown.vue'
   import SortingMenu from '@/components/SortingDropdown.vue'
+  import StatsDropdown from '@/components/StatsDropdown.vue'
 
   export default {
     name: 'SearchAndSort',
     components: {
       ExportDropdown,
       SortingMenu,
+      StatsDropdown
     },
     data() {
       return {
       showDropdown: false,
+      showStatsDropdown: false,
       showSorting: false
     }
     },
     methods: {
     toggleMenu() {
       console.log('toggleMenu');
-    }
-    // ...existing methods...
+    },
+    Statspopup() {
+      this.showStatsDropdown = !this.showStatsDropdown;
+    },
+    updateSortKeys(newSortKeys) {
+      this.sortKey = newSortKeys; // Update sortKey when it changes
+
+      this.$emit('navbar-sort-key-changed', newSortKeys);
+    },
   }
-    // You can add methods to handle search and sorting here
   };
   </script>
   

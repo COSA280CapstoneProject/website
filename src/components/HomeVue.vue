@@ -29,19 +29,20 @@
 
     <!-- Submit a Post Section -->
     <section class="submit-post trapezoid">
-    <div class="content">
-      <div class="inner-content">
-        <h2>Submit a Post</h2>
-        <button @click="showPopup = true">Create Posting</button>
-        <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
-          By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
-        </p>
-        <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
-          Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
-        </p>
-        <p><em>We will be evaluating your posting</em></p>
+      <div class="content">
+        <div class="inner-content">
+          <h2>Submit a Post</h2>
+          <p>Your posting will be viewed by many students!</p>
+          <p>If you are an employer seeking top-tier talent to fill key positions within your company, requesting a resource through ICT is your gateway to a pool of skilled professionals.
+            By clicking the "Create Posting" button, you unlock the opportunity to access a diverse range of qualified candidates tailored to your specific industry needs.
+          </p>
+          <p> ICT simplifies and streamlines the hiring process, providing a platform where employers can connect with the right talent efficiently and effectively.
+            Elevate your recruitment strategy with ICT and discover the ideal candidates to drive success for your business.
+          </p>
+          <p><em>We will be evaluating your posting</em></p>
+          <button @click="showPopup = true">Create Posting</button>
+        </div>
       </div>
-    </div>
     </section>
 
     <!-- Line Between Submit a Post and Testimonials Section -->
@@ -53,29 +54,18 @@
         <h2>What people are saying</h2>
       </div>
       <div class="content testimonials-container">
-        <!-- Written Testimonials -->
-        <div class="testimonials">
-
-          <div class="employerReview">
-            <h4>Audrey K:</h4>
-            <h5 class="subtitle">CST Student</h5>
+        <div class="carousel-container">
+          <div class="carousel-slide" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+            <div class="carousel-item" v-for="(testimonial, index) in testimonials" :key="index">
+              <h4>{{ testimonial.name }}</h4>
+              <h5 class="subtitle">{{ testimonial.subtitle }}</h5>
+              <p>{{ testimonial.review }}</p>
+            </div>
           </div>
-
-          <p>
-            "Working with ICT has been a transformative experience for our HR team.
-            The platform's extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company's culture and values.
-            The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes."
-          </p>
-
-          <div class="employerReview">
-            <h4>Spencer Nikkel:</h4>
-            <h5 class="subtitle">Client</h5>
+          <div class="controls">
+            <button @click="prev"><i class="fas fa-arrow-left"></i></button>
+            <button @click="next"><i class="fas fa-arrow-right"></i></button>
           </div>
-          <p>
-            "Choosing ICT for our hiring needs was a strategic move that paid off immensely.
-            The platform's innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals.
-            ICT has become an indispensable ally in our quest for building a high-performing team."
-          </p>
         </div>
       </div>
     </section>
@@ -108,8 +98,8 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import PostingPopup from '@/components/PostingPopup.vue'
-
 
 export default {
   name: 'HomeVue',
@@ -122,6 +112,32 @@ export default {
       showPopup: false
     };
   },
+  setup() {
+    const testimonials = [ // Testimonials carousel information 
+      {
+        name: 'Audrey K:',
+        subtitle: 'CST Student',
+        review: 'Working with ICT has been a transformative experience for our HR team. The platform\'s extensive network of professionals, coupled with its advanced matching algorithms, ensures that we consistently discover qualified candidates who align with our company\'s culture and values. The streamlined process and valuable insights provided by ICT have significantly enhanced our recruitment outcomes.'
+      },
+      {
+        name: 'Spencer Nikkel:',
+        subtitle: 'Client',
+        review: 'Choosing ICT for our hiring needs was a strategic move that paid off immensely. The platform\'s innovative approach to recruitment empowers employers to make data-driven decisions and connect with candidates who not only possess the right skills but also align with our organizational goals. ICT has become an indispensable ally in our quest for building a high-performing team.'
+      }
+    ];
+
+    const currentIndex = ref(0);
+
+    const next = () => {
+      currentIndex.value = (currentIndex.value + 1) % testimonials.length;
+    };
+
+    const prev = () => {
+      currentIndex.value = (currentIndex.value - 1 + testimonials.length) % testimonials.length;
+    };
+
+    return { testimonials, currentIndex, next, prev };
+  },
   methods: {
     
   },
@@ -130,6 +146,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .home {
   margin: 0;
@@ -137,9 +154,11 @@ export default {
   height: 100%;
   overflow: hidden;
 }
+
 .logo {
   padding-bottom: 50px;
 }
+
 .home {
   display: flex;
   flex-direction: column;
@@ -199,11 +218,9 @@ export default {
   z-index: 1;
 }
 
-
-
 .introduction {
   transform: skewY(3deg); /* Skew the background */
-  background-color: lightgray;
+  background-color: rgb(255, 255, 255);
   margin: 0;
   padding-top: 50px;
   padding-bottom: 50px;
@@ -216,26 +233,32 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   z-index: 1;
   padding-bottom: 388px;
 } 
-
 
 /* Specific styles for each section */
 .introduction .content {
   display: flex;
   align-items: center;
   transform: skewY(-3deg); /* Counter-skew the content */
+  font-size: large;
+  width: 75%;
+  margin: 0 auto;
 }
 
 .submit-post {
-  background-color: #8D68AB;
+  background-color: #763c97;
+  background-repeat: repeat;
+  background-size: 10%;
+  color: black;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
   padding-top: 150px;
-  padding-left: 400px;
-  padding-right: 400px;
+  padding-left: 20%;
+  padding-right: 20%;
   padding-bottom: 150px;
   z-index: 0;
 }
@@ -244,21 +267,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
 
+}
 
 .introduction img {
   max-width: 100%;
   height: auto;
   margin-right: 1rem;
-}
-
-.submit-post button {
-  background-color: #3498db;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
 }
 
 .employerReview {
@@ -280,7 +295,7 @@ export default {
 }
 
 .testimonials-section {
-  background-color: lightgray;
+  background-color: rgb(255, 255, 255);
   padding-top: 50px;
   padding-bottom: 50px;
   z-index: 2;
@@ -291,7 +306,7 @@ export default {
 .testimonials-section .content {
   display: flex;
   justify-content: center;
-  background-color: lightgray;
+  background-color: rgb(255, 255, 255);
   padding-top: 5px;
   padding-left: 50px;
   padding-bottom: 50px;
@@ -323,7 +338,6 @@ export default {
   margin-top: 0; /* Remove top margin */
 }
 
-
 /* Footer styles */
 footer {
   background-color: #753C97;
@@ -334,7 +348,7 @@ footer {
 
 .footer-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
@@ -350,4 +364,74 @@ footer {
   width: 30px;
   margin-right: 10px;
 }
+.footer, a{
+  color: #fff;
+  text-decoration: none;
+}
+
+.carousel-container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+}
+
+.carousel-slide {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+  min-width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.controls button  {
+  background-color: #c56eff;
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 5px;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+.controls button:hover .submit-post button:hover  {
+  background-color: #a51eff;
+  color: rgb(255, 255, 255);
+}
+
+.submit-post button{
+  background-color: #c56eff;
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
 </style>

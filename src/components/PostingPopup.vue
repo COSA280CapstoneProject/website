@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="Title">
-              <label for="Title">Title </label>
+              <label for="Title" id="TitleL">Title </label>
               <input type="text" id="Title" name="Title" v-model="postTitle"
                 :class="{ error: submitted && !postTitle }" />
             </div>
@@ -99,7 +99,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 import { ref, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
@@ -154,14 +154,14 @@ export default {
     generateYears();
 
     const validateEmail = () => {
-  console.log('Email:', email.value);
-  if (!email.value) {
-    emailIsValid.value = false;
-  } else {
-    emailIsValid.value = isValidEmail(email.value);
-  }
-  console.log('Email is valid:', emailIsValid.value);
-};
+      console.log('Email:', email.value);
+      if (!email.value) {
+        emailIsValid.value = false;
+      } else {
+        emailIsValid.value = isValidEmail(email.value);
+      }
+      console.log('Email is valid:', emailIsValid.value);
+    };
 
     const goBack = () => {
       emit('close');
@@ -225,25 +225,34 @@ export default {
     };
 
     const onFileChange = (e) => {
-      const files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      Array.from(files).forEach(file => {
-        fileName.value.push(file.name);
-        fileSize.value.push(file.size);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          fileDataUrl.value.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-        fileObjects.value.push(file); 
-      });
-      toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
+  const files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+
+  Array.from(files).forEach(file => {
+    if (file.size > 15 * 1024 * 1024) {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'File size exceeds the maximum limit of 15MB.', life: 3000 });
+      return;
+    }
+
+    fileName.value.push(file.name);
+    fileSize.value.push(file.size);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      fileDataUrl.value.push(e.target.result);
     };
+    reader.readAsDataURL(file);
+    fileObjects.value.push(file);
+  });
+
+  toast.add({ severity: 'success', summary: 'File Added', detail: 'Your file has been added successfully.', life: 3000 });
+};
 
     console.log('orgName:', orgName.value); 
 
     const submitForm = () => {
       submitted.value = true;
+
+      validateEmail(); // Validate the email
 
       if (!orgName.value || !contactName.value || !phoneNum.value || !startDate.value || !postTitle.value || !postDesc.value || !programType.value || !email.value || !season.value) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please make sure the field is filled out correctly.', life: 3000 });
@@ -265,15 +274,6 @@ export default {
         formData.append('file', file, fileName.value[index]);
         filesToUpload.push(fileName.value[index]);
       });
-
-      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
-          console.log(response);
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully.', life: 3000 });
 
           const postID = Math.floor(100000 + Math.random() * 900000);
           const status = 'Open';
@@ -302,16 +302,44 @@ export default {
             email: email.value,
             season: season.value,
             dateAdded: dateAdded,
-          };
+            blobUrl: ''
+    };
 
-          console.log(JSON.stringify(postData));
+    const uploadFiles = () => {
+        const promises = fileObjects.value.map((file, index) => {
+          const formData = new FormData();
+          formData.append('file', file, fileName.value[index]);
 
+          return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/ICTFileUpload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+            .then(response => {
+              console.log(response);
+              toast.add({ severity: 'success', summary: 'Success', detail: 'File uploaded successfully.', life: 3000 });
+
+              const urlRegex = /(https?:\/\/[^\s]+)/g;
+              return response.data.match(urlRegex)[0]; // Return the URL from the response data
+            })
+            .catch(error => {
+              console.error(error);
+              toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload the file.', life: 3000 });
+            });
+        });
+
+        return Promise.all(promises)
+          .then(urls => {
+            postData.blobUrl = urls.join(','); // Join the URLs into a string and update blobUrl
+          });
+      };
+
+    const insertData = () => {
           return axios.post('https://ictdatabasefileupload.azurewebsites.net/api/postToICTSQLDatabasePostings', postData, {
             headers: {
               'Content-Type': 'application/json'
             }
-          });
-        })
+                    })
         .then(response => {
           console.log(response);
           toast.add({ severity: 'success', summary: 'Success', detail: 'Data inserted successfully.', life: 3000 });
@@ -321,6 +349,13 @@ export default {
           console.error(error);
           toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to submit the form.', life: 3000 });
         });
+};
+
+    if (fileObjects.value.length > 0) {
+      uploadFiles().then(insertData);
+    } else {
+      insertData();
+    }
     };
 
     return {
@@ -420,14 +455,20 @@ export default {
 .email div {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
  
 .phoneNumber {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 25px;
+  gap: 13%;
   width: 45%;
+  margin-top: -1%;
+}
+
+.phoneNumber input {
+  transform: translateX(-1%);
 }
  
 .orgName label, .contactName label, .email label, .phoneNumber label {
@@ -449,13 +490,14 @@ export default {
   font-size: 16px;
 }
 
+
 .Description textarea {
   resize: none; 
 }
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 71px;
+  margin-left: 72px;
   font-size: 16px;
 }
  
@@ -488,7 +530,7 @@ export default {
 }
 
 .select-container {
-  margin-left: 110px;
+  margin-left: 112px;
   margin-top: -20px;
   flex: 1; 
 }
@@ -505,6 +547,16 @@ export default {
   align-items: center;
   padding-bottom: 20px;
   gap: 16px;
+}
+
+.error-message {
+  height: 20px;
+  color: red;
+  font-size: 10px;
+  width: 123%;
+  position: absolute;
+  margin-left: -40%;
+  transform: translateY(155%);
 }
  
 .startDate label {
@@ -548,10 +600,10 @@ export default {
 }
 .Description label {
   margin-bottom: 5px;
-  margin-top: -100px;
+  margin-top: -14%;
 }
 .Title input {
-  margin-left: 60px
+  
 }
 
 .FileUpload {
@@ -567,13 +619,10 @@ export default {
   text-align: center;
 }
  
-.remove-instruction {
-  color: #732181;
-  font-size: 12px;
-  text-align: center;
-  align-self: center;
+.drag-drop-container {
+  position: relative; /* Ensure relative positioning for containing the box and files */
 }
- 
+
 .drag-drop-box {
   border: 2px dashed #732181;
   padding: 20px;
@@ -585,7 +634,32 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  height: 100px
+  min-height: 100px; /* Set a minimum height to prevent collapsing */
+  position: relative; /* Ensure relative positioning */
+}
+
+.drag-drop-box:hover {
+  color: #732181; 
+}
+
+.remove-instruction {
+  color: #732181;
+  font-size: 12px;
+  text-align: center;
+  align-self: center;
+  position: absolute;
+  padding-bottom: 15%; 
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.file-info {
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: 10px;
+  margin-top: 10px; 
 }
  
 .drag-drop-box:hover {
@@ -632,6 +706,10 @@ export default {
   background-color: red;
 }
  
+#TitleL {
+  margin-right: 65px;
+}
+
 .background {
   position: fixed;
   top: 0;
@@ -647,6 +725,107 @@ export default {
   border-left: 1px solid black;
   border-bottom: 1px solid red;
   border-right: 1px solid red;
+  display: block;
+}
+
+@media only screen and (max-width: 600px) {
+  .Postings {
+    width: 100vw; /* Make popup width equal to viewport width */
+    height: 100vh; /* Make popup height equal to viewport height */
+    padding: 20px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Include padding in the total width and height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../assets/background 2.jpg'); /* Background image */
+    background-size: cover; /* Adjust background size as needed */
+    background-position: center; /* Adjust background position as needed */
+    background-repeat: no-repeat; /* Adjust background repeat as needed */
+    padding: 40px; /* Adjust padding as needed */
+  }
+
+  .org-contact-container,
+  .contact-info-container {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 5px; /* Adjust spacing between containers */
+  }
+
+  .orgName,
+  .contactName,
+  .email,
+  .phoneNumber {
+    width: 100%;
+  }
+
+  .orgName label,
+  .contactName label,
+  .email label,
+  .phoneNumber label {
+    margin-right: 0;
+    text-align: left;
+    width: 50%;
+    font-size: 14px;
+    margin-bottom: 5px; /* Add margin-bottom for spacing */
+  }
+
+  .email {
+  display: flex;
+  flex-direction: row; /* Ensure inline display for label and input */
+  align-items: center; /* Align items vertically */
+  justify-content: space-between; /* Align items with space between */
+  width: 100%;
+}
+
+.email input {
+  width: 117%; /* Adjust width as needed */
+  font-size: 14px;
+  margin-top: -5px; /* Adjust the margin-top to align input box with label */
+  margin-left: -49%;
+  transform: translateX(27%);
+}
+
+  .posting,
+  .startDate,
+  .Title,
+  .Description {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 10px; /* Adjust spacing between sections */
+  }
+
+  .Description label{
+    padding-top: 10%;
+  }
+  .Title input,
+  .Description textarea {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .select-container {
+    margin-top: -8%;
+    width: 100%;
+  }
+
+  .submit button {
+    padding: 12px 24px;
+  }
+
+  .close-button {
+    top: 5px;
+    right: 5px;
+    font-size: 16px;
+  }
+
+  .remove-instruction {
+    padding-bottom: 10%;
+  }
+}
+.TitleL {
+  margin-right: 5px;
 }
 
 
