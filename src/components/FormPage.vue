@@ -5,31 +5,34 @@
     <div class="posting-row" v-for="(detail, index) in postingDetails" :key="index">
       <div class="organization">
         <h2>{{ detail.OrgName }}</h2>
-        <!-- <p>Organization name: {{ detail.OrgName }}</p> -->
-        <p>Contact name: {{ detail.ContactName }}</p>
-        <p>Contact email: {{ detail.Email }}</p>
-        <p>Phone number: {{ formatPhoneNumber(detail.PhoneNum) }}</p>
-        <p>Post type: {{ detail.PostType }}</p>
-        <p>Program: {{ detail.ProgramType }}</p>
-        <p>Start Date: {{ detail.StartDate }}</p>
-        <p>Post ID: {{ detail.PostID }}</p>
-        <p>Post Title: {{ detail.PostTitle }}</p>
-        <p>Job Description: {{ detail.PostDesc }}</p>
-        <p>Season: {{ detail.Season }}</p>
-        <p>Date Added: {{ detail.DateAdded }}</p>
-        <p>Status: {{ detail.Status }}</p>
+        <p class="bold-text">Contact name: {{ detail.ContactName }}</p>
+  <p class="bold-text">Contact email: {{ detail.Email }}</p>
+  <p class="bold-text">Phone number: {{ formatPhoneNumber(detail.PhoneNum) }}</p>
+  <p class="bold-text">Post type: {{ detail.PostType }}</p>
+  <p class="bold-text">Program: {{ detail.ProgramType }}</p>
+  <p class="bold-text">Start Date: {{ detail.StartDate }}</p>
+  <p class="bold-text">Post ID: {{ detail.PostID }}</p>
+  <p class="bold-text">Post Title: {{ detail.PostTitle }}</p>
+  <p class="bold-text">Season: {{ detail.Season }}</p>
+  <p class="bold-text">Date Added: {{ detail.DateAdded }}</p>
+  <p class="bold-text">Status: {{ detail.Status }}</p>
       </div>
-      <div class="job-description">
+      <div class="job-description-1">
         <h2>{{ detail.PostTitle }}</h2>
-        <p>{{ detail.PostDesc }}</p>
+        <p class="job-description">{{ detail.PostDesc }}</p>
       </div>
-      <div class="file" v-if="detail.BlobURL">
-        <h2>File</h2>
-        <div v-for="(url, fileIndex) in detail.BlobURL.split(',') " :key="fileIndex">
-          <img src="@/assets/file.png" alt="Download file" class="download-icon"
-            @click="downloadFile(url, getFileName(url))" />
-          <div class="file-name">{{ getFileName(url) }} (File {{ fileIndex + 1 }})</div>
-          <div class="file-size">{{ fileSizes[url] }}</div>
+      <div v-if="detail.BlobURL" class="file">
+        <button @click="toggleDropdown(index)">
+          <img class="hamburger" src="@/assets/Hamburger_icon.png" />
+        </button>
+        <div v-show="showMenu[index]" class="dropdown-content">
+          <a href="#">Status: {{ detail.Status }}</a>
+          <a href="#">Edit</a>
+          <a href="#">Delete</a>
+        </div>
+        <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
+          <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(url, 'DownloadedFile')"/>
+          <div class="file-name">{{ url.substring(url.lastIndexOf('/') + 1) }} (File {{ fileIndex + 1 }})</div>
         </div>
       </div>
     </div>
@@ -42,102 +45,56 @@
   </div>
 </template>
 
-
 <script>
 import axios from 'axios';
+import HamburgerIcon from '@/assets/Hamburger_icon.png';
 
 export default {
-  props: {
-    sortKey: Array,
-  },
-
   data() {
     return {
       postingDetails: [],
-      allPostings: [], // Store all postings without filtering
       error: null,
+      HamburgerIcon,
       showErrorPopup: false,
       errorMessage: '',
-      fileSizes: {},
+      showMenu: [],
     };
   },
-  
   methods: {
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
-        .then(response => {
-          this.postingDetails = response.data;
-          this.postingDetails.forEach(detail => {
-            if (detail.BlobURL) {
-              detail.BlobURL.split(',').forEach(url => {
-                this.getFileSize(url);
-              });
-            }
-          });
-        })
-        .catch(error => {
-          this.errorMessage = 'Failed to load posting details: ' + error.message;
-          this.showErrorPopup = true;
-        });
+      .then(response => {
+        this.postingDetails = response.data;
+        this.showMenu = new Array(this.postingDetails.length).fill(false);
+      })
+      .catch(error => {
+        this.errorMessage = `Failed to load posting details: ${error.message}`;
+        this.showErrorPopup = true;
+      });
+    },
+    toggleDropdown(index) {
+      this.showMenu[index] = !this.showMenu[index];
     },
     downloadFile(blobUrl, fileName) {
-      const urls = blobUrl.split(',').filter(url => url.trim() !== '');
-      urls.forEach((url, index) => {
-        const link = document.createElement('a');
-        link
-
-          .href
-
-          = url;
-        const downloadFileName = fileName || 'File';
-        link.setAttribute('download', `${downloadFileName} (File ${index + 1})`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      });
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
     closePopup() {
       this.showErrorPopup = false;
     },
     formatPhoneNumber(phoneNumber) {
-      if (!phoneNumber) return '';
-      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
-      return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
-    },
-    getFileSize(url) {
-      axios.head(url)
-        .then(response => {
-          const size = response.headers['content-length'];
-          this.fileSizes[url] = this.formatFileSize(size);
-        })
-        .catch(error => {
-          console.error('Failed to get file size: ' + error.message);
-          this.fileSizes[url] = 'Unknown size';
-        });
-    },
-    getFileName(url) {
-      return url.substring(url.lastIndexOf('/') + 1);
-    },
-    formatFileSize(size) {
-      const i = Math.floor(Math.log(size) / Math.log(1024));
-      return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+      return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     },
   },
-
-  watch: {
-    sortKey() {
-      console.log('sortKey changed:', this.sortKey);
-      this.filterAndLogMatches();
-    },
-  },
-
   mounted() {
     this.fetchPostingDetails();
   },
 };
 </script>
-
-  
   
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -150,7 +107,9 @@ export default {
   padding: 5%;
   float: left;
 }
-
+.bold-text {
+  font-weight: bold;
+}
 .p{
 text-align: left;
 display: flex;
@@ -166,8 +125,16 @@ display: flex;
   padding: 10px;
   border-bottom: 1px solid #eee; /* Adds a line to separate postings */
 }
+.hamburger{
+  width: 2.5em;
+  background: none;   /* Make the background transparent */
+  border: none;       /* Remove the border */
+  padding: 0;         /* Remove padding */
+  margin: 0;          /* Remove margins */
+  cursor: pointer;
+}
 
-.organization, .job-description ,.file{
+.organization, .job-description-1 ,.file{
   flex: 1; /* Allows these sections to grow and take equal space */
   margin-right: 20px; /* Adds spacing between organization and job description sections */
   color: #5a1c7a;
@@ -185,10 +152,24 @@ display: flex;
 }
 
 .job-description {
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 40%;
+  flex: 0 0 40%; /* Do not grow, do not shrink, basis at 40% */
+  max-width: 40%; /* Confine maximum width to 40% of the parent container */
+  padding: 10px; /* Provides spacing inside the container */
+  margin-right: 20px; /* Separation from adjacent elements */
+  height: 300px; /* Fixed height for the container */
+  overflow-y: auto; /* Adds vertical scroll within the element if content overflows */
+  background-color: #f8f8f8; /* Background color for the container */
+  border: 1px solid #eaeaea; /* Border for the container */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow for visual depth */
+  margin-bottom: 20px; /* Space to the next section */
+  word-break: break-word; /* Allows words to break and wrap to the next line */
+  color: black;
 }
+
+
+
+
+
 
 .file-download-section {
   display: flex;
