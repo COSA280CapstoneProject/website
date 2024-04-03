@@ -252,6 +252,7 @@ html, body {
 .form-page button {
   background-color: #c56eff;
   border: none;
+  border-radius: 5px;
   color: rgb(255, 255, 255);
   padding: 15px 32px;
   text-align: center;
