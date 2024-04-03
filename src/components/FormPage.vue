@@ -5,17 +5,17 @@
     <div class="posting-row" v-for="(detail, index) in postingDetails" :key="index">
       <div class="organization">
         <h2>{{ detail.OrgName }}</h2>
-        <p><b>Contact name: </b>{{ detail.ContactName }}</p>
-        <p><b>Contact email: </b>{{ detail.Email }}</p>
-        <p><b>Phone number: </b>{{ formatPhoneNumber(detail.PhoneNum) }}</p>
+        <p><b>Contact name:</b> {{ detail.ContactName }}</p>
+        <p><b>Contact email:</b> {{ detail.Email }}</p>
+        <p><b>Phone number:</b> {{ formatPhoneNumber(detail.PhoneNum) }}</p>
         <p><b>Post type:</b> {{ detail.PostType }}</p>
-        <p><b>Program: </b>{{ detail.ProgramType }}</p>
-        <p><b>Start Date: </b>{{ detail.StartDate }}</p>
-        <p><b>Post ID: </b>{{ detail.PostID }}</p>
-        <p><b>Post Title: </b>{{ detail.PostTitle }}</p>
-        <p><b>Season: </b>{{ detail.Season }}</p>
-        <p><b>Date Added: </b>{{ detail.DateAdded }}</p>
-        <p><b>Status: </b>{{ detail.Status }}</p>
+        <p><b>Program:</b> {{ detail.ProgramType }}</p>
+        <p><b>Start Date:</b> {{ detail.StartDate }}</p>
+        <p><b>Post ID:</b> {{ detail.PostID }}</p>
+        <p><b>Post Title:</b> {{ detail.PostTitle }}</p>
+        <p><b>Season:</b> {{ detail.Season }}</p>
+        <p><b>Date Added:</b> {{ detail.DateAdded }}</p>
+        <p><b>Status:</b> {{ detail.Status }}</p>
       </div>
       <div class="job-description-1">
         <h2>{{ detail.PostTitle }}</h2>
@@ -28,11 +28,9 @@
         <div v-show="showMenu[index]" class="dropdown-content">
           <a>Status: <b>{{ detail.Status }}</b></a>
           <br>
-          <!-- Edit link to open the posting popup -->
-          <a href="#" @click="openPostingPopup(detail)">Edit</a>
+          <a href="#" @click.prevent="openEditPopup(detail, index)">Edit</a>
           <br>
-          <!-- Delete link to delete the posting -->
-          <a href="#" @click="deletePosting(detail.PostID)">Delete</a>
+          <a href="#" @click.prevent="deletePosting(detail.PostID)">Delete</a>
         </div>
         <div v-if="detail.BlobURL" class="file">
           <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
@@ -42,53 +40,110 @@
         </div>
       </div>
     </div>
-    <!-- Posting popup -->
-    <div v-if="showPostingPopup" class="posting-popup">
-      <!-- Posting Popup Content -->
-      <!-- Add form fields to edit posting details -->
-      <button @click="submitUpdatedPosting">Submit</button>
-    </div>
-    <div v-if="showErrorPopup" class="error-popup">
-      <div class="error-content">
-        <span>{{ errorMessage }}</span>
-        <button @click="closePopup" class="close-button">Close</button>
-      </div>
-    </div>
+    <!-- PostingPopupEdit component is conditionally rendered here -->
+    <posting-popup-edit
+      v-if="showEditPopup"
+      :editing-posting="currentEditingPosting"
+      @close="showEditPopup = false">
+    </posting-popup-edit>
   </div>
 </template>
 
+
+
 <script>
+
+
+
 import axios from 'axios';
-import HamburgerIcon from '@/assets/Hamburger_icon.png';
+import PostingPopupEdit from '@/components/PostingPopupEdit.vue';
 
 export default {
+  components: {
+    PostingPopupEdit,
+  },
   data() {
     return {
       postingDetails: [],
       error: null,
-      HamburgerIcon,
-      showErrorPopup: false,
-      errorMessage: '',
       showMenu: [],
-      showPostingPopup: false,
-      selectedPosting: null,
+      showEditPopup: false,
+      currentEditingPosting: null,
     };
   },
   methods: {
     fetchPostingDetails() {
       axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
-      .then(response => {
-        this.postingDetails = response.data;
-        this.showMenu = new Array(this.postingDetails.length).fill(false);
-      })
-      .catch(error => {
-        this.errorMessage = `Failed to load posting details: ${error.message}`;
-        this.showErrorPopup = true;
-      });
+        .then(response => {
+          this.postingDetails = response.data;
+          this.showMenu = new Array(this.postingDetails.length).fill(false);
+        })
+        .catch(error => {
+          this.error = error.message;
+        });
     },
     toggleDropdown(index) {
       this.showMenu[index] = !this.showMenu[index];
     },
+    openEditPopup(detail, index) {
+      this.currentEditingPosting = detail;
+      this.showEditPopup = true;
+      this.showMenu[index] = false;
+    },
+    deletePosting(postID) {
+      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings', { postID })
+        .then(response => {
+          if (response.status === 200) {
+            this.postingDetails = this.postingDetails.filter(post => post.PostID !== postID);
+          } else {
+            throw new Error(`Failed to delete posting: ${response.statusText}`);
+          }
+        })
+        .catch(error => {
+          this.error = error.message;
+        });
+    },
+    submitEditedPosting(editedPosting) {
+  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/';
+  const endpoints = {
+    contactName: 'editiCTSQLDatabasePostingsContactName',
+    email: 'editiCSQLDatabasePostingsEmail',
+    orgName: 'editICTSQLDatabasePostingsOrgName',
+    phoneNum: 'editICTSQLDatabasePostingsPhoneNum',
+    postDesc: 'editICTSQLDatabasePostingsPostDesc',
+    postTitle: 'editICTSQLDatabasePostingsPostTitle',
+    postType: 'editiCTSQLDatabasePostingsPostType',
+    programType: 'editiCTSQLDatabasePostingsProgramtype',
+    season: 'editiCTSQLDatabasePostingsSeason',
+    startDate: 'editICTSQLDatabasePostingsStartDate',
+  };
+
+  // Collect promises for each edit operation
+  const editPromises = Object.entries(editedPosting).reduce((promises, [key, value]) => {
+    if (endpoints[key]) { // If there's a corresponding endpoint for the field
+      const url = `${endpointBase}${endpoints[key]}`;
+      // Assuming each endpoint expects { postID, [key]: value } format
+      const data = { postID: editedPosting.PostID };
+      data[key] = value;
+      promises.push(axios.post(url, data));
+    }
+    return promises;
+  }, []);
+
+  // Execute all edit operations
+  Promise.all(editPromises)
+    .then(() => {
+      // If all edits were successful, close the popup and refresh the data
+      this.showEditPopup = false;
+      this.fetchPostingDetails();
+    })
+    .catch(error => {
+      // Handle errors (e.g., display an error message)
+      console.error('An error occurred while submitting the edits:', error);
+      this.error = 'An error occurred while submitting the edits. Please try again.';
+    });
+}
+,
     downloadFile(blobUrl, fileName) {
       const link = document.createElement('a');
       link.href = blobUrl;
@@ -97,50 +152,21 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-    closePopup() {
-      this.showErrorPopup = false;
-    },
     formatPhoneNumber(phoneNumber) {
       return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     },
-    // Method to open posting popup and populate it with selected posting data
-    openPostingPopup(posting) {
-      this.selectedPosting = posting;
-      this.showPostingPopup = true;
-    },
-    // Method to submit updated posting data
-    submitUpdatedPosting() {
-      // Call API to update posting
-      // Handle submission logic here
-      this.showPostingPopup = false; // Close posting popup after submission
-    },
-    deletePosting(postID) {
-  const url = `https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings`;
-
-  axios.post(url, {
-    postID: postID
-  })
-    .then(response => {
-      if (response.status === 200) {
-        // Remove the posting from the list
-        this.postingDetails = this.postingDetails.filter(post => post.PostID !== postID);
-      } else {
-        throw new Error(`Failed to delete posting: ${response.statusText}`);
-      }
-    })
-    .catch(error => {
-      this.errorMessage = `Failed to delete posting: ${error.message}`;
-      this.showErrorPopup = true;
-    });
-},
-
-
   },
   mounted() {
     this.fetchPostingDetails();
   },
 };
+
+
+
 </script>
+
+
+
 
 
 
