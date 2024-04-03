@@ -155,6 +155,43 @@ export default {
   },
   
   
+  // Extracting headers from the first row of data
+  const headers = Object.keys(data[0]);
+  
+  // Creating CSV content with headers
+  let csvContent = 'data:text/csv;charset=utf-8,';
+  csvContent += headers.join('\t') + '\n';
+
+  // Adding data rows
+  csvContent += data.map(row => {
+    // Loop through each cell in the row
+    return headers.map(header => {
+      let cellValue = row[header];
+      // If the header is "PostDesc" and cellValue is not null or undefined
+      if (header === 'PostDesc' && cellValue !== null && cellValue !== undefined) {
+        cellValue = cellValue.replace(/\r?\n/g, ' ');
+      }
+      // Enclose all cell values in double quotes
+      return `"${cellValue ? cellValue.replace(/"/g, '""') : ''}"`;
+    }).join('\t');
+  }).join('\n');
+
+  // Get the current date to include in the file name
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().slice(0,10);
+
+  // Constructing the file name with the current date
+  const fileName = `ICTIndustryPostings${formattedDate}.csv`;
+
+  // Encoding URI, creating link, and triggering download
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click();
+}
+  }
 };
 </script>
 
