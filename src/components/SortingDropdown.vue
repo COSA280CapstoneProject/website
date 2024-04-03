@@ -1,11 +1,11 @@
 <template>
   <div class="sorting-dropdown">
       <label class="closedCheck">
-          <Checkbox v-model="checked" :binary="true" />
+          <Checkbox v-model="closedChecked" :binary="true" />
     Show Closed
   </label>
   <label class="RejectedCheck">
-          <Checkbox v-model="checked2" :binary="true" />
+          <Checkbox v-model="rejectedCheck" :binary="true" />
     Show Rejected
   </label>
     <h4>Date Posted</h4>
@@ -47,8 +47,8 @@ export default {
   },
   data() {
     return {
-      checked: false,
-      checked2: false,
+      closedChecked: false,
+      rejectedCheck: false,
       showFilled: false,
       startDate: null,
       endDate: null,
@@ -113,17 +113,23 @@ export default {
         });
       });
     },
-    handleClickOutside(event) {
-      // Check if the click was outside the dropdown
-      if (!this.$el.contains(event.target)) {
-        this.closeDropdown(); // Call the method to close the dropdown
-      }
-    },
-
     // Method to close the dropdown
     closeDropdown() {
       this.$emit('close-Sort'); // Emit an event to the parent component to close the dropdown
     },
+    handleClickOutside(event) {
+  // Check if the click was inside the calendar or multiselect components
+  const withinCalendar = event.composedPath().some(el => el.classList && el.classList.contains('p-datepicker'));
+  const withinMultiselect = event.composedPath().some(el => el.classList && el.classList.contains('p-multiselect-panel'));
+
+  // If the click was outside the dropdown and not within the calendar or multiselect, close the dropdown
+  if (!this.$el.contains(event.target) && !withinCalendar && !withinMultiselect) {
+    this.closeDropdown();
+  }
+},
+
+
+   
   
 
 
@@ -159,12 +165,12 @@ export default {
   DeadlineS(newDeadlineS) {
     this.sortKeys.DeadlineS = newDeadlineS;
   },
-  checked(newChecked) {
-    this.sortKeys.checked = newChecked;
+  closedChecked(newClosedChecked) {
+    console.log(newClosedChecked);
+    this.sortKeys.closedChecked = newClosedChecked;
   },
-  checked2(newChecked2) {
-    this.sortKeys.checked2 = newChecked2;
-    
+  rejectedCheck(newRejectedCheck) {
+    this.sortKeys.rejectedCheck = newRejectedCheck;
   },
 },
 

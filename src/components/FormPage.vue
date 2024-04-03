@@ -45,6 +45,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   props: {
@@ -66,13 +67,16 @@ export default {
   
   methods: {
     fetchPostingDetails() {
+
   // Construct the URL with a query parameter for the search
   const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
 
   axios.get(url)
     .then(response => {
-      this.allPostings = response.data; // Store all postings
-      this.postingDetails = [...this.allPostings]; // Copy all postings to postingDetails
+        this.allPostings = response.data; // Store all postings fetched from the backend
+      // Filter postings to only include those with a status of 'Open' for display
+      this.postingDetails = this.allPostings.filter(posting => posting.Status === 'Open');
+      
 
       // Process BlobURL and file sizes as before
       this.postingDetails.forEach(detail => {
@@ -115,108 +119,69 @@ export default {
     },
 
     filterAndLogMatches() {
-      // Reset postingDetails from allPostings before filtering
-      this.postingDetails = [...this.allPostings];
+  // Start with all postings
+  let filteredPostings = [...this.allPostings];
 
-      // Check if there's a filter criteria in sortKey
-      if (this.sortKey) {
-        if (this.sortKey.PostType) {
-          console.log(`Filtering by PostType: ${this.sortKey.PostType}`);
-          this.postingDetails = this.postingDetails.filter(detail => {
-            // Adjusted to check if the detail.PostType is included in the sortKey.PostType array
-            const matchesFilter = this.sortKey.PostType.includes(detail.PostType);
-            console.log(`Checking PostType: ${detail.PostType}, matches filter: ${matchesFilter}`);
-            if (matchesFilter) {
-              console.log(`Match found for filter (PostType): ${detail.PostType}`);
-            }
-            return matchesFilter;
-          });
-        }
+  // Apply filters based on the sortKey criteria
+  if (this.sortKey) {
+    // Filter by PostType
+    if (this.sortKey.PostType && this.sortKey.PostType.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.PostType.includes(posting.PostType)
+      );
+    }
 
-        if (this.sortKey.ProgramType) {
-          console.log(`Filtering by ProgramType: ${this.sortKey.ProgramType}`);
-          this.postingDetails = this.postingDetails.filter(detail => {
-            const matchesFilter = this.sortKey.ProgramType.includes(detail.ProgramType);
-            console.log(`Checking ProgramType: ${detail.ProgramType}, matches filter: ${matchesFilter}`);
-            if (matchesFilter) {
-              console.log(`Match found for filter (ProgramType): ${detail.ProgramType}`);
-            }
-            return matchesFilter;
-          });
-        }
-        if (this.sortKey.DeadlineY) {
-          console.log(`Filtering by StartDate: ${this.sortKey.DeadlineY}`);
-          this.postingDetails = this.postingDetails.filter(detail => {
-            const matchesFilter = this.sortKey.DeadlineY.includes(detail.StartDate);
-            console.log(`Checking StartDate: ${detail.StartDate}, matches filter: ${matchesFilter}`);
-            if (matchesFilter) {
-              console.log(`Match found for filter (StartDate): ${detail.StartDate}`);
-            }
-            return matchesFilter;
-          });
-        }
-        if (this.sortKey.DeadlineS) {
-          console.log(`Filtering by Season: ${this.sortKey.DeadlineS}`);
-          this.postingDetails = this.postingDetails.filter(detail => {
-            const matchesFilter = this.sortKey.DeadlineS.includes(detail.Season);
-            console.log(`Checking Season: ${detail.Season}, matches filter: ${matchesFilter}`);
-            if (matchesFilter) {
-              console.log(`Match found for filter (Season): ${detail.Season}`);
-            }
-            return matchesFilter;
-          });
-        }
-        if (this.sortKey.startDate) {
-          console.log(`Filtering by startDate: ${this.sortKey.startDate}`);
-          const startDate = new Date(this.sortKey.startDate);
-          this.postingDetails = this.postingDetails.filter(detail => {
-            // Split the date and time parts
-            const [datePart, timePart] = detail.DateAdded.split(', ');
+    // Filter by ProgramType
+    if (this.sortKey.ProgramType && this.sortKey.ProgramType.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.ProgramType.includes(posting.ProgramType)
+      );
+    }
 
-            // Split the date into day, month, and year
-            const [day, month, year] = datePart.split('/');
+    // Filter by Deadline Year
+    if (this.sortKey.DeadlineY && this.sortKey.DeadlineY.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.DeadlineY.includes(posting.StartDate)
+      );
+    }
 
-            // Combine the date and time into a format that JavaScript can understand
-            const detailDate = new Date(`${year}-${month}-${day}T${timePart}`);
+    // Filter by Season
+    if (this.sortKey.DeadlineS && this.sortKey.DeadlineS.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.DeadlineS.includes(posting.Season)
+      );
+    }
 
-            const matchesFilter = detailDate >= startDate;
-            console.log(`Checking DateAdded: ${detail.DateAdded}, matches filter: ${matchesFilter}`);
-            if (matchesFilter) {
-              console.log(`Match found for filter (startDate): ${detail.DateAdded}`);
-            }
-            return matchesFilter;
-          });
-        }
-        if (this.sortKey.endDate) {
-          console.log(`Filtering by endDate: ${this.sortKey.endDate}`);
-          const endDate = new Date(this.sortKey.endDate);
-          this.postingDetails = this.postingDetails.filter(detail => {
-            // Split the date and time parts
-            const [datePart, timePart] = detail.DateAdded.split(', ');
+    // Filter by Start Date
+if (this.sortKey.startDate) {
+  const startDate = moment(this.sortKey.startDate, 'DD/MM/YYYY, HH:mm:ss');
+  filteredPostings = filteredPostings.filter(posting => {
+    const postingDate = moment(posting.DateAdded, 'DD/MM/YYYY, HH:mm:ss');
+    return postingDate.isSameOrAfter(startDate);
+  });
+}
 
-            // Split the date into day, month, and year
-            const [day, month, year] = datePart.split('/');
+// Filter by End Date
+if (this.sortKey.endDate) {
+  const endDate = moment(this.sortKey.endDate, 'DD/MM/YYYY, HH:mm:ss');
+  filteredPostings = filteredPostings.filter(posting => {
+    const postingDate = moment(posting.DateAdded, 'DD/MM/YYYY, HH:mm:ss');
+    return postingDate.isSameOrBefore(endDate);
+  });
+}
+  }
 
-            // Combine the date and time into a format that JavaScript can understand
-            const detailDate = new Date(`${year}-${month}-${day}T${timePart}`);
+  // Finally, include or exclude postings based on their status
+  this.postingDetails = filteredPostings.filter(posting => {
+    const isOpen = posting.Status === 'Open';
+    const isClosedAndChecked = this.sortKey.closedChecked && posting.Status === 'Closed';
+    const isRejectedAndChecked = this.sortKey.rejectedCheck && posting.Status === 'Rejected';
 
-            const matchesFilter = detailDate <= endDate;
-            console.log(`Checking DateAdded: ${detail.DateAdded}, matches filter: ${matchesFilter}`);
-            if (matchesFilter) {
-              console.log(`Match found for filter (endDate): ${detail.DateAdded}`);
-            }
-            return matchesFilter;
-          });
-        }
+    return isOpen || isClosedAndChecked || isRejectedAndChecked;
+  });
 
-        
-       
-        
-      }
-
-      // Make sure to trigger reactivity in Vue
-      this.postingDetails = [...this.postingDetails];
-    },
+  console.log('Filtered postings:', this.postingDetails);
+},
     
 
 
