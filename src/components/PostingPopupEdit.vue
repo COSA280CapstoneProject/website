@@ -98,6 +98,10 @@
       },
       props: {
         editingPosting: Object,
+        postID: {
+          type: String,
+          required: true,
+        }
       },
       setup(props, { emit }) {
         const toast = useToast();
@@ -107,7 +111,6 @@
         const contactName = ref('');
         const phoneNum = ref('');
         const startDate = ref('');
-        const postID = ref('');
         const postTitle = ref('');
         const postDesc = ref('');
         const programType = ref('');
@@ -118,13 +121,11 @@
     
         // Function to populate form fields from props
         onMounted(() => {
-          console.log("Editing posting with postID:", props.editingPosting?.postID);
           const posting = props.editingPosting;
           orgName.value = posting?.orgName || '';
           contactName.value = posting?.contactName || '';
           phoneNum.value = posting?.phoneNum || '';
           startDate.value = posting?.startDate || '';
-          postID.value = props.editingPosting.postID;
           postTitle.value = posting?.postTitle || '';
           postDesc.value = posting?.postDesc || '';
           programType.value = posting?.programType || '';
@@ -147,6 +148,21 @@
           email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
           season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
         };
+
+        // Function to clear all fields
+        const clearFields = () => {
+          orgName.value = '';
+          contactName.value = '';
+          phoneNum.value = '';
+          startDate.value = '';
+          postTitle.value = '';
+          postDesc.value = '';
+          programType.value = '';
+          postType.value = '';
+          status.value = '';
+          email.value = '';
+          season.value = '';
+        };
     
         // SubmitForm method to trigger update for changed fields
         const submitForm = async () => {
@@ -155,17 +171,23 @@
           };
 
           for (const [fieldName, fieldValue] of Object.entries(fieldsToUpdate)) {
-            // Compare current value with initial value from props and update if different
-            if (props.editingPosting[fieldName] !== fieldValue.value) {
+            // Compare current value with initial value from props and update if different and not empty
+            if (props.editingPosting[fieldName] !== fieldValue.value && fieldValue.value.trim() !== '') {
               await updateField(fieldName, fieldValue.value);
+            } else {
+              // If the value hasn't changed or is empty, keep the original value
+              fieldValue.value = props.editingPosting[fieldName];
             }
           }
+
+          // Clear all fields after updating
+          clearFields();
         };
-    
+
         // Function to update a field, including postID in every request
         const updateField = async (fieldName, value) => {
           const payload = {
-            postID: postID.value,
+            postID: props.postID,
             [fieldName]: value,
           };
 
@@ -185,7 +207,7 @@
         return {
           goBack,
           submitForm,
-          orgName, contactName, phoneNum, startDate, postID, postTitle, postDesc, programType, postType, status, email, season,
+          orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season,
         };
       },
     };
