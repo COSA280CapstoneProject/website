@@ -5,36 +5,48 @@
     <div class="posting-row" v-for="(detail, index) in postingDetails" :key="index">
       <div class="organization">
         <h2>{{ detail.OrgName }}</h2>
-        <p class="bold-text">Contact name: {{ detail.ContactName }}</p>
-  <p class="bold-text">Contact email: {{ detail.Email }}</p>
-  <p class="bold-text">Phone number: {{ formatPhoneNumber(detail.PhoneNum) }}</p>
-  <p class="bold-text">Post type: {{ detail.PostType }}</p>
-  <p class="bold-text">Program: {{ detail.ProgramType }}</p>
-  <p class="bold-text">Start Date: {{ detail.StartDate }}</p>
-  <p class="bold-text">Post ID: {{ detail.PostID }}</p>
-  <p class="bold-text">Post Title: {{ detail.PostTitle }}</p>
-  <p class="bold-text">Season: {{ detail.Season }}</p>
-  <p class="bold-text">Date Added: {{ detail.DateAdded }}</p>
-  <p class="bold-text">Status: {{ detail.Status }}</p>
+        <p><b>Contact name: </b>{{ detail.ContactName }}</p>
+        <p><b>Contact email: </b>{{ detail.Email }}</p>
+        <p><b>Phone number: </b>{{ formatPhoneNumber(detail.PhoneNum) }}</p>
+        <p><b>Post type:</b> {{ detail.PostType }}</p>
+        <p><b>Program: </b>{{ detail.ProgramType }}</p>
+        <p><b>Start Date: </b>{{ detail.StartDate }}</p>
+        <p><b>Post ID: </b>{{ detail.PostID }}</p>
+        <p><b>Post Title: </b>{{ detail.PostTitle }}</p>
+        <p><b>Season: </b>{{ detail.Season }}</p>
+        <p><b>Date Added: </b>{{ detail.DateAdded }}</p>
+        <p><b>Status: </b>{{ detail.Status }}</p>
       </div>
       <div class="job-description-1">
         <h2>{{ detail.PostTitle }}</h2>
         <p class="job-description">{{ detail.PostDesc }}</p>
       </div>
-      <div v-if="detail.BlobURL" class="file">
+      <div>
         <button @click="toggleDropdown(index)">
           <img class="hamburger" src="@/assets/Hamburger_icon.png" />
         </button>
         <div v-show="showMenu[index]" class="dropdown-content">
-          <a href="#">Status: {{ detail.Status }}</a>
-          <a href="#">Edit</a>
-          <a href="#">Delete</a>
+          <a>Status: <b>{{ detail.Status }}</b></a>
+          <br>
+          <!-- Edit link to open the posting popup -->
+          <a href="#" @click="openPostingPopup(detail)">Edit</a>
+          <br>
+          <!-- Delete link to delete the posting -->
+          <a href="#" @click="deletePosting(detail.PostID)">Delete</a>
         </div>
-        <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
-          <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(url, 'DownloadedFile')"/>
-          <div class="file-name">{{ url.substring(url.lastIndexOf('/') + 1) }} (File {{ fileIndex + 1 }})</div>
+        <div v-if="detail.BlobURL" class="file">
+          <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
+            <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(url, 'DownloadedFile')"/>
+            <div class="file-name">{{ url.substring(url.lastIndexOf('/') + 1) }} (File {{ fileIndex + 1 }})</div>
+          </div>
         </div>
       </div>
+    </div>
+    <!-- Posting popup -->
+    <div v-if="showPostingPopup" class="posting-popup">
+      <!-- Posting Popup Content -->
+      <!-- Add form fields to edit posting details -->
+      <button @click="submitUpdatedPosting">Submit</button>
     </div>
     <div v-if="showErrorPopup" class="error-popup">
       <div class="error-content">
@@ -58,6 +70,8 @@ export default {
       showErrorPopup: false,
       errorMessage: '',
       showMenu: [],
+      showPostingPopup: false,
+      selectedPosting: null,
     };
   },
   methods: {
@@ -89,12 +103,48 @@ export default {
     formatPhoneNumber(phoneNumber) {
       return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     },
+    // Method to open posting popup and populate it with selected posting data
+    openPostingPopup(posting) {
+      this.selectedPosting = posting;
+      this.showPostingPopup = true;
+    },
+    // Method to submit updated posting data
+    submitUpdatedPosting() {
+      // Call API to update posting
+      // Handle submission logic here
+      this.showPostingPopup = false; // Close posting popup after submission
+    },
+    deletePosting(postID) {
+  const url = `https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings`;
+
+  axios.post(url, {
+    postID: postID
+  })
+    .then(response => {
+      if (response.status === 200) {
+        // Remove the posting from the list
+        this.postingDetails = this.postingDetails.filter(post => post.PostID !== postID);
+      } else {
+        throw new Error(`Failed to delete posting: ${response.statusText}`);
+      }
+    })
+    .catch(error => {
+      this.errorMessage = `Failed to delete posting: ${error.message}`;
+      this.showErrorPopup = true;
+    });
+},
+
+
   },
   mounted() {
     this.fetchPostingDetails();
   },
 };
 </script>
+
+
+
+
   
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -132,6 +182,23 @@ display: flex;
   padding: 0;         /* Remove padding */
   margin: 0;          /* Remove margins */
   cursor: pointer;
+}
+.button{
+  background: none;
+}
+.dropdown-content {
+  float: left;
+  left: 0; /* Align to the left edge of the parent element */
+  position: relative;
+  background-color: #ffffff; /* White background for the dropdown */
+  border: 1px solid #ddd; /* Light grey border */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  border-radius: 4px; /* Rounded corners */
+  width: auto; /* Width can be adjusted or set to auto */
+  z-index: 1000; /* Ensure it's on top of other elements */
+  padding: 1em 0; /* Padding on top and bottom */
+  text-align: left;
+  right: 100%;
 }
 
 .organization, .job-description-1 ,.file{
