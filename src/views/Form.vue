@@ -1,12 +1,13 @@
 <template>
   <div>
-    <FormNavbar @navbar-sort-key-changed="updateSortKey" />
+    <FormNavbar @navbar-sort-key-changed="updateSortKey" @search-query-updated="updateSearchQuery" />
     <ExportDropdown v-if="showDropdown" />
     <SortingMenu v-if="showSorting" @close-Sort="closeSortingMenu"/>
     <br>
     <br>
     <div class="form-page-container">
-      <FormPage :sortKey="sortKey" />
+      <FormPage :sortKey="sortKey" :searchQuery="searchQuery"/>
+
     </div>
   </div>
 </template>
@@ -31,6 +32,7 @@
         showDropdown: false,
         showSorting: false,
         sortKey: null,
+        searchQuery: '',
     }
   },
   methods: {
@@ -38,6 +40,11 @@
       this.sortKey = newSortKey;
      
     },
+    updateSearchQuery(newQuery) {
+      this.searchQuery = newQuery; // Update the searchQuery based on the event from FormNavbar
+      console.log('updateSearchQuery');
+    },
+
 
     closeSortingMenu() {
       console.log('closeSortingMenu');

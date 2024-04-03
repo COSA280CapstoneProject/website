@@ -49,6 +49,7 @@ import axios from 'axios';
 export default {
   props: {
     sortKey: Array,
+    searchQuery: String,
   },
 
   data() {
@@ -59,30 +60,35 @@ export default {
       showErrorPopup: false,
       errorMessage: '',
       fileSizes: {},
+      
     };
   },
   
   methods: {
     fetchPostingDetails() {
-      axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
-        .then(response => {
-          this.allPostings = response.data; // Store all postings
-          this.postingDetails = [...this.allPostings]; // Copy all postings to postingDetails
-          this.postingDetails.forEach(detail => {
-            console.log('Detail:', detail);
-            if (detail.BlobURL) {
-              detail.BlobURL.split(',').forEach(url => {
-                this.getFileSize(url);
-              });
-            }
+  // Construct the URL with a query parameter for the search
+  const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
+
+  axios.get(url)
+    .then(response => {
+      this.allPostings = response.data; // Store all postings
+      this.postingDetails = [...this.allPostings]; // Copy all postings to postingDetails
+
+      // Process BlobURL and file sizes as before
+      this.postingDetails.forEach(detail => {
+        if (detail.BlobURL) {
+          detail.BlobURL.split(',').forEach(url => {
+            this.getFileSize(url);
           });
-          this.filterAndLogMatches(); // Call this after allPostings and postingDetails are populated
-        })
-        .catch(error => {
-          this.errorMessage = 'Failed to load posting details: ' + error.message;
-          this.showErrorPopup = true;
-        });
-    },
+        }
+      });
+    })
+    .catch(error => {
+      this.errorMessage = 'Failed to load posting details: ' + error.message;
+      this.showErrorPopup = true;
+    });
+},
+
     downloadFile(blobUrl, fileName) {
       const urls = blobUrl.split(',').filter(url => url.trim() !== '');
       urls.forEach((url, index) => {
@@ -211,6 +217,7 @@ export default {
       // Make sure to trigger reactivity in Vue
       this.postingDetails = [...this.postingDetails];
     },
+    
 
 
     getFileSize(url) {
@@ -231,13 +238,29 @@ export default {
       const i = Math.floor(Math.log(size) / Math.log(1024));
       return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
     },
+    performSearch() {
+    const query = this.searchQuery.toLowerCase(); // Convert search query to lowercase for case-insensitive search
+
+    // Filter postings based on the search query
+    this.postingDetails = this.allPostings.filter(posting => {
+      // Check each field for the presence of the search query
+      return `${posting.OrgName} ${posting.ContactName} ${posting.Email} ${posting.PhoneNum} ${posting.PostDesc} ${posting.PostID} ${posting.PostTitle} ${posting.PostType} ${posting.ProgramType} ${posting.Season} ${posting.StartDate} ${posting.Status} ${posting.DateAdded}`
+        .toLowerCase() // Convert to lowercase to make the search case-insensitive
+        .includes(query); // Check if the concatenated string includes the search query
+    });
+  }
   },
+  
 
   watch: {
     sortKey() {
       console.log('sortKey changed:', this.sortKey);
       this.filterAndLogMatches();
     },
+    searchQuery() {
+      console.log('searchQuery changed:', this.searchQuery);
+    this.performSearch(); // Refetch posting details when searchQuery changes
+  },
   },
 
   mounted() {

@@ -10,7 +10,7 @@
       
     <div class="search-bar">
       <i class="fa fa-search"></i>
-      <input type="text" placeholder="Search..." />
+      <input type="text" placeholder="Search..." v-model="searchQuery" />
     </div>
     <button class="four-square">
       <i class="fa-solid fa-table-cells-large"></i>
@@ -19,7 +19,7 @@
       <i class="fas fa-ellipsis-v"></i>
     </button>
     <ExportDropdown :show="showDropdown" />
-    <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" />
+    <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" @close-Sort="closeSortingMenu"   />
     <StatsDropdown v-if="showStatsDropdown" />
     </div>
     </div>
@@ -42,7 +42,8 @@
       return {
       showDropdown: false,
       showStatsDropdown: false,
-      showSorting: false
+      showSorting: false,
+      searchQuery: '',
     }
     },
     methods: {
@@ -54,10 +55,24 @@
     },
     updateSortKeys(newSortKeys) {
       this.sortKey = newSortKeys; // Update sortKey when it changes
-
       this.$emit('navbar-sort-key-changed', newSortKeys);
     },
+    closeSortingMenu() {
+      this.showSorting = false; // This will hide the SortingMenu component
+    
+  },
+  },
+  watch: {
+    searchQuery(newQuery, oldQuery) {
+    // To avoid unnecessary emissions, check if the newQuery is actually different from oldQuery
+    if (newQuery !== oldQuery) {
+      
+      this.$emit('search-query-updated', newQuery);
+    console.log('searchQuery updated');
+      
+    }
   }
+},
   };
   </script>
   

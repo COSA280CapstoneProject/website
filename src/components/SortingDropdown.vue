@@ -1,8 +1,12 @@
 <template>
   <div class="sorting-dropdown">
-      <label>
+      <label class="closedCheck">
           <Checkbox v-model="checked" :binary="true" />
-    Show Filled
+    Show Closed
+  </label>
+  <label class="RejectedCheck">
+          <Checkbox v-model="checked2" :binary="true" />
+    Show Rejected
   </label>
     <h4>Date Posted</h4>
     <Calendar v-model="startDate" showIcon @focus="adjustDatePickerPosition" />
@@ -34,6 +38,8 @@ import MultiSelect from 'primevue/multiselect';
   
 
 export default {
+
+  
   components: {
     Calendar,
     Checkbox,
@@ -42,6 +48,7 @@ export default {
   data() {
     return {
       checked: false,
+      checked2: false,
       showFilled: false,
       startDate: null,
       endDate: null,
@@ -106,12 +113,33 @@ export default {
         });
       });
     },
+    handleClickOutside(event) {
+      // Check if the click was outside the dropdown
+      if (!this.$el.contains(event.target)) {
+        this.closeDropdown(); // Call the method to close the dropdown
+      }
+    },
+
+    // Method to close the dropdown
+    closeDropdown() {
+      this.$emit('close-Sort'); // Emit an event to the parent component to close the dropdown
+    },
   
 
 
 
     
   },
+  mounted() {
+    // Add a global click event listener when the component is mounted
+    document.addEventListener('click', this.handleClickOutside, true);
+  },
+  beforeUnmount() {
+    // Remove the global click event listener when the component is about to be destroyed
+    document.removeEventListener('click', this.handleClickOutside, true);
+  },
+
+  
   watch: {
   startDate(newStartDate) {
     this.sortKeys.startDate = newStartDate;
@@ -130,6 +158,13 @@ export default {
   },
   DeadlineS(newDeadlineS) {
     this.sortKeys.DeadlineS = newDeadlineS;
+  },
+  checked(newChecked) {
+    this.sortKeys.checked = newChecked;
+  },
+  checked2(newChecked2) {
+    this.sortKeys.checked2 = newChecked2;
+    
   },
 },
 
