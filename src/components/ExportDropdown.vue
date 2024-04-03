@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown" v-bind:class="{ 'dropdown-show': show }">
-    <PanelMenu :model="items" class="dropdown-option"></PanelMenu>
+    <PanelMenu v-if="show" v-model="selectedItem" :model="items" class="dropdown-option"></PanelMenu>
     <div v-if="showDateExport" class="date-export-dropdown">
       <h4>Start date</h4>
       <Calendar v-model="startDate" showIcon />
@@ -34,6 +34,7 @@ export default {
       startDate: null,
       endDate: null,
       showDateExport: false,
+      selectedItem: null,
       items: [
         {
           label: 'Export all',
@@ -140,6 +141,7 @@ export default {
       }
     },
     closeDropdown() {
+      this.showDateExport = false;
       this.$emit('close-export'); // Emit an event to the parent component to close the dropdown
     },
   },

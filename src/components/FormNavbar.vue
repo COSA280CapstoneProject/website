@@ -12,9 +12,7 @@
       <i class="fa fa-search"></i>
       <input type="text" placeholder="Search..." v-model="searchQuery" />
     </div>
-    <button class="four-square">
-      <i class="fa-solid fa-table-cells-large"></i>
-    </button>
+    
     <button class="more-options" @click="showDropdown = !showDropdown">
       <i class="fas fa-ellipsis-v"></i>
     </button>
@@ -90,13 +88,13 @@
   align-items: center;
   justify-content: center; /* Center the container */
   height: 60px;
-  background-image: url("@/assets/header.jpg");
+  background-color: #753C97;
 }
 
 .Navbar-container {
   width: 90%; /* Reduce the width to create space on the sides */
   display: flex;
-  justify-content: space-between; /* Distribute the items equally */
+ 
 }
     .hamburger {
   position: relative;
@@ -105,10 +103,12 @@
   transition: 0.5s;
     border: none;
     background-color: transparent;
+    margin-right: 15%;
 }
 
 .hamburger i {
   font-size: 35px;
+  
 }
 .sorting {
   margin-left: 10px;
@@ -116,11 +116,14 @@
   border: none;
   background-color: transparent;
   font-size: 20px; /* Increase the font size of the sorting icon */
+  margin-right: 20%;
 
 }
 .search-bar {
   position: relative;
-  margin-left: 10px;
+  display: inline-block;
+  margin-right: 35%;
+
 }
 
 .search-bar i {
@@ -136,18 +139,7 @@
   height: 40px; /* Increase the height of the search bar */
 
 }
-.four-square {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  transition: 0.5s;
-    border: none;
-    background-color: transparent;
-}
 
-.four-square i {
-  font-size: 35px;
-}
   
 
   .more-options {
@@ -157,6 +149,7 @@
   transition: 0.5s;
   border: none;
     background-color: transparent;
+   
 }
 
 .more-options i {
