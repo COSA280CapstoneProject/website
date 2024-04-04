@@ -40,7 +40,6 @@
         </div>
       </div>
     </div>
-    <!-- PostingPopupEdit component is conditionally rendered here -->
     <posting-popup-edit
       v-if="showEditPopup"
       :postID="currentEditingPosting.PostID"
