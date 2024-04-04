@@ -40,6 +40,7 @@
         </div>
       </div>
     </div>
+    <!-- PostingPopupEdit component is conditionally rendered here -->
     <posting-popup-edit
       v-if="showEditPopup"
       :postID="currentEditingPosting.PostID"
@@ -52,36 +53,55 @@
 
 
 <script>
-
-
-
 import axios from 'axios';
+import moment from 'moment';
 import PostingPopupEdit from '@/components/PostingPopupEdit.vue';
 
 export default {
   components: {
     PostingPopupEdit,
   },
+  props: {
+    sortKey: Array,
+    searchQuery: String,
+  },
   data() {
     return {
       postingDetails: [],
+      allPostings: [],
       error: null,
       showMenu: [],
       showEditPopup: false,
       currentEditingPosting: null,
+      fileSizes: {},
     };
   },
   methods: {
     fetchPostingDetails() {
-      axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
-        .then(response => {
-          this.postingDetails = response.data;
-          this.showMenu = new Array(this.postingDetails.length).fill(false);
-        })
-        .catch(error => {
-          this.error = error.message;
+
+// Construct the URL with a query parameter for the search
+const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
+
+axios.get(url)
+  .then(response => {
+      this.allPostings = response.data; // Store all postings fetched from the backend
+    // Filter postings to only include those with a status of 'Open' for display
+    this.postingDetails = this.allPostings.filter(posting => posting.Status === 'Open');
+    
+
+    // Process BlobURL and file sizes as before
+    this.postingDetails.forEach(detail => {
+      if (detail.BlobURL) {
+        detail.BlobURL.split(',').forEach(url => {
+          this.getFileSize(url);
         });
-    },
+      }
+    });
+  })
+  .catch(error => {
+    this.errorMessage = 'Failed to load posting details: ' + error.message;
+    this.showErrorPopup = true;
+  }); },
     toggleDropdown(index) {
       this.showMenu[index] = !this.showMenu[index];
     },
@@ -104,7 +124,7 @@ export default {
         });
     },
     submitEditedPosting(editedPosting) {
-  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/';
+  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/'; // Base URL for all endpoints
   const endpoints = {
     contactName: 'editiCTSQLDatabasePostingsContactName',
     email: 'editiCSQLDatabasePostingsEmail',
@@ -136,6 +156,25 @@ export default {
       // If all edits were successful, close the popup and refresh the data
       this.showEditPopup = false;
       this.fetchPostingDetails();
+        // Construct the URL with a query parameter for the search
+  const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
+
+axios.get(url)
+  .then(response => {
+      this.allPostings = response.data; // Store all postings fetched from the backend
+    // Filter postings to only include those with a status of 'Open' for display
+    this.postingDetails = this.allPostings.filter(posting => posting.Status === 'Open');
+    
+
+    // Process BlobURL and file sizes as before
+    this.postingDetails.forEach(detail => {
+      if (detail.BlobURL) {
+        detail.BlobURL.split(',').forEach(url => {
+          this.getFileSize(url);
+        });
+      }
+    });
+  })
     })
     .catch(error => {
       // Handle errors (e.g., display an error message)
@@ -153,25 +192,129 @@ export default {
       document.body.removeChild(link);
     },
     formatPhoneNumber(phoneNumber) {
-      return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      if (!phoneNumber) return '';
+      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
+      return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
     },
+
+    filterAndLogMatches() {
+  // Start with all postings
+  let filteredPostings = [...this.allPostings];
+
+  // Apply filters based on the sortKey criteria
+  if (this.sortKey) {
+    // Filter by PostType
+    if (this.sortKey.PostType && this.sortKey.PostType.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.PostType.includes(posting.PostType)
+      );
+    }
+
+    // Filter by ProgramType
+    if (this.sortKey.ProgramType && this.sortKey.ProgramType.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.ProgramType.includes(posting.ProgramType)
+      );
+    }
+
+    // Filter by Deadline Year
+    if (this.sortKey.DeadlineY && this.sortKey.DeadlineY.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.DeadlineY.includes(posting.StartDate)
+      );
+    }
+
+    // Filter by Season
+    if (this.sortKey.DeadlineS && this.sortKey.DeadlineS.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.DeadlineS.includes(posting.Season)
+      );
+    }
+
+    // Filter by Start Date
+if (this.sortKey.startDate) {
+  const startDate = moment(this.sortKey.startDate, 'DD/MM/YYYY, HH:mm:ss');
+  filteredPostings = filteredPostings.filter(posting => {
+    const postingDate = moment(posting.DateAdded, 'DD/MM/YYYY, HH:mm:ss');
+    return postingDate.isSameOrAfter(startDate);
+  });
+}
+
+// Filter by End Date
+if (this.sortKey.endDate) {
+  const endDate = moment(this.sortKey.endDate, 'DD/MM/YYYY, HH:mm:ss');
+  filteredPostings = filteredPostings.filter(posting => {
+    const postingDate = moment(posting.DateAdded, 'DD/MM/YYYY, HH:mm:ss');
+    return postingDate.isSameOrBefore(endDate);
+  });
+}
+  }
+
+  // Finally, include or exclude postings based on their status
+  this.postingDetails = filteredPostings.filter(posting => {
+    const isOpen = posting.Status === 'Open';
+    const isClosedAndChecked = this.sortKey.closedChecked && posting.Status === 'Closed';
+    const isRejectedAndChecked = this.sortKey.rejectedCheck && posting.Status === 'Rejected';
+
+    return isOpen || isClosedAndChecked || isRejectedAndChecked;
+  });
+
+  console.log('Filtered postings:', this.postingDetails);
+},
+    
+
+
+    getFileSize(url) {
+      axios.head(url)
+        .then(response => {
+          const size = response.headers['content-length'];
+          this.fileSizes[url] = this.formatFileSize(size);
+        })
+        .catch(error => {
+          console.error('Failed to get file size: ' + error.message);
+          this.fileSizes[url] = 'Unknown size';
+        });
+    },
+    getFileName(url) {
+      return url.substring(url.lastIndexOf('/') + 1);
+    },
+    formatFileSize(size) {
+      const i = Math.floor(Math.log(size) / Math.log(1024));
+      return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    },
+    performSearch() {
+    const query = this.searchQuery.toLowerCase(); // Convert search query to lowercase for case-insensitive search
+
+    // Filter postings based on the search query
+    this.postingDetails = this.allPostings.filter(posting => {
+      // Check each field for the presence of the search query
+      return `${posting.OrgName} ${posting.ContactName} ${posting.Email} ${posting.PhoneNum} ${posting.PostDesc} ${posting.PostID} ${posting.PostTitle} ${posting.PostType} ${posting.ProgramType} ${posting.Season} ${posting.StartDate} ${posting.Status} ${posting.DateAdded}`
+        .toLowerCase() // Convert to lowercase to make the search case-insensitive
+        .includes(query); // Check if the concatenated string includes the search query
+    });
+  }
   },
+  
+  
+
+  watch: {
+    sortKey() {
+      console.log('sortKey changed:', this.sortKey);
+      this.filterAndLogMatches();
+    },
+    searchQuery() {
+      console.log('searchQuery changed:', this.searchQuery);
+    this.performSearch(); // Refetch posting details when searchQuery changes
+  },
+  },
+
   mounted() {
     this.fetchPostingDetails();
   },
 };
-
-
-
 </script>
 
 
-
-
-
-
-
-  
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
