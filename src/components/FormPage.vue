@@ -67,6 +67,69 @@ export default {
   
   methods: {
     fetchPostingDetails() {
+      axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
+        .then(response => {
+          this.postingDetails = response.data;
+          this.showMenu = new Array(this.postingDetails.length).fill(false);
+        })
+        .catch(error => {
+          this.error = error.message;
+        });
+    },
+    toggleDropdown(index) {
+      this.showMenu[index] = !this.showMenu[index];
+    },
+    openEditPopup(detail, index) {
+      this.currentEditingPosting = detail;
+      this.showEditPopup = true;
+      this.showMenu[index] = false;
+    },
+    deletePosting(postID) {
+      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings', { postID }) // URL to delete postings
+        .then(response => {
+          if (response.status === 200) {
+            this.postingDetails = this.postingDetails.filter(post => post.PostID !== postID);
+          } else {
+            throw new Error(`Failed to delete posting: ${response.statusText}`);
+          }
+        })
+        .catch(error => {
+          this.error = error.message;
+        });
+    },
+    submitEditedPosting(editedPosting) {
+  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/'; // Base URL for all endpoints
+  const endpoints = {
+    contactName: 'editiCTSQLDatabasePostingsContactName',
+    email: 'editiCSQLDatabasePostingsEmail',
+    orgName: 'editICTSQLDatabasePostingsOrgName',
+    phoneNum: 'editICTSQLDatabasePostingsPhoneNum',
+    postDesc: 'editICTSQLDatabasePostingsPostDesc',
+    postTitle: 'editICTSQLDatabasePostingsPostTitle',
+    postType: 'editiCTSQLDatabasePostingsPostType',
+    programType: 'editiCTSQLDatabasePostingsProgramtype',
+    season: 'editiCTSQLDatabasePostingsSeason',
+    startDate: 'editICTSQLDatabasePostingsStartDate',
+  };
+
+  // Collect promises for each edit operation
+  const editPromises = Object.entries(editedPosting).reduce((promises, [key, value]) => {
+    if (endpoints[key]) { // If there's a corresponding endpoint for the field
+      const url = `${endpointBase}${endpoints[key]}`;
+      // Assuming each endpoint expects { postID, [key]: value } format
+      const data = { postID: editedPosting.PostID };
+      data[key] = value;
+      promises.push(axios.post(url, data));
+    }
+    return promises;
+  }, []);
+
+  // Execute all edit operations
+  Promise.all(editPromises)
+    .then(() => {
+      // If all edits were successful, close the popup and refresh the data
+      this.showEditPopup = false;
+      this.fetchPostingDetails();
 
   // Construct the URL with a query parameter for the search
   const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
