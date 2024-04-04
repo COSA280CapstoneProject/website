@@ -36,6 +36,7 @@
           <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
             <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(url, 'DownloadedFile')"/>
             <div class="file-name">{{ url.substring(url.lastIndexOf('/') + 1) }} (File {{ fileIndex + 1 }})</div>
+            <div class="file-size">{{ fileSizes[url] }}</div>
           </div>
         </div>
       </div>
