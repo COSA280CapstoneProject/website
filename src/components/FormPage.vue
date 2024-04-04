@@ -67,15 +67,31 @@ export default {
   
   methods: {
     fetchPostingDetails() {
-      axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
-        .then(response => {
-          this.postingDetails = response.data;
-          this.showMenu = new Array(this.postingDetails.length).fill(false);
-        })
-        .catch(error => {
-          this.error = error.message;
+
+// Construct the URL with a query parameter for the search
+const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
+
+axios.get(url)
+  .then(response => {
+      this.allPostings = response.data; // Store all postings fetched from the backend
+    // Filter postings to only include those with a status of 'Open' for display
+    this.postingDetails = this.allPostings.filter(posting => posting.Status === 'Open');
+    
+
+    // Process BlobURL and file sizes as before
+    this.postingDetails.forEach(detail => {
+      if (detail.BlobURL) {
+        detail.BlobURL.split(',').forEach(url => {
+          this.getFileSize(url);
         });
-    },
+      }
+    });
+  })
+  .catch(error => {
+    this.errorMessage = 'Failed to load posting details: ' + error.message;
+    this.showErrorPopup = true;
+  });
+},
     toggleDropdown(index) {
       this.showMenu[index] = !this.showMenu[index];
     },
@@ -111,6 +127,7 @@ export default {
     season: 'editiCTSQLDatabasePostingsSeason',
     startDate: 'editICTSQLDatabasePostingsStartDate',
   };
+
 
   // Collect promises for each edit operation
   const editPromises = Object.entries(editedPosting).reduce((promises, [key, value]) => {
@@ -154,7 +171,9 @@ export default {
       this.errorMessage = 'Failed to load posting details: ' + error.message;
       this.showErrorPopup = true;
     });
-},
+  })},
+  
+
 
     downloadFile(blobUrl, fileName) {
       const urls = blobUrl.split(',').filter(url => url.trim() !== '');
@@ -278,6 +297,7 @@ if (this.sortKey.endDate) {
     });
   }
   },
+  
   
 
   watch: {
