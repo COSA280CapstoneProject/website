@@ -92,7 +92,7 @@ export default {
       this.showMenu[index] = false;
     },
     deletePosting(postID) {
-      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings', { postID })
+      axios.post('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings', { postID }) // URL to delete postings
         .then(response => {
           if (response.status === 200) {
             this.postingDetails = this.postingDetails.filter(post => post.PostID !== postID);
@@ -105,7 +105,7 @@ export default {
         });
     },
     submitEditedPosting(editedPosting) {
-  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/';
+  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/'; // Base URL for all endpoints
   const endpoints = {
     contactName: 'editiCTSQLDatabasePostingsContactName',
     email: 'editiCSQLDatabasePostingsEmail',

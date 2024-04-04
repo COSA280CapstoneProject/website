@@ -95,7 +95,7 @@
     export default {
       data() {
         return {
-          years: [2024, 2025, 2026],
+          years: [2024, 2025, 2026], // Years for the dropdown list
         }
       },
       components: {
