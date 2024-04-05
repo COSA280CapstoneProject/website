@@ -21,28 +21,31 @@
         <h2>{{ detail.PostTitle }}</h2>
         <p class="job-description">{{ detail.PostDesc }}</p>
       </div>
-      <div>
-        <button @click="toggleDropdown(index)">
-          <img class="hamburger" src="@/assets/Hamburger_icon.png" />
-        </button>
+      <div class="file">
+        <div class="hamburger" @click="toggleDropdown(index)" role="button" tabindex="0">
+          <img class="hamburger-image"   src="@/assets/Hamburger_icon.png" alt="Menu"/>
+        </div>
+        
         <div v-show="showMenu[index]" class="dropdown-content">
-          <a>Status: <b>{{ detail.Status }}</b></a>
+          <a class="statusdropdown">Status: <b>{{ detail.Status }}</b></a>
           <br>
-          <a href="#" @click.prevent="openEditPopup(detail, index)">Edit</a>
+          <a class="Edit" href="#" @click.prevent="openEditPopup(detail, index)">Edit</a>
           <br>
-          <a href="#" @click.prevent="deletePosting(detail.PostID)">Delete</a>
+          <a class="Delete" href="#" @click.prevent="deletePosting(detail.PostID)">Delete</a>
         </div>
         <div v-if="detail.BlobURL" class="file">
           <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
             <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(url, 'DownloadedFile')"/>
             <div class="file-name">{{ url.substring(url.lastIndexOf('/') + 1) }} (File {{ fileIndex + 1 }})</div>
+            <div class="file-size">{{ fileSizes[url] }}</div>
           </div>
         </div>
       </div>
     </div>
-    <!-- PostingPopupEdit component is conditionally rendered here -->
+    
     <posting-popup-edit
       v-if="showEditPopup"
+      :postID="currentEditingPosting.PostID"
       :editing-posting="currentEditingPosting"
       @close="showEditPopup = false">
     </posting-popup-edit>
@@ -52,36 +55,55 @@
 
 
 <script>
-
-
-
 import axios from 'axios';
+import moment from 'moment';
 import PostingPopupEdit from '@/components/PostingPopupEdit.vue';
 
 export default {
   components: {
     PostingPopupEdit,
   },
+  props: {
+    sortKey: Array,
+    searchQuery: String,
+  },
   data() {
     return {
       postingDetails: [],
+      allPostings: [],
       error: null,
       showMenu: [],
       showEditPopup: false,
       currentEditingPosting: null,
+      fileSizes: {},
     };
   },
   methods: {
     fetchPostingDetails() {
-      axios.get('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings')
-        .then(response => {
-          this.postingDetails = response.data;
-          this.showMenu = new Array(this.postingDetails.length).fill(false);
-        })
-        .catch(error => {
-          this.error = error.message;
+
+// Construct the URL with a query parameter for the search
+const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
+
+axios.get(url)
+  .then(response => {
+      this.allPostings = response.data; // Store all postings fetched from the backend
+    // Filter postings to only include those with a status of 'Open' for display
+    this.postingDetails = this.allPostings.filter(posting => posting.Status === 'Open');
+    
+
+    // Process BlobURL and file sizes as before
+    this.postingDetails.forEach(detail => {
+      if (detail.BlobURL) {
+        detail.BlobURL.split(',').forEach(url => {
+          this.getFileSize(url);
         });
-    },
+      }
+    });
+  })
+  .catch(error => {
+    this.errorMessage = 'Failed to load posting details: ' + error.message;
+    this.showErrorPopup = true;
+  }); },
     toggleDropdown(index) {
       this.showMenu[index] = !this.showMenu[index];
     },
@@ -104,7 +126,7 @@ export default {
         });
     },
     submitEditedPosting(editedPosting) {
-  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/';
+  const endpointBase = 'https://ictdatabasefileupload.azurewebsites.net/api/'; // Base URL for all endpoints
   const endpoints = {
     contactName: 'editiCTSQLDatabasePostingsContactName',
     email: 'editiCSQLDatabasePostingsEmail',
@@ -136,6 +158,25 @@ export default {
       // If all edits were successful, close the popup and refresh the data
       this.showEditPopup = false;
       this.fetchPostingDetails();
+        // Construct the URL with a query parameter for the search
+  const url = `https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${encodeURIComponent(this.searchQuery)}`;
+
+axios.get(url)
+  .then(response => {
+      this.allPostings = response.data; // Store all postings fetched from the backend
+    // Filter postings to only include those with a status of 'Open' for display
+    this.postingDetails = this.allPostings.filter(posting => posting.Status === 'Open');
+    
+
+    // Process BlobURL and file sizes as before
+    this.postingDetails.forEach(detail => {
+      if (detail.BlobURL) {
+        detail.BlobURL.split(',').forEach(url => {
+          this.getFileSize(url);
+        });
+      }
+    });
+  })
     })
     .catch(error => {
       // Handle errors (e.g., display an error message)
@@ -153,25 +194,129 @@ export default {
       document.body.removeChild(link);
     },
     formatPhoneNumber(phoneNumber) {
-      return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      if (!phoneNumber) return '';
+      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
+      return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
     },
+
+    filterAndLogMatches() {
+  // Start with all postings
+  let filteredPostings = [...this.allPostings];
+
+  // Apply filters based on the sortKey criteria
+  if (this.sortKey) {
+    // Filter by PostType
+    if (this.sortKey.PostType && this.sortKey.PostType.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.PostType.includes(posting.PostType)
+      );
+    }
+
+    // Filter by ProgramType
+    if (this.sortKey.ProgramType && this.sortKey.ProgramType.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.ProgramType.includes(posting.ProgramType)
+      );
+    }
+
+    // Filter by Deadline Year
+    if (this.sortKey.DeadlineY && this.sortKey.DeadlineY.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.DeadlineY.includes(posting.StartDate)
+      );
+    }
+
+    // Filter by Season
+    if (this.sortKey.DeadlineS && this.sortKey.DeadlineS.length) {
+      filteredPostings = filteredPostings.filter(posting =>
+        this.sortKey.DeadlineS.includes(posting.Season)
+      );
+    }
+
+    // Filter by Start Date
+if (this.sortKey.startDate) {
+  const startDate = moment(this.sortKey.startDate, 'DD/MM/YYYY, HH:mm:ss');
+  filteredPostings = filteredPostings.filter(posting => {
+    const postingDate = moment(posting.DateAdded, 'DD/MM/YYYY, HH:mm:ss');
+    return postingDate.isSameOrAfter(startDate);
+  });
+}
+
+// Filter by End Date
+if (this.sortKey.endDate) {
+  const endDate = moment(this.sortKey.endDate, 'DD/MM/YYYY, HH:mm:ss');
+  filteredPostings = filteredPostings.filter(posting => {
+    const postingDate = moment(posting.DateAdded, 'DD/MM/YYYY, HH:mm:ss');
+    return postingDate.isSameOrBefore(endDate);
+  });
+}
+  }
+
+  // Finally, include or exclude postings based on their status
+  this.postingDetails = filteredPostings.filter(posting => {
+    const isOpen = posting.Status === 'Open';
+    const isClosedAndChecked = this.sortKey.closedChecked && posting.Status === 'Closed';
+    const isRejectedAndChecked = this.sortKey.rejectedCheck && posting.Status === 'Rejected';
+
+    return isOpen || isClosedAndChecked || isRejectedAndChecked;
+  });
+
+  console.log('Filtered postings:', this.postingDetails);
+},
+    
+
+
+    getFileSize(url) {
+      axios.head(url)
+        .then(response => {
+          const size = response.headers['content-length'];
+          this.fileSizes[url] = this.formatFileSize(size);
+        })
+        .catch(error => {
+          console.error('Failed to get file size: ' + error.message);
+          this.fileSizes[url] = 'Unknown size';
+        });
+    },
+    getFileName(url) {
+      return url.substring(url.lastIndexOf('/') + 1);
+    },
+    formatFileSize(size) {
+      const i = Math.floor(Math.log(size) / Math.log(1024));
+      return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    },
+    performSearch() {
+    const query = this.searchQuery.toLowerCase(); // Convert search query to lowercase for case-insensitive search
+
+    // Filter postings based on the search query
+    this.postingDetails = this.allPostings.filter(posting => {
+      // Check each field for the presence of the search query
+      return `${posting.OrgName} ${posting.ContactName} ${posting.Email} ${posting.PhoneNum} ${posting.PostDesc} ${posting.PostID} ${posting.PostTitle} ${posting.PostType} ${posting.ProgramType} ${posting.Season} ${posting.StartDate} ${posting.Status} ${posting.DateAdded}`
+        .toLowerCase() // Convert to lowercase to make the search case-insensitive
+        .includes(query); // Check if the concatenated string includes the search query
+    });
+  }
   },
+  
+  
+
+  watch: {
+    sortKey() {
+      console.log('sortKey changed:', this.sortKey);
+      this.filterAndLogMatches();
+    },
+    searchQuery() {
+      console.log('searchQuery changed:', this.searchQuery);
+    this.performSearch(); // Refetch posting details when searchQuery changes
+  },
+  },
+
   mounted() {
     this.fetchPostingDetails();
   },
 };
-
-
-
 </script>
 
 
-
-
-
-
-
-  
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
@@ -201,33 +346,62 @@ display: flex;
   padding: 10px;
   border-bottom: 1px solid #eee; /* Adds a line to separate postings */
 }
-.hamburger{
-  width: 2.5em;
-  background: none;   /* Make the background transparent */
-  border: none;       /* Remove the border */
-  padding: 0;         /* Remove padding */
-  margin: 0;          /* Remove margins */
-  cursor: pointer;
-}
+
 .button{
   background: none;
 }
+
+
+
 .dropdown-content {
-  float: left;
-  left: 0; /* Align to the left edge of the parent element */
-  position: relative;
-  background-color: #ffffff; /* White background for the dropdown */
-  border: 1px solid #ddd; /* Light grey border */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  border-radius: 4px; /* Rounded corners */
-  width: auto; /* Width can be adjusted or set to auto */
-  z-index: 1000; /* Ensure it's on top of other elements */
-  padding: 1em 0; /* Padding on top and bottom */
-  text-align: left;
-  right: 100%;
+  /* existing styles */
+  background-color: #ffffff; /* Set your desired dropdown background color */
+  border-radius: 5px; /* Rounded corners for the dropdown */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  padding: 10px; /* Spacing around the content */
 }
 
-.organization, .job-description-1 ,.file{
+.dropdown-content a {
+  display: block; /* Each link will take up the full width of the dropdown */
+  padding: 8px 15px; /* Spacing inside each link for clickable area */
+  margin: 5px 0; /* Spacing between each link */
+  background-color: #f9f9f9; /* Slightly off-white background for each link */
+  color: #333; /* Darker text for better readability */
+  text-decoration: none; /* No underlines on the links */
+  border-radius: 4px; /* Slightly rounded corners for the link backgrounds */
+  transition: background-color 0.3s ease; /* Smooth background color transition for hover effect */
+}
+
+/* This will target any <a> with a class of 'Edit' or 'Delete' within .dropdown-content on hover */
+  .dropdown-content a.Edit:hover, .dropdown-content a.Delete:hover {
+    background-color: #e0e0e0; /* A light grey for the hover state */
+  }
+  
+
+.dropdown-content a b {
+  font-weight: bold;
+}
+
+/* Optional: Add a little more styling for the "Status" which isn't a button, but informative text */
+.dropdown-content a.status-text {
+  background-color: transparent; /* No background for informational text */
+  pointer-events: none; /* Prevents clicking on the informational text */
+  margin: 0; /* Reset margin for informational text */
+  padding-left: 0; /* Reset padding for informational text */
+}
+
+.dropdown-content a:not(.status-text):hover {
+  background-color: #e0e0e0; /* Only apply hover effect to clickable items */
+}
+
+.statusdropdown :hover{
+  color: inherit; /* Keeps the text color the same on hover */
+  background-color: inherit; /* Keeps the background color the same on hover */
+ 
+
+}
+
+.organization, .job-description-1 {
   flex: 1; /* Allows these sections to grow and take equal space */
   margin-right: 20px; /* Adds spacing between organization and job description sections */
   color: #5a1c7a;
@@ -238,6 +412,19 @@ display: flex;
   padding: 10px; 
 }
 
+.file{
+  flex: 1; /* Allows these sections to grow and take equal space */
+  margin-right: 20px; /* Adds spacing between organization and job description sections */
+  color: #5a1c7a;
+  display: flex; /* or 'block' depending on your layout needs */
+  flex-direction: column; /* This will ensure each child starts on a new line */
+  align-items: flex-start; /* This aligns children (p tags) to the start (left) */
+  width: 100%; /* Adjust based on your layout needs */
+  padding: 10px; 
+  float: left;
+
+}
+
 .organization {
   flex-grow: 0;
   flex-shrink: 0;
@@ -246,13 +433,14 @@ display: flex;
 
 .job-description {
   flex: 0 0 40%; /* Do not grow, do not shrink, basis at 40% */
-  max-width: 40%; /* Confine maximum width to 40% of the parent container */
+  max-width: 35%; /* Confine maximum width to 40% of the parent container */
   padding: 10px; /* Provides spacing inside the container */
   margin-right: 20px; /* Separation from adjacent elements */
   height: 300px; /* Fixed height for the container */
   overflow-y: auto; /* Adds vertical scroll within the element if content overflows */
   background-color: #f8f8f8; /* Background color for the container */
   border: 1px solid #eaeaea; /* Border for the container */
+  border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow for visual depth */
   margin-bottom: 20px; /* Space to the next section */
   word-break: break-word; /* Allows words to break and wrap to the next line */
@@ -278,8 +466,18 @@ display: flex;
 }
 
 .file {
-  align-items: flex-end;
+  align-items: center;
+  align-content: center;
 }
+.file-image { /* This is the class for the file images */
+  margin-left: auto; /* This pushes the image to the right */
+}
+.hamburger img {
+
+  width: 2em;     /* Set the width of the hamburger icon */
+  position: relative; /* Position relative for z-index to take effect */
+
+  }
 
 .download-button {
   background-color: #723281; /* Purple color, matching the theme */
