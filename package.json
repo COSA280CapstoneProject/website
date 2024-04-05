@@ -20,7 +20,7 @@
     "sweetalert2": "^11.10.6",
     "v-click-outside": "^3.2.0",
     "vue": "^3.2.13",
-    "vue-draggable-resizable": "^2.3.0",
+    "vue-draggable-resizable": "^3.0.0",
     "vue-meta": "^2.4.0",
     "vue-router": "^4.2.5",
     "vue2-dropzone": "^3.6.0",
