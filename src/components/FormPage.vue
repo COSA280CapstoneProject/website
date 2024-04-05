@@ -433,7 +433,7 @@ display: flex;
 
 .job-description {
   flex: 0 0 40%; /* Do not grow, do not shrink, basis at 40% */
-  max-width: 35%; /* Confine maximum width to 40% of the parent container */
+  max-width: 100%; /* Confine maximum width to 40% of the parent container */
   padding: 10px; /* Provides spacing inside the container */
   margin-right: 20px; /* Separation from adjacent elements */
   height: 300px; /* Fixed height for the container */
