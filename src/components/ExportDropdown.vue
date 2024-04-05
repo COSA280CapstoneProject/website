@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown" v-bind:class="{ 'dropdown-show': show }">
-    <PanelMenu :model="items" class="dropdown-option"></PanelMenu>
+    <PanelMenu v-if="show" v-model="selectedItem" :model="items" class="dropdown-option"></PanelMenu>
     <div v-if="showDateExport" class="date-export-dropdown">
       <h4>Start date</h4>
       <Calendar v-model="startDate" showIcon />
@@ -34,6 +34,7 @@ export default {
       startDate: null,
       endDate: null,
       showDateExport: false,
+      selectedItem: null,
       items: [
         {
           label: 'Export all',
@@ -128,8 +129,32 @@ export default {
       link.setAttribute('download', 'exported_data.csv');
       document.body.appendChild(link);
       link.click();
-    }
-  }
+    },
+    handleClickOutside(event) {
+      // Check if the click was inside the calendar
+      const withinCalendar = event.composedPath().some(el => el.classList && el.classList.contains('p-datepicker'));
+    
+
+      // If the click was outside the dropdown and not within the calendar
+      if (!this.$el.contains(event.target) && !withinCalendar) {
+        this.closeDropdown();
+      }
+    },
+    closeDropdown() {
+      this.showDateExport = false;
+      this.$emit('close-export'); // Emit an event to the parent component to close the dropdown
+    },
+  },
+  mounted() {
+    // Add a global click event listener when the component is mounted
+    document.addEventListener('click', this.handleClickOutside, true);
+  },
+  beforeUnmount() {
+    // Remove the global click event listener when the component is about to be destroyed
+    document.removeEventListener('click', this.handleClickOutside, true);
+  },
+  
+  
 };
 </script>
 
@@ -137,7 +162,7 @@ export default {
 .dropdown {
   position: absolute;
   right: 0;
-  top: 60px;
+  top: 15%;
   background-color: #f9f9f9;
   width: 300px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
