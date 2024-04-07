@@ -7,7 +7,7 @@
         <h2>{{ detail.OrgName }}</h2>
         <p><b>Contact name:</b> {{ detail.ContactName }}</p>
         <p><b>Contact email:</b> {{ detail.Email }}</p>
-        <p><b>Phone number:</b> {{ formatPhoneNumber(detail.PhoneNum) }}</p>
+        <!-- <p><b>Phone number:</b> {{ formatPhoneNumber(detail.PhoneNum) }}</p> -->
         <p><b>Post type:</b> {{ detail.PostType }}</p>
         <p><b>Program:</b> {{ detail.ProgramType }}</p>
         <p><b>Start Date:</b> {{ detail.StartDate }}</p>
@@ -15,24 +15,48 @@
         <p><b>Post Title:</b> {{ detail.PostTitle }}</p>
         <p><b>Season:</b> {{ detail.Season }}</p>
         <p><b>Date Added:</b> {{ detail.DateAdded }}</p>
-        <p><b>Status:</b> {{ detail.Status }}</p>
+        
       </div>
       <div class="job-description-1">
-        <h2>{{ detail.PostTitle }}</h2>
+        <div class="title-and-date">
+          <h2 class="post-title">{{ detail.PostTitle }}</h2>
+          <h2 class="date">{{ detail.Season }}, {{ detail.StartDate }}</h2>
+        </div>
         <p class="job-description">{{ detail.PostDesc }}</p>
       </div>
+      
       <div class="file">
         <div class="hamburger" @click="toggleDropdown(index)" role="button" tabindex="0">
           <img class="hamburger-image"   src="@/assets/Hamburger_icon.png" alt="Menu"/>
         </div>
         
         <div v-show="showMenu[index]" class="dropdown-content">
-          <a class="statusdropdown">Status: <b>{{ detail.Status }}</b></a>
-          <br>
+          <!-- Trigger for Status Dropdown -->
+          <div class="statusdropdown-trigger" @click="toggleStatusDropdown(index)" role="button" tabindex="0">
+           <a class="editStatus">Edit Status ▼</a> 
+          </div>
+          
+          <!-- Status Dropdown Menu -->
+          <div v-show="showStatusDropdown[index]" class="status-options">
+            <a href="#">Open</a>
+            <a href="#">Closed</a>
+            <a href="#">Rejected</a>
+          </div>
+        
+          <!-- Separate Edit Link -->
           <a class="Edit" href="#" @click.prevent="openEditPopup(detail, index)">Edit</a>
-          <br>
-          <a class="Delete" href="#" @click.prevent="deletePosting(detail.PostID)">Delete</a>
+        
+          <!-- Separate Delete Link -->
+          <a class="Delete" href="#" @click.prevent="showDeleteConfirmationPopup(detail.PostID, index)">Delete</a>
         </div>
+        <div v-if="showDeleteConfirmation" class="delete-confirmation-popup">
+          <div class="delete-confirmation-content">
+            <p>Do you want to delete this posting?</p>
+            <button class="yes" @click="confirmDelete">Yes</button>
+            <button @click="closeDeleteConfirmationPopup">No</button>
+          </div>
+        </div>
+        <p class="status"><b>Status:</b> {{ detail.Status }}</p>
         <div v-if="detail.BlobURL" class="file">
           <div v-for="(url, fileIndex) in detail.BlobURL.split(',')" :key="fileIndex">
             <img src="@/assets/file.png" alt="Download file" class="download-icon" @click="downloadFile(url, 'DownloadedFile')"/>
@@ -76,6 +100,9 @@ export default {
       showEditPopup: false,
       currentEditingPosting: null,
       fileSizes: {},
+      showStatusDropdown: [],
+      showDeleteConfirmation: false,
+      selectedPostID: null,
     };
   },
   methods: {
@@ -104,6 +131,20 @@ axios.get(url)
     this.errorMessage = 'Failed to load posting details: ' + error.message;
     this.showErrorPopup = true;
   }); },
+  toggleStatusDropdown(index) {
+      // Directly set the value at the specified index
+      if (this.showStatusDropdown[index] === undefined) {
+        // Explicitly add the index to the array with the initial value of false
+        this.showStatusDropdown = [
+          ...this.showStatusDropdown.slice(0, index),
+          false,
+          ...this.showStatusDropdown.slice(index + 1)
+        ];
+      } else {
+        // If already initialized, simply toggle the boolean value
+        this.showStatusDropdown[index] = !this.showStatusDropdown[index];
+      }
+    },
     toggleDropdown(index) {
       this.showMenu[index] = !this.showMenu[index];
     },
@@ -112,6 +153,19 @@ axios.get(url)
       this.showEditPopup = true;
       this.showMenu[index] = false;
     },
+    showDeleteConfirmationPopup(postID) {
+  this.selectedPostID = postID;
+  this.showDeleteConfirmation = true;
+},
+confirmDelete() {
+  if (this.selectedPostID) {
+    this.deletePosting(this.selectedPostID);
+  }
+  this.closeDeleteConfirmationPopup();
+},
+closeDeleteConfirmationPopup() {
+  this.showDeleteConfirmation = false;
+},
     deletePosting(postID) {
       axios.post('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabasePostings', { postID })
         .then(response => {
@@ -438,14 +492,47 @@ display: flex;
   margin-right: 20px; /* Separation from adjacent elements */
   height: 300px; /* Fixed height for the container */
   overflow-y: auto; /* Adds vertical scroll within the element if content overflows */
-  background-color: #f8f8f8; /* Background color for the container */
-  border: 1px solid #eaeaea; /* Border for the container */
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow for visual depth */
+ 
   margin-bottom: 20px; /* Space to the next section */
   word-break: break-word; /* Allows words to break and wrap to the next line */
   color: black;
 }
+
+
+
+.status-options {
+ 
+  position: absolute; /* Position it relative to its trigger */
+  background-color: #fff; /* White background */
+  width: 8em; /* Minimum width */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  border-radius: 4px; /* Rounded corners */
+  z-index: 100; /* Higher z-index to be on top of other elements */
+  margin-top: 5px; /* Give some space from the trigger */
+  margin-right: 1em;
+
+}
+
+.status-options a {
+  color: #333; /* Dark text color for better readability */
+ width: 7em;
+ align-items: center;
+ margin-left: 0.5em;
+  text-decoration: none; /* No underline */
+  display: block; /* Block level - takes the full width */
+  border-bottom: 1px solid #eaeaea; /* Separator between options */
+}
+
+.status-options a:last-child {
+  border-bottom: none; /* No border for the last option */
+}
+
+.status-options a:hover {
+  background-color: #f7f7f7; /* Light background on hover */
+}
+
+
+
 
 
 
@@ -474,9 +561,9 @@ display: flex;
 }
 .hamburger img {
 
-  width: 2em;     /* Set the width of the hamburger icon */
+  width: 4em;     /* Set the width of the hamburger icon */
   position: relative; /* Position relative for z-index to take effect */
-
+padding-left: 1.8em;
   }
 
 .download-button {
@@ -552,13 +639,115 @@ display: flex;
   border-radius: 10px;
   z-index: 100;
 }
+.status{
+  color: black;
+}
 
+.date{
+  margin-left: 9em;
+  font-weight: bold;
+  max-width: 3em;
+  text-align: right;
+ text-align-last: right;
+}
+.job-description-1 .title-and-date {
+  display: flex; /* Use flexbox to lay out the children in a row */
+  align-items: center; /* Align the items vertically */
+  justify-content: start; /* Start alignment of the items */
+  flex-wrap: wrap; /* Allow the items to wrap to the next line on small screens */
+}
+
+.job-description-1 {
+  margin-right: 10px; /* Add space between the post title and the date */
+  /* Adjust the margin as needed */
+}
+.post-title {
+  max-width: 11em;
+}
+.job-description-1 .date {
+  white-space: nowrap; /* Prevent the date from wrapping */
+  /* If you want the date to be less prominent, you could add additional styling */
+  font-weight: bold; /* Less bold than the title */
+  font-size: 0.9em; /* Smaller font size */
+}
+
+/* Ensure the job description still appears as a block-level element */
+.job-description-1 .job-description {
+  /* your existing styles for job-description */
+}
 
 .error-content {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+.delete-confirmation-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px #5a6268;
+  display: flex;
+  box-shadow: #333;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirmation-content {
+  background: #fff; /* White background for the popup */
+  padding: 30px;
+  border-radius: 15px; /* Rounded corners for the popup */
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirmation-content p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.delete-confirmation-content button {
+  border: none;
+  border-radius: 20px; /* Rounded corners for buttons */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin: 0 10px; /* Space between buttons */
+  min-width: 100px; /* Minimum width so buttons are not too small */
+  background-color: #6c757d; /* Default color for both buttons */
+  color: white; /* Default text color for both buttons */
+}
+
+.delete-confirmation-content .yes {
+  border: none;
+  border-radius: 20px; /* Rounded corners for buttons */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin: 0 10px; /* Space between buttons */
+  background-color: #dc3545; /* Red background color */
+  color: white; /* White text color */
+  min-width: 100px; /* Minimum width so buttons are not too small */
+}
+
+.delete-confirmation-content .yes:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* Hover effect for 'No' button */
+.delete-confirmation-content button:last-child:hover {
+  background-color: #5a6268; /* Darker grey background on hover */
+}
+
 
 .close-button {
   margin-top: 20px;
