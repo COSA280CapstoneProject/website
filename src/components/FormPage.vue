@@ -10,10 +10,10 @@
         <!-- <p><b>Phone number:</b> {{ formatPhoneNumber(detail.PhoneNum) }}</p> -->
         <p><b>Post type:</b> {{ detail.PostType }}</p>
         <p><b>Program:</b> {{ detail.ProgramType }}</p>
-        <p><b>Start Date:</b> {{ detail.StartDate }}</p>
+        <!-- <p><b>Start Date:</b> {{ detail.StartDate }}</p> -->
         <p><b>Post ID:</b> {{ detail.PostID }}</p>
         <p><b>Post Title:</b> {{ detail.PostTitle }}</p>
-        <p><b>Season:</b> {{ detail.Season }}</p>
+        <!-- <p><b>Season:</b> {{ detail.Season }}</p> -->
         <p><b>Date Added:</b> {{ detail.DateAdded }}</p>
         
       </div>
@@ -21,7 +21,7 @@
         <div class="title-and-date">
           <h2 class="post-title">{{ detail.PostTitle }}</h2>
           <h2 class="date">{{ detail.Season }}, {{ detail.StartDate }}</h2>
-        </div>
+        </div> 
         <p class="job-description">{{ detail.PostDesc }}</p>
       </div>
       
@@ -29,7 +29,7 @@
         <div class="hamburger" @click="toggleDropdown(index)" role="button" tabindex="0">
           <img class="hamburger-image"   src="@/assets/Hamburger_icon.png" alt="Menu"/>
         </div>
-        
+     
         <div v-show="showMenu[index]" class="dropdown-content">
           <!-- Trigger for Status Dropdown -->
           <div class="statusdropdown-trigger" @click="toggleStatusDropdown(index)" role="button" tabindex="0">
@@ -38,11 +38,35 @@
           
           <!-- Status Dropdown Menu -->
           <div v-show="showStatusDropdown[index]" class="status-options">
-            <a href="#">Open</a>
-            <a href="#">Closed</a>
-            <a href="#">Rejected</a>
+            <a href="#" @click.prevent="updateField(detail.PostID, 'status', 'Open')">Open</a>
+            <a href="#" @click.prevent="updateField(detail.PostID, 'status', 'Closed')">Closed</a>
+            <a href="#" @click.prevent="updateField(detail.PostID, 'status', 'Rejected')">Rejected</a>
+          </div>
+          
+          <div class="statusdropdown-trigger" @click="toggleAssignProgramDropdown(index)" role="button" tabindex="0">
+            <a class="assignProgram">Assign Program ▼</a>
           </div>
         
+          <!-- Program Dropdown Menu -->
+          <div v-show="showAssignProgramDropdown[index]" class="program-options">
+            <select class="program" v-model="detail.selectedProgram" @change="updateField(detail.PostID, 'programType', detail.selectedProgram)">
+              <option value="">Select Program</option>
+              <option value="Software Development">Software Development</option>
+              <option value="Network Technician">Network Technician</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Data Analysis">Data Analysis</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Cyber Security">Cyber Security</option>
+              <option value="UX/UI Design">UX/UI Design</option>
+              <option value="Digital Marketing">Digital Marketing</option>
+              <option value="IT Support">IT Support</option>
+              <option value="Cloud Computing">Cloud Computing</option>
+              <option value="Project Management">Project Management</option>
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+       
+
           <!-- Separate Edit Link -->
           <a class="Edit" href="#" @click.prevent="openEditPopup(detail, index)">Edit</a>
         
@@ -83,9 +107,11 @@ import axios from 'axios';
 import moment from 'moment';
 import PostingPopupEdit from '@/components/PostingPopupEdit.vue';
 
+
 export default {
   components: {
     PostingPopupEdit,
+    
   },
   props: {
     sortKey: Array,
@@ -103,7 +129,24 @@ export default {
       showStatusDropdown: [],
       showDeleteConfirmation: false,
       selectedPostID: null,
+      showAssignProgramDropdown: [],
+      
+      ProgramType: [
+      'Software Development',
+      'Network Technician',
+      'Web Development',
+      'Data Analysis',
+      'Data Science',
+      'Cyber Security',
+      'UX/UI Design',
+      'Digital Marketing',
+      'IT Support',
+      'Cloud Computing',
+      'Project Management',
+      // Add more program types as needed
+    ],
     };
+    
   },
   methods: {
     fetchPostingDetails() {
@@ -153,10 +196,59 @@ axios.get(url)
       this.showEditPopup = true;
       this.showMenu[index] = false;
     },
+    toggleAssignProgramDropdown(index) {
+  // Directly set the value at the specified index
+  if (this.showAssignProgramDropdown[index] === undefined) {
+    // Explicitly add the index to the array with the initial value of false
+    this.showAssignProgramDropdown = [
+      ...this.showAssignProgramDropdown.slice(0, index),
+      false,
+      ...this.showAssignProgramDropdown.slice(index + 1)
+    ];
+  } else {
+    // If already initialized, simply toggle the boolean value
+    this.showAssignProgramDropdown[index] = !this.showAssignProgramDropdown[index];
+  }
+},
+
+
+
+
+    
+    // Here's the updateField method adapted for your component
+    async updateField(postID, fieldName, value) {
+      let url = 'https://ictdatabasefileupload.azurewebsites.net/api/';
+      const payload = { postID };
+
+      if (fieldName === 'status') {
+        url += 'updateICTSQLDatabasePostingsStatus';
+        payload.Status = value;
+      } else if (fieldName === 'programType') {
+        url += 'editICTSQLDatabasePostingsProgramtype';
+        payload.ProgramType = value;
+      } else {
+        // Adjust for other fields as necessary
+      }
+
+      try {
+        const response = await axios.post(url, payload);
+        if (response.status === 200) {
+          console.log(`Successfully updated ${fieldName}`);
+          this.fetchPostingDetails(); // Refresh data
+        } else {
+          console.error(`Failed to update ${fieldName}: Server responded with status ${response.status}`);
+        }
+      } catch (error) {
+        console.error(`Error updating ${fieldName}:`, error);
+        this.error = `Failed to update ${fieldName}. ` + error.message;
+      }
+    },
+
     showDeleteConfirmationPopup(postID) {
   this.selectedPostID = postID;
   this.showDeleteConfirmation = true;
 },
+
 confirmDelete() {
   if (this.selectedPostID) {
     this.deletePosting(this.selectedPostID);
@@ -192,6 +284,8 @@ closeDeleteConfirmationPopup() {
     programType: 'editiCTSQLDatabasePostingsProgramtype',
     season: 'editiCTSQLDatabasePostingsSeason',
     startDate: 'editICTSQLDatabasePostingsStartDate',
+     status: 'https://ictdatabasefileupload.azurewebsites.net/api/updateICTSQLDatabasePostingsStatus',
+
   };
 
   // Collect promises for each edit operation
@@ -488,8 +582,7 @@ display: flex;
 .job-description {
   flex: 0 0 40%; /* Do not grow, do not shrink, basis at 40% */
   max-width: 100%; /* Confine maximum width to 40% of the parent container */
-  padding: 10px; /* Provides spacing inside the container */
-  margin-right: 20px; /* Separation from adjacent elements */
+  text-align: left;
   height: 300px; /* Fixed height for the container */
   overflow-y: auto; /* Adds vertical scroll within the element if content overflows */
  
@@ -504,7 +597,7 @@ display: flex;
  
   position: absolute; /* Position it relative to its trigger */
   background-color: #fff; /* White background */
-  width: 8em; /* Minimum width */
+  width: 10.5em; /* Minimum width */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for depth */
   border-radius: 4px; /* Rounded corners */
   z-index: 100; /* Higher z-index to be on top of other elements */
@@ -515,7 +608,7 @@ display: flex;
 
 .status-options a {
   color: #333; /* Dark text color for better readability */
- width: 7em;
+ width: 9.5em;
  align-items: center;
  margin-left: 0.5em;
   text-decoration: none; /* No underline */
@@ -536,7 +629,9 @@ display: flex;
 
 
 
-
+.multi-select{
+  width: 10em;
+}
 
 
 .file-download-section {
@@ -758,4 +853,32 @@ padding-left: 1.8em;
   border-radius: 5px;
   cursor: pointer;
 }
+.program-options .program {
+  width: 12.5em;
+  height: 2em;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  box-sizing: border-box; /* Makes sure the padding doesn't affect the total width */
+  cursor: pointer;
+  appearance: none; /* Disables the native dropdown styling */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="14px" height="12px" viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg"><path fill="%23333" d="M1108 271H92c-23 0-44 14-44 32 0 25 19 41 44 41h1016c24 0 44-16 44-41 0-18-20-32-44-32z"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.program-options .program:hover,
+.program-options .program:focus {
+  border-color: #666666;
+  box-shadow: 0 0 0 3px rgba(102, 102, 102, 0.3);
+  outline: none;
+}
+
+/* For the options */
+.program-options .program option {
+  padding: 10px;
+}
+
 </style>
