@@ -142,6 +142,7 @@
         email.value = posting?.email || '';
         season.value = posting?.season || '';
       });
+      
       const detail = reactive({
       OrgName: '',
       ContactName: '',
@@ -155,6 +156,7 @@
       Season: '',
       DateAdded: '',
     });
+    
       // Define the endpoint map
       const endpointMap = {
         orgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
@@ -183,6 +185,7 @@
         email.value = '';
         season.value = '';
       };
+      
   
       // SubmitForm method to trigger update for changed fields
       const submitForm = async () => {

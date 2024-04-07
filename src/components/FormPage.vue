@@ -49,8 +49,8 @@
         
           <!-- Program Dropdown Menu -->
           <div v-show="showAssignProgramDropdown[index]" class="program-options">
-            <select class="program" v-model="detail.selectedProgram" @change="updateField(detail.PostID, 'programType', detail.selectedProgram)">
-              <option value="">Select Program</option>
+            <select placeholder="Select Here" class="program" v-model="detail.selectedProgram" @change="updateField(detail.PostID, 'programType', detail.selectedProgram)">
+              <option disabled value="" selected>Select Program</option>
               <option value="Software Development">Software Development</option>
               <option value="Network Technician">Network Technician</option>
               <option value="Web Development">Web Development</option>
@@ -217,18 +217,17 @@ axios.get(url)
     
     // Here's the updateField method adapted for your component
     async updateField(postID, fieldName, value) {
-      let url = 'https://ictdatabasefileupload.azurewebsites.net/api/';
+      let urlStatus = 'https://ictdatabasefileupload.azurewebsites.net/api/updateICTSQLDatabasePostingsStatus';
+      let urlProgram = 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype';
       const payload = { postID };
-
+let url;
       if (fieldName === 'status') {
-        url += 'updateICTSQLDatabasePostingsStatus';
+       url= urlStatus;
         payload.Status = value;
       } else if (fieldName === 'programType') {
-        url += 'editICTSQLDatabasePostingsProgramtype';
+       url= urlProgram;
         payload.ProgramType = value;
-      } else {
-        // Adjust for other fields as necessary
-      }
+      } 
 
       try {
         const response = await axios.post(url, payload);
@@ -581,15 +580,23 @@ display: flex;
 
 .job-description {
   flex: 0 0 40%; /* Do not grow, do not shrink, basis at 40% */
-  max-width: 100%; /* Confine maximum width to 40% of the parent container */
+  max-width: 100%; /* Confine maximum width to 100% of the parent container */
   text-align: left;
   height: 300px; /* Fixed height for the container */
   overflow-y: auto; /* Adds vertical scroll within the element if content overflows */
- 
   margin-bottom: 20px; /* Space to the next section */
   word-break: break-word; /* Allows words to break and wrap to the next line */
   color: black;
+ 
+  line-height: 1.6; /* Adjust line height for better readability */
+  white-space: pre-line; /* Respects new lines in the text content */
 }
+
+.job-description p {
+  margin-bottom: 1em; /* Adds space below each paragraph */
+}
+
+
 
 
 
@@ -867,6 +874,7 @@ padding-left: 1.8em;
   background-position: right 10px center;
   background-size: 12px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  color: black;
 }
 
 .program-options .program:hover,
@@ -874,6 +882,7 @@ padding-left: 1.8em;
   border-color: #666666;
   box-shadow: 0 0 0 3px rgba(102, 102, 102, 0.3);
   outline: none;
+  color: black;
 }
 
 /* For the options */
