@@ -9,8 +9,8 @@
           <div class="input-group">
             <div class="org-contact-container">
               <div class="orgName">
-                <label for="orgName">Organization Name </label>
-                <input type="text" v-model="orgName" :class="{ error: submitted && !orgName.trim() }" />
+                <label for="orgName">Organization Name</label>
+                <input type="text" v-model="detail.OrgName" :class="{ error: submitted && !detail.OrgName.trim() }" />
               </div>
               <div class="contactName">
                 <label for="contactName">Contact Name </label>
@@ -91,11 +91,13 @@
   import { useToast } from 'primevue/usetoast';
   import axios from 'axios';
   import Toast from 'primevue/toast';
+  import { reactive } from 'vue';
   
   export default {
     data() {
       return {
         years: [2024, 2025, 2026], // Years for the dropdown
+        postingDetails: [],
       }
     },
     components: {
@@ -108,6 +110,7 @@
         required: true,
       }
     },
+    
     setup(props, { emit }) {
       const toast = useToast();
   
@@ -139,7 +142,21 @@
         email.value = posting?.email || '';
         season.value = posting?.season || '';
       });
-  
+      
+      const detail = reactive({
+      OrgName: '',
+      ContactName: '',
+      Email: '',
+      PhoneNum: '', // Assume you will format this later if needed
+      PostType: '',
+      ProgramType: '',
+      StartDate: '',
+      PostID: '',
+      PostTitle: '',
+      Season: '',
+      DateAdded: '',
+    });
+    
       // Define the endpoint map
       const endpointMap = {
         orgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
@@ -168,6 +185,7 @@
         email.value = '';
         season.value = '';
       };
+      
   
       // SubmitForm method to trigger update for changed fields
       const submitForm = async () => {
@@ -210,6 +228,7 @@
       const goBack = () => emit('close');
   
       return {
+        detail,
         goBack,
         submitForm,
         orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season,
