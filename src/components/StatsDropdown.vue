@@ -90,6 +90,7 @@ export default {
   top: 61px;
   background-color: #fff;
   border: 1px solid black;
+  padding: 20px;
 }
 
 .dropdown-menu {
