@@ -286,7 +286,7 @@ export default {
   background-color: #763c97;
   background-repeat: repeat;
   background-size: 10%;
-  color: black;
+  color: white;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
