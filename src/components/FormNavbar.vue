@@ -92,6 +92,7 @@
   justify-content: center; /* Center the container */
   height: 60px;
   background-color: #753C97;
+  z-index: 10;
 }
 
 .Navbar-container {
