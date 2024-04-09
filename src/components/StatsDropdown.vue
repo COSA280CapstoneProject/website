@@ -57,9 +57,7 @@ export default {
       this.isOpen = !this.isOpen;
     },
     closeDropdown() {
-      if (this.isOpen) {
-        this.isOpen = false;
-      }
+      this.$emit('close-stats'); // Emit an event to the parent component to close the dropdown
     },
   },
   created() {
@@ -80,6 +78,13 @@ export default {
           }
         });
       });
+      
+  },
+  mounted() {
+    document.addEventListener('click', this.closeDropdown, true);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.closeDropdown, true);
   },
 };
 </script>
@@ -87,10 +92,11 @@ export default {
 <style scoped>
 .stats-dropdown {
   position: absolute;
-  top: 61px;
+  top: 60px;
   background-color: #fff;
   border: 1px solid black;
   padding: 20px;
+  left: 1%;
 }
 
 .dropdown-menu {
