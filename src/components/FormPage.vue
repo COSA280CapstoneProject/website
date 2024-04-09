@@ -921,7 +921,7 @@ padding-left: 1.8em;
   padding: 10px;
 }
 
-.statusYe{
+.statusYes{
   background-color: #dc3545; 
 }
 .statusYes:hover{
