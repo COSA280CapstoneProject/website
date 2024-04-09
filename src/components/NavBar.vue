@@ -29,10 +29,10 @@
       <div v-else class="login-button">
         <button @click="Login">Login</button>
       </div>
-      <!-- Button to Navigate to the Form Page -->
-      <div class="form-page">
-        <button @click="goToFormPage">Form Page</button>
-      </div>
+        <!-- Button to Navigate to the Form Page -->
+        <div v-if="isLoggedIn" class="form-page">
+          <button @click="goToFormPage">Form Page</button>
+        </div>
     </nav>
     <!-- Popup for Admin Management -->
     <div v-show="showPopup" class="overlay">
