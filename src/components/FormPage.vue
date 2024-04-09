@@ -145,7 +145,7 @@ export default {
       'IT Support',
       'Cloud Computing',
       'Project Management',
-      // Add more program types as needed
+      
     ],
     };
     
@@ -221,15 +221,16 @@ axios.get(url)
     // Here's the updateField method adapted for your component
     async updateField(postID, fieldName, value) {
       let urlStatus = 'https://ictdatabasefileupload.azurewebsites.net/api/updateICTSQLDatabasePostingsStatus';
-      let urlProgram = 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype';
+      let urlProgram = 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramType';
       const payload = { postID };
-let url;
+      let url;
       if (fieldName === 'status') {
        url= urlStatus;
-        payload.Status = value;
+       
+        payload.status = value;
       } else if (fieldName === 'programType') {
        url= urlProgram;
-        payload.ProgramType = value;
+        payload.programType = value;
       } 
 
       try {

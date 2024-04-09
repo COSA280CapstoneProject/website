@@ -51,9 +51,9 @@
               <div class="start-date-container">
                 <label for="startDate">Start Date </label>
                 <div class="date-inputs">
-                  <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
+                  <!-- <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
                     <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-                  </select>
+                  </select> -->
                   <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
                     <option value="Fall">Fall</option>
                     <option value="Winter">Winter</option>
