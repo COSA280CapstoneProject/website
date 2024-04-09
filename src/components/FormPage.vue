@@ -218,7 +218,7 @@ axios.get(url)
     // Here's the updateField method adapted for your component
     async updateField(postID, fieldName, value) {
       let urlStatus = 'https://ictdatabasefileupload.azurewebsites.net/api/updateICTSQLDatabasePostingsStatus';
-      let urlProgram = 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostType';
+      let urlProgram = 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramType';
       const payload = { postID };
       let url;
       if (fieldName === 'status') {
@@ -227,7 +227,7 @@ axios.get(url)
         payload.status = value;
       } else if (fieldName === 'programType') {
        url= urlProgram;
-        payload.postType = value;
+        payload.programType = value;
       } 
 
       try {
