@@ -14,7 +14,7 @@
               </div>
               <div class="contactName">
                 <label for="contactName">Contact Name </label>
-                <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" />
+                <input type="text" v-model="detail.ContactName" :class="{ error: submitted && !ContactName.trim() }" />
               </div>
             </div>
             <div class="contact-info-container">
@@ -22,15 +22,15 @@
                 <div class="email">
                   <label for="email">Email </label>
                   <div>
-                    <input type="text" v-model="email" :class="{ error: submitted && !email }" />
+                    <input type="text" v-model="detail.Email" :class="{ error: submitted && !email }" />
                     <span v-if="submitted && !email" class="error-message">Please enter a valid email address.</span>
                   </div>
                 </div>
               </div>
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
-                <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
-                  :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
+                <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" v-model.lazy="detail.PhoneNum" :class="{ error: submitted && !detail.PhoneNum }" />
+
               </div>
             </div>
             <div class="posting">
@@ -39,8 +39,7 @@
                 <label for="postingType">Posting</label>
               </div>
               <div class="select-container">
-                <select id="postingType" name="postingType" v-model="programType"
-                  :class="{ error: submitted && !programType }">
+                <select id="postingType" name="postingType" v-model="detail.PostType" :class="{ error: submitted && !detail.PostType }">
                   <option value="Student Projects">Student Project</option>
                   <option value="Internships">Internship</option>
                   <option value="Job Placements">Job Placement</option>
@@ -49,12 +48,15 @@
             </div>
             <div class="startDate">
               <div class="start-date-container">
-                <label for="startDate">Start Season </label>
+                <label for="startDate">Start Date </label>
                 <div class="date-inputs">
-                  <!-- <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
-                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-                  </select> -->
-                  <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
+                  <select id="Year" name="Year" v-model="detail.StartDate" :class="{ error: submitted && !startDate }">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                  </select>
+                  <select id="Season" name="Season" v-model="detail.Season" :class="{ error: submitted && !season }">
                     <option value="Fall">Fall</option>
                     <option value="Winter">Winter</option>
                     <option value="Spring">Spring</option>
@@ -65,12 +67,13 @@
             </div>
             <div class="Title">
               <label for="Title" id="TitleL">Title </label>
-              <input type="text" id="Title" name="Title" v-model="postTitle"
+              <input type="text" id="Title" name="Title" v-model="detail.PostTitle"
                 :class="{ error: submitted && !postTitle }" />
             </div>
             <div class="Description">
               <label for="Description">Description </label>
-              <textarea id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }"></textarea>
+              <textarea id="Description" name="Description" v-model="detail.PostDesc" :class="{ error: submitted && !detail.PostDesc }"></textarea>
+
             </div>
             <div class="submit">
               <button @click="submitForm">Edit</button>
@@ -96,7 +99,7 @@
   export default {
     data() {
       return {
-        years: [2024, 2025, 2026], // Years for the dropdown
+        years: [2024, 2025, 2026, 2027], // Years for the dropdown
         postingDetails: [],
       }
     },
@@ -115,7 +118,7 @@
       const toast = useToast();
   
       // Initializing refs for form fields
-      const orgName = ref('');
+      const orgName = ref('hi');
       const contactName = ref('');
       const phoneNum = ref('');
       const startDate = ref('');
@@ -147,7 +150,7 @@
       OrgName: '',
       ContactName: '',
       Email: '',
-      PhoneNum: '', // Assume you will format this later if needed
+      PhoneNum: '', 
       PostType: '',
       ProgramType: '',
       StartDate: '',
@@ -155,7 +158,49 @@
       PostTitle: '',
       Season: '',
       DateAdded: '',
+      PostDesc: '',
     });
+    const fetchPostDetails = async () => {
+  try {
+    const response = await axios.get(`https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${props.postID}`);
+    console.log(response.data);
+
+    // Find the posting with the matching PostID
+    const posting = response.data.find(item => item.PostID.toString() === props.postID);
+
+    if (posting) {
+      console.log("Posting found:", posting);
+      // If a matching posting is found, assign its details to the detail object
+      Object.assign(detail, {
+        OrgName: posting.OrgName,
+        ContactName: posting.ContactName,
+        Email: posting.Email,
+        PhoneNum: posting.PhoneNum,
+        PostType: posting.PostType,
+        ProgramType: posting.ProgramType,
+        StartDate: posting.StartDate,
+        PostID: posting.PostID,
+        PostTitle: posting.PostTitle,
+        Season: posting.Season,
+        DateAdded: posting.DateAdded,
+        Status: posting.Status,
+        PostDesc: posting.PostDesc,
+        // Add any other fields you need
+      });
+    } else {
+      console.error("No posting found with the given PostID.");
+      toast.add({ severity: 'error', summary: 'Fetch Failed', detail: 'No posting found with the given PostID.', life: 3000 });
+    }
+  } catch (error) {
+    console.error("Failed to fetch posting details:", error);
+    toast.add({ severity: 'error', summary: 'Fetch Failed', detail: 'Failed to fetch posting details.', life: 3000 });
+  }
+};
+
+    onMounted(() => {
+      fetchPostDetails();
+    });
+
     
       // Define the endpoint map
       const endpointMap = {
@@ -234,6 +279,7 @@
         orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season,
       };
     },
+    
   };
   </script>
 
@@ -331,11 +377,12 @@
 
 .Description textarea {
   resize: none; 
+  
 }
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 72px;
+  margin-left: 66px;
   font-size: 16px;
 }
  
@@ -344,6 +391,8 @@
   padding: 5px;
   margin: 0;
   font-size: 16px;
+  
+  
 }
  
 .posting {
@@ -398,7 +447,7 @@
 }
  
 .startDate label {
-  margin-right: 10px; 
+  margin-right: 25px; 
 }
  
 .date-inputs {
@@ -439,6 +488,7 @@
 .Description label {
   margin-bottom: 5px;
   margin-top: -14%;
+  margin-right: 15px;
 }
 
 .FileUpload {
