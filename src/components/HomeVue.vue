@@ -80,9 +80,8 @@
           <img src="@/assets/footer-logo.png" alt="Footer Logo" style="width: 200%;" />
         </div>
         <div class="footer-info">
-          <p>&copy; 2024 ICT Regina. All rights reserved.</p>
+          <p>&copy; 2024 Saskatchewan Polytechnic. All rights reserved.</p>
           <p><a href="https://maps.app.goo.gl/kQPc3ypHg8xk8xdW7" target="_blank" rel="noopener noreferrer">4500 Wascana Pkwy, Regina, SK S4S 5X1</a></p>
-          <p>Email: <a href="mailto:info@ictregina.com">info@ictregina.com</a> | Phone: <a href="tel:1234567890">(123) 456-7890</a></p>
         </div>
         <div class="footer-social">
         <a href="https://www.facebook.com/saskpolytech/" target="_blank" rel="noopener noreferrer">
@@ -286,7 +285,7 @@ export default {
   background-color: #763c97;
   background-repeat: repeat;
   background-size: 10%;
-  color: black;
+  color: white;
   margin: -100px;
   margin-top: -125px;
   padding: 23px 0px;
