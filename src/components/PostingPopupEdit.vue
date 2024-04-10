@@ -276,7 +276,7 @@
         detail,
         goBack,
         submitForm,
-        orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season,
+        OrgName, ContactName, PhoneNum, StartDate, PostTitle, PostDesc, ProgramType, PostType, Status, Email, Season,
       };
     },
     
