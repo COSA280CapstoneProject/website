@@ -118,17 +118,17 @@
       const toast = useToast();
   
       // Initializing refs for form fields
-      const orgName = ref('');
-      const contactName = ref('');
-      const phoneNum = ref('');
-      const startDate = ref('');
-      const postTitle = ref('');
-      const postDesc = ref('');
-      const programType = ref('');
-      const postType = ref('');
-      const status = ref('');
-      const email = ref('');
-      const season = ref('');
+      const OrgName = ref('');
+      const ContactName = ref('');
+      const PhoneNum = ref('');
+      const StartDate = ref('');
+      const PostTitle = ref('');
+      const PostDesc = ref('');
+      const ProgramType = ref('');
+      const PostType = ref('');
+      const Status = ref('');
+      const Email = ref('');
+      const Season = ref('');
   
       // Function to populate form fields from props
       onMounted(() => {
@@ -204,16 +204,16 @@
     
       // Define the endpoint map
       const endpointMap = {
-        orgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
-        contactName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsContactName',
-        phoneNum: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPhoneNum',
-        startDate: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsStartDate',
-        postTitle: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostTitle',
-        postDesc: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostDesc',
-        programType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype',
-        postType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostType',
-        email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
-        season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
+        OrgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
+        ContactName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsContactName',
+        PhoneNum: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPhoneNum',
+        PtartDate: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsStartDate',
+        PostTitle: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostTitle',
+        PostDesc: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostDesc',
+        ProgramType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype',
+        PostType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostType',
+        Email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
+        Season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
       };
 
       // Function to clear all fields
