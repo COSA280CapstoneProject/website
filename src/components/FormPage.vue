@@ -38,11 +38,21 @@
           
           <!-- Status Dropdown Menu -->
           <div v-show="showStatusDropdown[index]" class="status-options">
-            <a href="#" @click.prevent="updateField(detail.PostID, 'status', 'Open')">Open</a>
-            <a href="#" @click.prevent="updateField(detail.PostID, 'status', 'Closed')">Closed</a>
-            <a href="#" @click.prevent="updateField(detail.PostID, 'status', 'Rejected')">Rejected</a>
+            <a href="#" @click.prevent="promptStatusUpdate(detail.PostID, 'Open')">Open</a>
+            <a href="#" @click.prevent="promptStatusUpdate(detail.PostID, 'Closed')">Closed</a>
+            <a href="#" @click.prevent="promptStatusUpdate(detail.PostID, 'Rejected')">Rejected</a>
           </div>
           
+          <div v-if="showStatusUpdatePopup" class="delete-confirmation-popup">
+            <div class="delete-confirmation-content">
+              <p>Are you sure you want to change the status?</p>
+              <button class="statusYes" @click="confirmStatusUpdate">Yes</button>
+              <button @click="showStatusUpdatePopup = false">No</button>
+            </div>
+          </div>
+          
+          
+
           <div class="statusdropdown-trigger" @click="toggleAssignProgramDropdown(index)" role="button" tabindex="0">
             <a class="assignProgram">Assign Program ▼</a>
           </div>
@@ -130,8 +140,11 @@ export default {
       showDeleteConfirmation: false,
       selectedPostID: null,
       showAssignProgramDropdown: [],
-      errorMessage: null,
-      
+      showStatusUpdatePopup: false,
+    statusUpdateDetails: {
+      postID: null,
+      newStatus: '',
+    },
       
       ProgramType: [
       'Software Development',
@@ -217,6 +230,7 @@ axios.get(url)
 
 
 
+
     
     // Here's the updateField method adapted for your component
     async updateField(postID, fieldName, value) {
@@ -251,6 +265,20 @@ axios.get(url)
   this.selectedPostID = postID;
   this.showDeleteConfirmation = true;
 },
+promptStatusUpdate(postID, newStatus) {
+  this.statusUpdateDetails.postID = postID;
+  this.statusUpdateDetails.newStatus = newStatus;
+  this.showStatusUpdatePopup = true;
+},
+
+async confirmStatusUpdate() {
+    await this.updateField(
+      this.statusUpdateDetails.postID,
+      'status',
+      this.statusUpdateDetails.newStatus
+    );
+    this.showStatusUpdatePopup = false;
+  },
 
 confirmDelete() {
   if (this.selectedPostID) {
@@ -912,4 +940,11 @@ padding-left: 1.8em;
   padding: 10px;
 }
 
+.statusYes{
+  background-color: #dc3545; 
+}
+.statusYes:hover{
+
+ background-color: #c82333; /* Darker red on hover */
+}
 </style>

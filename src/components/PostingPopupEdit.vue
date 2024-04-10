@@ -49,7 +49,7 @@
             </div>
             <div class="startDate">
               <div class="start-date-container">
-                <label for="startDate">Start Date </label>
+                <label for="startDate">Start Season </label>
                 <div class="date-inputs">
                   <!-- <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
                     <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
