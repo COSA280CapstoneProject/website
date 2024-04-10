@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-if="!postingDetails.length && !error" class="loading-message">Loading posting details...</div>
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div v-if="!postingDetails.length && !errorMessage" class="loading-message">Loading posting details...</div>
     <div class="posting-row" v-for="(detail, index) in postingDetails" :key="index">
       <div class="organization">
         <h2>{{ detail.OrgName }}</h2>
@@ -190,6 +190,7 @@ axios.get(url)
     });
   })
   .catch(error => {
+    console.error('Failed to load posting details:', error);
     this.errorMessage = 'Failed to load posting details: ' + error.message;
     this.showErrorPopup = true;
   }); },
@@ -382,6 +383,7 @@ axios.get(url)
     },
 
     filterAndLogMatches() {
+      try{
   // Start with all postings
   let filteredPostings = [...this.allPostings];
 
@@ -432,18 +434,27 @@ if (this.sortKey.endDate) {
     return postingDate.isSameOrBefore(endDate);
   });
 }
-  }
+  }if (filteredPostings.length === 0) {
+      this.errorMessage = 'No postings match your filter criteria.';
+      console.log('No postings match your filter criteria.');
+    }
+    else {
+      this.errorMessage = null; // Reset the error message if postings are found
+    }
 
   // Finally, include or exclude postings based on their status
   this.postingDetails = filteredPostings.filter(posting => {
     const isOpen = posting.Status === 'Open';
     const isClosedAndChecked = this.sortKey.closedChecked && posting.Status === 'Closed';
     const isRejectedAndChecked = this.sortKey.rejectedCheck && posting.Status === 'Rejected';
+    
 
     return isOpen || isClosedAndChecked || isRejectedAndChecked;
+    
   });
-
-  console.log('Filtered postings:', this.postingDetails);
+} catch (error) {
+  this.errorMessage = 'An error occurred while filtering the postings.';
+}
 },
     
 
@@ -476,6 +487,13 @@ if (this.sortKey.endDate) {
         .toLowerCase() // Convert to lowercase to make the search case-insensitive
         .includes(query); // Check if the concatenated string includes the search query
     });
+    if (this.postingDetails.length === 0) {
+    this.errorMessage = 'No results found for your search.';
+  }
+  else {
+    this.errorMessage = null; // Reset the error message if postings are found
+  }
+
   }
   },
   
@@ -764,17 +782,18 @@ padding-left: 1.8em;
 .sidebar-button:hover {
   background-color: #5a1c7a;
 }
-.error-popup {
+.error-message {
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
   color: black;
-  border: 1px solid gray; /* Adds a black border */
+  border: 1px solid rgb(0, 0, 0); /* Adds a black border */
   padding: 20px;
   border-radius: 10px;
   z-index: 100;
+  
 }
 .status{
   color: black;
@@ -879,7 +898,7 @@ padding-left: 1.8em;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   margin: 0 10px; /* Space between buttons */
-  background-color: #dc3545; /* Red background color */
+  
   color: white; /* White text color */
   min-width: 100px; /* Minimum width so buttons are not too small */
 }

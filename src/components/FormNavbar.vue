@@ -18,7 +18,7 @@
     </button>
     <ExportDropdown :show="showDropdown" @close-export="closeExportDropdown"/>
     <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" @close-Sort="closeSortingMenu"   />
-    <StatsDropdown v-if="showStatsDropdown" />
+    <StatsDropdown v-if="showStatsDropdown" @close-stats="closeStats"/>
     </div>
     </div>
     
@@ -62,6 +62,9 @@
     
       this.showDropdown = false; // This will hide the ExportDropdown component
     },
+    closeStats() {
+      this.showStatsDropdown = false; // This will hide the StatsDropdown component
+    }
 
   },
   watch: {
@@ -89,6 +92,7 @@
   justify-content: center; /* Center the container */
   height: 60px;
   background-color: #753C97;
+  z-index: 10;
 }
 
 .Navbar-container {
