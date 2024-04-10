@@ -30,7 +30,7 @@
         <button @click="Login">Login</button>
       </div>
         <!-- Button to Navigate to the Form Page -->
-        <div v-if="isLoggedIn" class="form-page">
+        <div v-if="isLoggedIn && showAdminView" class="form-page">
           <button @click="goToFormPage">Form Page</button>
         </div>
     </nav>
