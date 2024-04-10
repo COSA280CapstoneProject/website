@@ -118,7 +118,7 @@
       const toast = useToast();
   
       // Initializing refs for form fields
-      const orgName = ref('hi');
+      const orgName = ref('');
       const contactName = ref('');
       const phoneNum = ref('');
       const startDate = ref('');
@@ -133,17 +133,17 @@
       // Function to populate form fields from props
       onMounted(() => {
         const posting = props.editingPosting;
-        orgName.value = posting?.orgName || '';
-        contactName.value = posting?.contactName || '';
-        phoneNum.value = posting?.phoneNum || '';
-        startDate.value = posting?.startDate || '';
-        postTitle.value = posting?.postTitle || '';
-        postDesc.value = posting?.postDesc || '';
-        programType.value = posting?.programType || '';
-        postType.value = posting?.postType || '';
-        status.value = posting?.status || '';
-        email.value = posting?.email || '';
-        season.value = posting?.season || '';
+        OrgName.value = posting?.OrgName || '';
+        ContactName.value = posting?.ContactName || '';
+        PhoneNum.value = posting?.PhoneNum || '';
+        StartDate.value = posting?.StartDate || '';
+        PostTitle.value = posting?.PostTitle || '';
+        PostDesc.value = posting?.PostDesc || '';
+        ProgramType.value = posting?.ProgramType || '';
+        PostType.value = posting?.PostType || '';
+        Status.value = posting?.Status || '';
+        Email.value = posting?.Email || '';
+        Season.value = posting?.Season || '';
       });
       
       const detail = reactive({
