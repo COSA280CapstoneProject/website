@@ -2,21 +2,25 @@
   <div>
     <!-- Navbar Container -->
     <nav class="navbar">
+
       <!-- Logo and Link to SaskPolytech -->
       <div class="logo-title">
         <a href="https://saskpolytech.ca/" target="_blank">
           <img src="@/assets/Saskatchewan_Polytechnic_logo.png" alt="Logo" class="logo">
         </a>
       </div>
+
       <!-- Display User Info if Logged In -->
       <div v-if="isLoggedIn" class="user-info">
         {{ firstName }} {{ lastName }}
       </div>
+
       <!-- Settings Button and Dropdown Menu for Logged In Users -->
       <div v-if="isLoggedIn" class="settings" ref="settings" @click="toggleSettings">
         <button :class="{ 'spin-animation': showSettings }">
           <i class="pi pi-cog"></i>
         </button>
+
         <!-- Dropdown Menu for Account Management and Logout -->
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
@@ -25,27 +29,33 @@
           </div>
         </transition>
       </div>
+      
       <!-- Login Button for Users Not Logged In -->
       <div v-else class="login-button">
         <button @click="Login">Login</button>
       </div>
+
       <!-- Button to Navigate to the Form Page -->
       <div class="form-page">
         <button @click="goToFormPage">Form Page</button>
       </div>
     </nav>
+
     <!-- Popup for Admin Management -->
     <div v-show="showPopup" class="overlay">
       <div class="popup">
         <div class="popup-header">
           <span>Admin Management</span>
+
           <!-- Button to Close Popup -->
           <button class="close-button" @click="closePopup">X</button>
         </div>
         <div class="popup-content">
+
           <!-- Button to Add Admin -->
           <button class="add-admin" @click="addAdmin">Add Admin</button>
         </div>
+
         <!-- List of Admins with Remove Admin Functionality -->
         <div class="admin-list-container">
           <div class="admin-list">
@@ -55,6 +65,21 @@
             </div>
           </div>
           <button class="remove-admin" @click="removeAdmin" :disabled="selectedAdmin === null">Remove Admin</button>
+        </div>
+      </div>
+    </div>
+        <!-- New Popup for Adding an Admin -->
+        <div v-show="showAddAdminPopup" class="overlay">
+      <div class="popup add-admin-popup">
+        <div class="popup-header">
+          <span>Add Admin</span>
+          <button class="close-button" @click="closeAddAdminPopup">X</button>
+        </div>
+        <div class="popup-content">
+          <input type="email" id="adminEmail" v-model="newAdminEmail" placeholder="Enter admin email">
+          <!-- Placeholder for future form validation message -->
+          <p v-if="emailValidationError" class="validation-error">{{ emailValidationError }}</p>
+          <button class="submit-admin" :class="{ 'submit-admin-disabled': !newAdminEmail.length }" @click="submitAdmin" :disabled="!newAdminEmail.length">Submit</button>
         </div>
       </div>
     </div>
@@ -79,6 +104,9 @@ export default {
       showAdminView: false,
       admins: [],
       selectedAdmin: null,
+      newAdminEmail: '',
+      emailValidationError: '',
+      showAddAdminPopup: false,
     };
   },
 
@@ -118,6 +146,76 @@ export default {
       }
     }
   },
+
+  async submitAdmin() {
+  if (!this.newAdminEmail) {
+    this.emailValidationError = "Email is required";
+    return;
+  }
+
+  const adminData = {
+    adminID: "1",
+    email: this.newAdminEmail,
+    name: "Admin Name",
+    partnerID: "123"
+  };
+
+  try {
+    const response = await fetch('https://ictdatabasefileupload.azurewebsites.net/api/addICTSQLDatabaseAdministrator', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(adminData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add admin');
+    }
+
+    console.log("Admin added successfully");
+    this.closeAddAdminPopup();
+    // Consider refreshing the list of admins here
+  } catch (error) {
+    console.error("Error adding admin:", error);
+  }
+},
+
+async removeAdmin() {
+  if (this.selectedAdmin === null) {
+    console.error("No admin selected");
+    return;
+  }
+
+  const adminToRemove = this.admins[this.selectedAdmin];
+  const adminData = {
+    adminID: adminToRemove.adminID,
+    email: adminToRemove.email,
+    name: adminToRemove.name, 
+    partnerID: adminToRemove.partnerID, 
+  };
+
+  try {
+    const response = await fetch('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabaseAdministrator', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(adminData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to remove admin');
+    }
+    console.log("Admin removed successfully");
+
+
+    this.admins.splice(this.selectedAdmin, 1);
+    this.selectedAdmin = null;
+  } catch (error) {
+    console.error("Error removing admin:", error);
+  }
+},
 
   // Lifecycle hook for cleanup before the component is destroyed
   beforeUnmount() {
@@ -194,9 +292,32 @@ export default {
       this.showPopup = false;
     },
 
-    // Placeholder for adding an admin (logic to be implemented)
     addAdmin() {
-      // Implementation required
+      this.openAddAdminPopup();
+    },
+
+    openAddAdminPopup() {
+      this.showAddAdminPopup = true;
+      this.showPopup = false;
+    },
+
+    closeAddAdminPopup() {
+      this.showAddAdminPopup = false;
+      this.newAdminEmail = '';
+      this.emailValidationError = '';
+      this.showPopup = true;
+    },
+
+    submitAdmin() {
+      // Validate the email format
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(this.newAdminEmail)) {
+        this.emailValidationError = 'Please enter a valid email address';
+        return;
+      }
+      this.addAdmin();
+      this.closeAddAdminPopup();
+      this.showPopup = true;
     },
 
     // Select an admin from the list
@@ -204,15 +325,16 @@ export default {
       this.selectedAdmin = index;
     },
 
-    // Remove the selected admin
+    // Handle the admin removal
     removeAdmin() {
-      if (this.selectedAdmin !== null) {
-        // Logic for removing an admin
-        this.selectedAdmin = null;
+      if (this.selectedAdmin === null) {
+        console.error("No admin selected");
+        return;
       }
-    },
-  }
-}
+      this.removeAdmin();
+  },
+},
+};
 </script>
 
 
@@ -242,10 +364,10 @@ html, body {
 
 /* Styles for the logo, making it clickable */
 .logo {
-  width: 100px;
+  width: 85px;
   margin-right: auto;
   cursor: pointer;
-  mix-blend-mode:inherit;
+  padding-top: 2px;
 }
 
 /* Form page button styles */
@@ -560,6 +682,45 @@ body.no-scroll {
   background-color: red;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+/* Styles for the admin email input field */
+input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Styles for the submit button inside the popup */
+.submit-admin {
+  background-color: #ab4ec0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 10px auto;
+  text-align: center;
+}
+
+/* Hover effect for the submit button */
+.submit-admin:hover {
+  background-color: #723281;
+}
+
+/* Disabled state for the submit button */
+.submit-admin-disabled {
+  background-color: #f7d1ff;
+  cursor: not-allowed;
+}
+
+/* Styles for validation error messages */
+.validation-error {
+  color: red;
+  font-size: 0.8em;
 }
 
 /* Media query for responsive adjustments */
