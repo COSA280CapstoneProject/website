@@ -9,12 +9,12 @@
           <div class="input-group">
             <div class="org-contact-container">
               <div class="orgName">
-                <label for="orgName">Organization Name </label>
-                <input type="text" v-model="orgName" :class="{ error: submitted && !orgName.trim() }" />
+                <label for="orgName">Organization Name</label>
+                <input type="text" v-model="detail.OrgName" :class="{ error: submitted && !detail.OrgName.trim() }" />
               </div>
               <div class="contactName">
                 <label for="contactName">Contact Name </label>
-                <input type="text" v-model="contactName" :class="{ error: submitted && !contactName }" />
+                <input type="text" v-model="detail.ContactName" :class="{ error: submitted && !ContactName.trim() }" />
               </div>
             </div>
             <div class="contact-info-container">
@@ -22,15 +22,15 @@
                 <div class="email">
                   <label for="email">Email </label>
                   <div>
-                    <input type="text" v-model="email" :class="{ error: submitted && !email }" />
+                    <input type="text" v-model="detail.Email" :class="{ error: submitted && !email }" />
                     <span v-if="submitted && !email" class="error-message">Please enter a valid email address.</span>
                   </div>
                 </div>
               </div>
               <div class="phoneNumber">
                 <label for="phoneNumber">Phone Number </label>
-                <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber"
-                  :value="formattedPhoneNumber" :class="{ error: submitted && !formattedPhoneNumber }" />
+                <input type="text" id="phoneNum" name="phoneNum" @input="updatePhoneNumber" v-model.lazy="detail.PhoneNum" :class="{ error: submitted && !detail.PhoneNum }" />
+
               </div>
             </div>
             <div class="posting">
@@ -39,8 +39,7 @@
                 <label for="postingType">Posting</label>
               </div>
               <div class="select-container">
-                <select id="postingType" name="postingType" v-model="programType"
-                  :class="{ error: submitted && !programType }">
+                <select id="postingType" name="postingType" v-model="detail.PostType" :class="{ error: submitted && !detail.PostType }">
                   <option value="Student Projects">Student Project</option>
                   <option value="Internships">Internship</option>
                   <option value="Job Placements">Job Placement</option>
@@ -51,10 +50,13 @@
               <div class="start-date-container">
                 <label for="startDate">Start Date </label>
                 <div class="date-inputs">
-                  <select id="Year" name="Year" v-model="startDate" :class="{ error: submitted && !startDate }">
-                    <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                  <select id="Year" name="Year" v-model="detail.StartDate" :class="{ error: submitted && !startDate }">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
                   </select>
-                  <select id="Season" name="Season" v-model="season" :class="{ error: submitted && !season }">
+                  <select id="Season" name="Season" v-model="detail.Season" :class="{ error: submitted && !season }">
                     <option value="Fall">Fall</option>
                     <option value="Winter">Winter</option>
                     <option value="Spring">Spring</option>
@@ -65,12 +67,13 @@
             </div>
             <div class="Title">
               <label for="Title" id="TitleL">Title </label>
-              <input type="text" id="Title" name="Title" v-model="postTitle"
+              <input type="text" id="Title" name="Title" v-model="detail.PostTitle"
                 :class="{ error: submitted && !postTitle }" />
             </div>
             <div class="Description">
               <label for="Description">Description </label>
-              <textarea id="Description" name="Description" v-model="postDesc" :class="{ error: submitted && !postDesc }"></textarea>
+              <textarea id="Description" name="Description" v-model="detail.PostDesc" :class="{ error: submitted && !detail.PostDesc }"></textarea>
+
             </div>
             <div class="submit">
               <button @click="submitForm">Edit</button>
@@ -91,11 +94,13 @@
   import { useToast } from 'primevue/usetoast';
   import axios from 'axios';
   import Toast from 'primevue/toast';
+  import { reactive } from 'vue';
   
   export default {
     data() {
       return {
-        years: [2024, 2025, 2026], // Years for the dropdown
+        years: [2024, 2025, 2026, 2027], // Years for the dropdown
+        postingDetails: [],
       }
     },
     components: {
@@ -108,83 +113,142 @@
         required: true,
       }
     },
+    
     setup(props, { emit }) {
       const toast = useToast();
   
       // Initializing refs for form fields
-      const orgName = ref('');
-      const contactName = ref('');
-      const phoneNum = ref('');
-      const startDate = ref('');
-      const postTitle = ref('');
-      const postDesc = ref('');
-      const programType = ref('');
-      const postType = ref('');
-      const status = ref('');
-      const email = ref('');
-      const season = ref('');
+      const OrgName = ref('');
+      const ContactName = ref('');
+      const PhoneNum = ref('');
+      const StartDate = ref('');
+      const PostTitle = ref('');
+      const PostDesc = ref('');
+      const ProgramType = ref('');
+      const PostType = ref('');
+      const Status = ref('');
+      const Email = ref('');
+      const Season = ref('');
   
       // Function to populate form fields from props
       onMounted(() => {
         const posting = props.editingPosting;
-        orgName.value = posting?.orgName || '';
-        contactName.value = posting?.contactName || '';
-        phoneNum.value = posting?.phoneNum || '';
-        startDate.value = posting?.startDate || '';
-        postTitle.value = posting?.postTitle || '';
-        postDesc.value = posting?.postDesc || '';
-        programType.value = posting?.programType || '';
-        postType.value = posting?.postType || '';
-        status.value = posting?.status || '';
-        email.value = posting?.email || '';
-        season.value = posting?.season || '';
+        OrgName.value = posting?.OrgName || '';
+        ContactName.value = posting?.ContactName || '';
+        PhoneNum.value = posting?.PhoneNum || '';
+        StartDate.value = posting?.StartDate || '';
+        PostTitle.value = posting?.PostTitle || '';
+        PostDesc.value = posting?.PostDesc || '';
+        ProgramType.value = posting?.ProgramType || '';
+        PostType.value = posting?.PostType || '';
+        Status.value = posting?.Status || '';
+        Email.value = posting?.Email || '';
+        Season.value = posting?.Season || '';
       });
-  
+      
+      const detail = reactive({
+      OrgName: '',
+      ContactName: '',
+      Email: '',
+      PhoneNum: '', 
+      PostType: '',
+      ProgramType: '',
+      StartDate: '',
+      PostID: '',
+      PostTitle: '',
+      Season: '',
+      DateAdded: '',
+      PostDesc: '',
+    });
+    const fetchPostDetails = async () => {
+  try {
+    const response = await axios.get(`https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabasePostings?search=${props.postID}`);
+    console.log(response.data);
+
+    // Find the posting with the matching PostID
+    const posting = response.data.find(item => item.PostID.toString() === props.postID);
+
+    if (posting) {
+      console.log("Posting found:", posting);
+      // If a matching posting is found, assign its details to the detail object
+      Object.assign(detail, {
+        OrgName: posting.OrgName,
+        ContactName: posting.ContactName,
+        Email: posting.Email,
+        PhoneNum: posting.PhoneNum,
+        PostType: posting.PostType,
+        ProgramType: posting.ProgramType,
+        StartDate: posting.StartDate,
+        PostID: posting.PostID,
+        PostTitle: posting.PostTitle,
+        Season: posting.Season,
+        DateAdded: posting.DateAdded,
+        Status: posting.Status,
+        PostDesc: posting.PostDesc,
+        // Add any other fields you need
+      });
+    } else {
+      console.error("No posting found with the given PostID.");
+      toast.add({ severity: 'error', summary: 'Fetch Failed', detail: 'No posting found with the given PostID.', life: 3000 });
+    }
+  } catch (error) {
+    console.error("Failed to fetch posting details:", error);
+    toast.add({ severity: 'error', summary: 'Fetch Failed', detail: 'Failed to fetch posting details.', life: 3000 });
+  }
+};
+
+    onMounted(() => {
+      fetchPostDetails();
+    });
+
+    
       // Define the endpoint map
       const endpointMap = {
-        orgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
-        contactName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsContactName',
-        phoneNum: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPhoneNum',
-        startDate: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsStartDate',
-        postTitle: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostTitle',
-        postDesc: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostDesc',
-        programType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype',
-        postType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostType',
-        email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
-        season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
+        OrgName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsOrgName',
+        ContactName: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsContactName',
+        PhoneNum: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPhoneNum',
+        PtartDate: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsStartDate',
+        PostTitle: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostTitle',
+        PostDesc: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostDesc',
+        ProgramType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsProgramtype',
+        PostType: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsPostType',
+        Email: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsEmail',
+        Season: 'https://ictdatabasefileupload.azurewebsites.net/api/editICTSQLDatabasePostingsSeason',
       };
 
       // Function to clear all fields
       const clearFields = () => {
-        orgName.value = '';
-        contactName.value = '';
-        phoneNum.value = '';
-        startDate.value = '';
-        postTitle.value = '';
-        postDesc.value = '';
-        programType.value = '';
-        postType.value = '';
-        status.value = '';
-        email.value = '';
-        season.value = '';
+        OrgName.value = '';
+        ContactName.value = '';
+        PhoneNum.value = '';
+        StartDate.value = '';
+        PostTitle.value = '';
+        PostDesc.value = '';
+        ProgramType.value = '';
+        PostType.value = '';
+        Status.value = '';
+        Email.value = '';
+        Season.value = '';
       };
+      
   
       // SubmitForm method to trigger update for changed fields
       const submitForm = async () => {
-        const fieldsToUpdate = {
-          orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season
-        };
+  // List of fields to check and update
+  const fieldsToUpdate = [
+    'OrgName', 'ContactName', 'PhoneNum', 'StartDate', 'PostTitle', 'PostDesc', 'ProgramType', 'PostType', 'Email', 'Season'
+  ];
+  console.log("Fields to update:", fieldsToUpdate);
+  console.log("Detail:", detail);
 
-        for (const [fieldName, fieldValue] of Object.entries(fieldsToUpdate)) {
-          // Compare current value with initial value from props and update if different and not empty
-          if (props.editingPosting[fieldName] !== fieldValue.value && fieldValue.value.trim() !== '') {
-            await updateField(fieldName, fieldValue.value);
-          } else {
-            // If the value hasn't changed or is empty, keep the original value
-            fieldValue.value = props.editingPosting[fieldName];
-          }
-        }
-
+  // Iterate over each field to check if it has changed
+  for (const fieldName of fieldsToUpdate) {
+    // Compare current value with the initial value from props
+    if (props.editingPosting[fieldName] !== detail[fieldName] && detail[fieldName].trim() !== '') {
+      // Update the field if it has changed
+      await updateField(fieldName, detail[fieldName]);
+    }
+  }
         // Clear all fields after updating
         clearFields();
       };
@@ -210,11 +274,13 @@
       const goBack = () => emit('close');
   
       return {
+        detail,
         goBack,
         submitForm,
-        orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season,
+        OrgName, ContactName, PhoneNum, StartDate, PostTitle, PostDesc, ProgramType, PostType, Status, Email, Season,
       };
     },
+    
   };
   </script>
 
@@ -312,11 +378,12 @@
 
 .Description textarea {
   resize: none; 
+  
 }
 .email input {
   padding: 5px;
   margin: 0;
-  margin-left: 72px;
+  margin-left: 66px;
   font-size: 16px;
 }
  
@@ -325,6 +392,8 @@
   padding: 5px;
   margin: 0;
   font-size: 16px;
+  
+  
 }
  
 .posting {
@@ -379,7 +448,7 @@
 }
  
 .startDate label {
-  margin-right: 10px; 
+  margin-right: 25px; 
 }
  
 .date-inputs {
@@ -420,6 +489,7 @@
 .Description label {
   margin-bottom: 5px;
   margin-top: -14%;
+  margin-right: 15px;
 }
 
 .FileUpload {
