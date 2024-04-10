@@ -235,7 +235,7 @@
       // SubmitForm method to trigger update for changed fields
       const submitForm = async () => {
         const fieldsToUpdate = {
-          orgName, contactName, phoneNum, startDate, postTitle, postDesc, programType, postType, status, email, season
+          OrgName, ContactName, PhoneNum, StartDate, PostTitle, PostDesc, ProgramType, PostType, Status, Email, Season
         };
 
         for (const [fieldName, fieldValue] of Object.entries(fieldsToUpdate)) {
