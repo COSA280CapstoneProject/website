@@ -36,7 +36,7 @@
       </div>
 
       <!-- Button to Navigate to the Form Page -->
-      <div class="form-page">
+      <div class="form-page" v-if="isLoggedIn">
         <button @click="goToFormPage">Form Page</button>
       </div>
     </nav>
