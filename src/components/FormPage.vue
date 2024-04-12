@@ -61,20 +61,21 @@
           <div v-show="showAssignProgramDropdown[index]" class="program-options">
             <select placeholder="Select Here" class="program" v-model="detail.selectedProgram" @change="updateField(detail.PostID, 'programType', detail.selectedProgram)">
               <option disabled value="" selected>Select Program</option>
-              <option value="AIDA (PG)">AIDA (PG)</option>
-              <option value="BIS ">BIS </option>
-              <option value="CCBC (PG) "> CCBC (PG)</option>
-              <option value="CAST ">CAST </option>
-              <option value="CNT ">CNT </option>
-              <option value="CST "> CST</option>
-              <option value=" CS (PG)"> CS (PG)</option>
-              <option value="GC ">GC </option>
-              <option value="IDT ">IDT </option>
-              <option value="LIT "> LIT</option>
-              <option value="MP "> MP</option>
-              <option value="SD (PG) ">SD (PG)</option>
-              <option value="TM (PG) ">TM (PG)</option>
-             
+              <option value="Artificial Intelligence and Data Analytics">Artificial Intelligence and Data Analytics</option>
+              <option value="Business Information Systems">Business Information Systems</option>
+              <option value="Cloud Computing and Blockchain">Cloud Computing and Blockchain</option>
+              <option value="Computer Automated Systems Technician">Computer Automated Systems Technician</option>
+              <option value="Computer Networking Technician">Computer Networking Technician</option>
+              <option value="Computer Systems Technology">Computer Systems Technology</option>
+              <option value="Cyber Security">Cyber Security</option>
+              <option value="Front-End Web Development">Front-End Web Development</option>
+              <option value="Graphic Communications">Graphic Communications</option>
+              <option value="Interactive Design and Technology">Interactive Design and Technology</option>
+              <option value="Library and Information Technology">Library and Information Technology</option>
+              <option value="Library Clerk">Library Clerk</option>
+              <option value="Media Production">Media Production</option>
+              <option value="Software Developer">Software Developer</option>
+              <option value="Technology Management">Technology Management</option>
             </select>
           </div>
        
@@ -149,21 +150,22 @@ export default {
     },
       
       ProgramType: [
-      'AIDA (PG)',
-      'BIS ',
-      'CCBC (PG)',
-      'CAST ',
-      'CNT ',
-      'CST ',
-      'CS (PG)',
-      'GC ',
-      'IDT',
-      'LIT ',
-      'MP ', 
-      'SD (PG) ', 
-      'TM (PG) ',
-      
-    ],
+        'Artificial Intelligence and Data Analytics',
+        'Business Information Systems',
+        'Cloud Computing and Blockchain',
+        'Computer Automated Systems Technician',
+        'Computer Networking Technician',
+        'Computer Systems Technology',
+        'Cyber Security',
+        'Front-End Web Development',
+        'Graphic Communications',
+        'Interactive Design and Technology',
+        'Library and Information Technology',
+        'Library Clerk',
+        'Media Production',
+        'Software Developer',
+        'Technology Management',
+      ],
     };
     
   },
