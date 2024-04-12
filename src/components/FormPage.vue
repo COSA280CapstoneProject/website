@@ -61,18 +61,20 @@
           <div v-show="showAssignProgramDropdown[index]" class="program-options">
             <select placeholder="Select Here" class="program" v-model="detail.selectedProgram" @change="updateField(detail.PostID, 'programType', detail.selectedProgram)">
               <option disabled value="" selected>Select Program</option>
-              <option value="Software Development">Software Development</option>
-              <option value="Network Technician">Network Technician</option>
-              <option value="Web Development">Web Development</option>
-              <option value="Data Analysis">Data Analysis</option>
-              <option value="Data Science">Data Science</option>
-              <option value="Cyber Security">Cyber Security</option>
-              <option value="UX/UI Design">UX/UI Design</option>
-              <option value="Digital Marketing">Digital Marketing</option>
-              <option value="IT Support">IT Support</option>
-              <option value="Cloud Computing">Cloud Computing</option>
-              <option value="Project Management">Project Management</option>
-              <!-- Add more options as needed -->
+              <option value="AIDA (PG)">AIDA (PG)</option>
+              <option value="BIS ">BIS </option>
+              <option value="CCBC (PG) "> CCBC (PG)</option>
+              <option value="CAST ">CAST </option>
+              <option value="CNT ">CNT </option>
+              <option value="CST "> CST</option>
+              <option value=" CS (PG)"> CS (PG)</option>
+              <option value="GC ">GC </option>
+              <option value="IDT ">IDT </option>
+              <option value="LIT "> LIT</option>
+              <option value="MP "> MP</option>
+              <option value="SD (PG) ">SD (PG)</option>
+              <option value="TM (PG) ">TM (PG)</option>
+             
             </select>
           </div>
        
@@ -147,17 +149,19 @@ export default {
     },
       
       ProgramType: [
-      'Software Development',
-      'Network Technician',
-      'Web Development',
-      'Data Analysis',
-      'Data Science',
-      'Cyber Security',
-      'UX/UI Design',
-      'Digital Marketing',
-      'IT Support',
-      'Cloud Computing',
-      'Project Management',
+      'AIDA (PG)',
+      'BIS ',
+      'CCBC (PG)',
+      'CAST ',
+      'CNT ',
+      'CST ',
+      'CS (PG)',
+      'GC ',
+      'IDT',
+      'LIT ',
+      'MP ', 
+      'SD (PG) ', 
+      'TM (PG) ',
       
     ],
     };
@@ -839,25 +843,33 @@ padding-left: 1.8em;
   left: 0;
   width: 100%;
   height: 100%;
-  border: 2px #5a6268;
+  border: 5px black;
+  border:black;
   display: flex;
   box-shadow: #333;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+  outline-width: 3px solid black;
 }
 
 .delete-confirmation-content {
   background: #fff; /* White background for the popup */
   padding: 30px;
-  border-radius: 15px; /* Rounded corners for the popup */
+  border-radius: 5px; /* Rounded corners for the popup */
   text-align: center;
   max-width: 400px;
   width: 90%;
-  
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19); /* Enhanced box-shadow for 3D effect */
+  transition: transform 0.3s ease; /* Smooth transition for hover effect */
 }
+
+.delete-confirmation-content:hover {
+  transform: scale(1.05); /* Slightly enlarge the popup on hover */
+}
+
+
 
 .delete-confirmation-content p {
   font-size: 18px;
