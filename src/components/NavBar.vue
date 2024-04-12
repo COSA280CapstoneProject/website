@@ -24,7 +24,7 @@
         <!-- Dropdown Menu for Account Management and Logout -->
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
-            <div v-if="showAdminView" class="account-man" @click="openPopup($event)">Account Management</div>
+            <div class="account-man" @click="openPopup($event)">Account Management</div>
             <div class="logout" @click="Logout">Logout</div>
           </div>
         </transition>
@@ -34,10 +34,11 @@
       <div v-else class="login-button">
         <button @click="Login">Login</button>
       </div>
-        <!-- Button to Navigate to the Form Page -->
-        <div v-if="isLoggedIn && showAdminView" class="form-page">
-          <button @click="goToFormPage">Form Page</button>
-        </div>
+
+      <!-- Button to Navigate to the Form Page -->
+      <div class="form-page">
+        <button @click="goToFormPage">Form Page</button>
+      </div>
     </nav>
 
     <!-- Popup for Admin Management -->
@@ -63,7 +64,8 @@
               <p>{{ admin.name }} ({{ admin.email }})</p>
             </div>
           </div>
-          <button class="remove-admin" @click="removeAdmin" :disabled="selectedAdmin === null">Remove Admin</button>
+          <div class="removal-error" v-if="removalError">{{ removalError }}</div>
+          <button class="remove-admin" @click="removeAdminButton" :disabled="selectedAdmin === null">Remove Admin</button>
         </div>
       </div>
     </div>
@@ -75,10 +77,16 @@
           <button class="close-button" @click="closeAddAdminPopup">X</button>
         </div>
         <div class="popup-content">
+          <input type="text" id="adminName" v-model="newAdminName" placeholder="Enter Full Name">
           <input type="email" id="adminEmail" v-model="newAdminEmail" placeholder="Enter admin email">
-          <!-- Placeholder for future form validation message -->
-          <p v-if="emailValidationError" class="validation-error">{{ emailValidationError }}</p>
-          <button class="submit-admin" :class="{ 'submit-admin-disabled': !newAdminEmail.length }" @click="submitAdmin" :disabled="!newAdminEmail.length">Submit</button>
+          <p v-if="emailValidationError" class="add-admin-error">{{ emailValidationError }}</p>
+          <p v-if="formError" class="add-admin-error">{{ formError }}</p>
+          <button class="submit-admin"
+                  :class="{ 'submit-admin-disabled': !newAdminName.trim().length || !newAdminEmail.trim().length }"
+                  @click="submitAdminButton"
+                  :disabled="!newAdminName.trim().length || !newAdminEmail.trim().length">
+            Submit
+          </button>
         </div>
       </div>
     </div>
@@ -104,8 +112,11 @@ export default {
       admins: [],
       selectedAdmin: null,
       newAdminEmail: '',
+      newAdminName: '',
       emailValidationError: '',
       showAddAdminPopup: false,
+      removalError: '',
+      formError: '',
     };
   },
 
@@ -135,7 +146,8 @@ export default {
       // Map and push administrator information to component state
       const adjustedAdmins = administrators.map(admin => ({
         email: admin.Email,
-        name: admin.Name
+        name: admin.Name,
+        adminID: admin.AdminID
       }));
       this.admins.push(...adjustedAdmins, { email: this.account.idTokenClaims.email, name: this.account.idTokenClaims.name });
       
@@ -145,76 +157,6 @@ export default {
       }
     }
   },
-
-  async submitAdmin() {
-  if (!this.newAdminEmail) {
-    this.emailValidationError = "Email is required";
-    return;
-  }
-
-  const adminData = {
-    adminID: "1",
-    email: this.newAdminEmail,
-    name: "Admin Name",
-    partnerID: "123"
-  };
-
-  try {
-    const response = await fetch('https://ictdatabasefileupload.azurewebsites.net/api/addICTSQLDatabaseAdministrator', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(adminData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to add admin');
-    }
-
-    console.log("Admin added successfully");
-    this.closeAddAdminPopup();
-    // Consider refreshing the list of admins here
-  } catch (error) {
-    console.error("Error adding admin:", error);
-  }
-},
-
-async removeAdmin() {
-  if (this.selectedAdmin === null) {
-    console.error("No admin selected");
-    return;
-  }
-
-  const adminToRemove = this.admins[this.selectedAdmin];
-  const adminData = {
-    adminID: adminToRemove.adminID,
-    email: adminToRemove.email,
-    name: adminToRemove.name, 
-    partnerID: adminToRemove.partnerID, 
-  };
-
-  try {
-    const response = await fetch('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabaseAdministrator', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(adminData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to remove admin');
-    }
-    console.log("Admin removed successfully");
-
-
-    this.admins.splice(this.selectedAdmin, 1);
-    this.selectedAdmin = null;
-  } catch (error) {
-    console.error("Error removing admin:", error);
-  }
-},
 
   // Lifecycle hook for cleanup before the component is destroyed
   beforeUnmount() {
@@ -263,8 +205,6 @@ async removeAdmin() {
         username: account.username,
         name: account.name,
         email: account.idTokenClaims.email,
-        firstName: account.idTokenClaims.given_name,
-        lastName: account.idTokenClaims.family_name
       };
 
       // Update login status
@@ -291,6 +231,25 @@ async removeAdmin() {
       this.showPopup = false;
     },
 
+    
+    async fetchAdmins() {
+      try {
+        const response = await fetch('https://ictdatabaseapi.azurewebsites.net/api/queryICTSQLDatabaseAdministrators');
+        if (!response.ok) {
+          throw new Error('Failed to fetch admins');
+        }
+        const administrators = await response.json();
+        this.admins = administrators.map(admin => ({
+          email: admin.Email,
+          name: admin.Name,
+          adminID: admin.AdminID
+        }));
+      } catch (error) {
+        console.error("Error fetching admins:", error);
+        // Handle errors (e.g., show an error message)
+      }
+    },
+
     addAdmin() {
       this.openAddAdminPopup();
     },
@@ -307,14 +266,51 @@ async removeAdmin() {
       this.showPopup = true;
     },
 
-    submitAdmin() {
+    async submitAdmin() {
+    if (!this.newAdminEmail) {
+      this.emailValidationError = "Email is required";
+      return;
+    }
+
+    const adminID = Math.floor(1000 + Math.random() * 9000); // generate a four digit random adminID
+
+    const adminData = {
+      email: this.newAdminEmail,
+      name: this.newAdminName,
+      adminID: adminID, // use the generated adminID
+      partnerID: adminID // use the same adminID as the partnerID to keep track in the database
+    };
+
+    try {
+      const response = await fetch('https://ictdatabasefileupload.azurewebsites.net/api/addICTSQLDatabaseAdministrator', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(adminData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add admin');
+      }
+        this.closeAddAdminPopup();
+        this.showPopup = true;
+        await this.fetchAdmins();
+    
+      } catch (error) {
+        console.error("Error adding admin:", error);
+        this.formError = 'Failed to add admin, please try again later';
+      }
+    },
+
+    submitAdminButton() {
       // Validate the email format
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(this.newAdminEmail)) {
         this.emailValidationError = 'Please enter a valid email address';
         return;
       }
-      this.addAdmin();
+      this.submitAdmin();
       this.closeAddAdminPopup();
       this.showPopup = true;
     },
@@ -324,13 +320,54 @@ async removeAdmin() {
       this.selectedAdmin = index;
     },
 
-    // Handle the admin removal
-    removeAdmin() {
+    // Remove an admin from the list
+    async removeAdmin() {
+    if (this.selectedAdmin === null) {
+      console.error("No admin selected");
+      return;
+    }
+
+    const adminToRemove = this.admins[this.selectedAdmin];
+    const adminData = {
+      adminID: adminToRemove.adminID,
+    };
+
+    try {
+      const response = await fetch('https://ictdatabasefileupload.azurewebsites.net/api/deleteICTSQLDatabaseAdministrator', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(adminData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove admin');
+      }
+      console.log("Admin removed successfully");
+
+      this.admins.splice(this.selectedAdmin, 1);
+      this.selectedAdmin = null;
+    } catch (error) {
+      console.error("Error removing admin:", error);
+      this.removalError = 'Failed to remove admin, please try again later';
+      setTimeout(() => {
+        this.removalError = '';
+      }, 15000);
+    }
+  },
+
+    // Remove admin button functionality
+    removeAdminButton() {
       if (this.selectedAdmin === null) {
         console.error("No admin selected");
         return;
       }
       this.removeAdmin();
+  },
+
+  clearRemovalError() {
+    this.removalError = '';
   },
 },
 };
@@ -496,7 +533,7 @@ html, body {
 .dropdown-menu {
   position: absolute;
   left: 50%;
-  transform: translateX(-80%);
+  transform: translateX(-50%);
   top: calc(100% + 5px);
   background-color: #f9f9f9;
   width: 200px;
@@ -650,6 +687,14 @@ body.no-scroll {
   margin: auto;
 }
 
+.removal-error {
+  padding: 10px;
+  bottom: 0;
+  color: red;
+  font-size: 0.6em;
+}
+
+
 /* Hover styles for add and remove buttons */
 .popup .add-admin:hover, .popup .remove-admin:hover{
   background-color: #723281;
@@ -671,8 +716,14 @@ body.no-scroll {
   border: none;
   background: none;
   cursor: pointer;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* Hover effect for close button */
@@ -683,14 +734,15 @@ body.no-scroll {
   padding-right: 5px;
 }
 
-/* Styles for the admin email input field */
-input[type="email"] {
+/* Styles for the admin email and text input fields */
+input[type="email"], input[type="text"] {
   width: 100%;
   padding: 10px;
-  margin: 10px 0;
+  margin-bottom: 15px; /* This creates space between the input fields */
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 
 /* Styles for the submit button inside the popup */
 .submit-admin {
@@ -716,11 +768,14 @@ input[type="email"] {
   cursor: not-allowed;
 }
 
-/* Styles for validation error messages */
-.validation-error {
-  color: red;
-  font-size: 0.8em;
+/* Styles for the add admin error message */
+.add-admin-error {
+  color: #f44336;
+  margin-top: 10px;
+  font-size: 0.9em;
+  text-align: center;
 }
+
 
 /* Media query for responsive adjustments */
 @media screen and (max-width: 950px) {
@@ -746,16 +801,17 @@ input[type="email"] {
 
   /* Adjust position and size of close button for small screens */
   .close-button {
-    font-size: 16px;
-    top: -10px;
-    margin-right: -50px;
-  }
-
-  /* Adjust position and size of close button for small screens */
-  .close-button {
     top: -20px;
     right: -23px;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+}
+
+    .close-button:hover {
+    color: white;
+    background-color: red;
   }
 
   /* Adjust font size and width of form page button for small screens */
