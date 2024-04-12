@@ -10,17 +10,15 @@
       
     <div class="search-bar">
       <i class="fa fa-search"></i>
-      <input type="text" placeholder="Search..." />
+      <input type="text" placeholder="Search..." v-model="searchQuery" />
     </div>
-    <button class="four-square">
-      <i class="fa-solid fa-table-cells-large"></i>
-    </button>
+    
     <button class="more-options" @click="showDropdown = !showDropdown">
       <i class="fas fa-ellipsis-v"></i>
     </button>
-    <ExportDropdown :show="showDropdown" />
-    <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" />
-    <StatsDropdown v-if="showStatsDropdown" />
+    <ExportDropdown :show="showDropdown" @close-export="closeExportDropdown"/>
+    <SortingMenu v-if="showSorting" @sort-key-changed="updateSortKeys" @close-Sort="closeSortingMenu"   />
+    <StatsDropdown v-if="showStatsDropdown" @close-stats="closeStats"/>
     </div>
     </div>
     
@@ -42,7 +40,8 @@
       return {
       showDropdown: false,
       showStatsDropdown: false,
-      showSorting: false
+      showSorting: false,
+      searchQuery: '',
     }
     },
     methods: {
@@ -54,10 +53,30 @@
     },
     updateSortKeys(newSortKeys) {
       this.sortKey = newSortKeys; // Update sortKey when it changes
-
       this.$emit('navbar-sort-key-changed', newSortKeys);
     },
+    closeSortingMenu() {
+      this.showSorting = false; // This will hide the SortingMenu component
+  },
+    closeExportDropdown() {
+    
+      this.showDropdown = false; // This will hide the ExportDropdown component
+    },
+    closeStats() {
+      this.showStatsDropdown = false; // This will hide the StatsDropdown component
+    }
+
+  },
+  watch: {
+    searchQuery(newQuery, oldQuery) {
+    // To avoid unnecessary emissions, check if the newQuery is actually different from oldQuery
+    if (newQuery !== oldQuery) {
+      
+      this.$emit('search-query-updated', newQuery);
+      
+    }
   }
+},
   };
   </script>
   
@@ -72,13 +91,14 @@
   align-items: center;
   justify-content: center; /* Center the container */
   height: 60px;
-  background-image: url("@/assets/header.jpg");
+  background-color: #753C97;
+  z-index: 10;
 }
 
 .Navbar-container {
   width: 90%; /* Reduce the width to create space on the sides */
   display: flex;
-  justify-content: space-between; /* Distribute the items equally */
+ 
 }
     .hamburger {
   position: relative;
@@ -87,10 +107,12 @@
   transition: 0.5s;
     border: none;
     background-color: transparent;
+    margin-right: 15%;
 }
 
 .hamburger i {
   font-size: 35px;
+  
 }
 .sorting {
   margin-left: 10px;
@@ -98,11 +120,14 @@
   border: none;
   background-color: transparent;
   font-size: 20px; /* Increase the font size of the sorting icon */
+  margin-right: 20%;
 
 }
 .search-bar {
   position: relative;
-  margin-left: 10px;
+  display: inline-block;
+  margin-right: 35%;
+
 }
 
 .search-bar i {
@@ -118,18 +143,7 @@
   height: 40px; /* Increase the height of the search bar */
 
 }
-.four-square {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  transition: 0.5s;
-    border: none;
-    background-color: transparent;
-}
 
-.four-square i {
-  font-size: 35px;
-}
   
 
   .more-options {
@@ -139,6 +153,7 @@
   transition: 0.5s;
   border: none;
     background-color: transparent;
+   
 }
 
 .more-options i {

@@ -24,7 +24,7 @@
         <!-- Dropdown Menu for Account Management and Logout -->
         <transition name="fade-slide">
           <div v-show="showSettings" class="dropdown-menu" ref="dropdown">
-            <div class="account-man" @click="openPopup($event)">Account Management</div>
+            <div v-if="showAdminView" class="account-man" @click="openPopup($event)">Account Management</div>
             <div class="logout" @click="Logout">Logout</div>
           </div>
         </transition>
@@ -34,11 +34,10 @@
       <div v-else class="login-button">
         <button @click="Login">Login</button>
       </div>
-
-      <!-- Button to Navigate to the Form Page -->
-      <div class="form-page">
-        <button @click="goToFormPage">Form Page</button>
-      </div>
+        <!-- Button to Navigate to the Form Page -->
+        <div v-if="isLoggedIn && showAdminView" class="form-page">
+          <button @click="goToFormPage">Form Page</button>
+        </div>
     </nav>
 
     <!-- Popup for Admin Management -->
@@ -497,7 +496,7 @@ html, body {
 .dropdown-menu {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-80%);
   top: calc(100% + 5px);
   background-color: #f9f9f9;
   width: 200px;
