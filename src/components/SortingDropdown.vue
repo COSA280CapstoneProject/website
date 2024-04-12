@@ -1,25 +1,29 @@
 <template>
   <div class="sorting-dropdown">
-      <label class="closedCheck">
-          <Checkbox v-model="closedChecked" :binary="true" />
-    Show Closed
-  </label>
-  <label class="RejectedCheck">
-          <Checkbox v-model="rejectedCheck" :binary="true" />
-    Show Rejected
-  </label>
+    <label class="closedCheck">
+      <Checkbox v-model="closedChecked" :binary="true" />
+      Show Closed
+    </label>
+    <label class="RejectedCheck">
+      <Checkbox v-model="rejectedCheck" :binary="true" />
+      Show Rejected
+    </label>
     <h4>Date Posted</h4>
     <Calendar v-model="startDate" showIcon @focus="adjustDatePickerPosition" />
     <Calendar v-model="endDate" showIcon @focus="adjustDatePickerPosition" />
     <h4>Deadline</h4>
-    <MultiSelect ref="deadlineYearRef" class="Deadline" v-model="DeadlineY" :options="Years" placeholder="Select Year" />
-    <MultiSelect ref="deadlineSeasonRef" class="Deadline" v-model="DeadlineS" :options="Season" placeholder="Select Season" />
+    <MultiSelect ref="deadlineYearRef" class="Deadline" v-model="DeadlineY" :options="Years"
+      placeholder="Select Year" />
+    <MultiSelect ref="deadlineSeasonRef" class="Deadline" v-model="DeadlineS" :options="Season"
+      placeholder="Select Season" />
     <h4>Program Types</h4>
-    <MultiSelect ref="programTypeRef" class="multi-select" v-model="ProgramTypes" :options="ProgramType" placeholder="Select Program Types" />
+    <MultiSelect ref="programTypeRef" class="multi-select" v-model="ProgramTypes" :options="ProgramType"
+      placeholder="Select Program Types" />
     <h4>Posting Types</h4>
-    <MultiSelect ref="postTypeRef" class="multi-select" v-model="PostType" :options="PostingType" placeholder="Select Posting Types" />
+    <MultiSelect ref="postTypeRef" class="multi-select" v-model="PostType" :options="PostingType"
+      placeholder="Select Posting Types" />
     <h4>
-      
+
     </h4>
 
     <button @click="submitSort" class="submitbtn">Submit Sort</button>
@@ -58,24 +62,27 @@ export default {
       DeadlineY: null,
 
       ProgramType: [
-      'Software Development',
-      'Network Technician',
-      'Web Development',
-      'Data Analysis',
-      'Data Science',
-      'Cyber Security',
-      'UX/UI Design',
-      'Digital Marketing',
-      'IT Support',
-      'Cloud Computing',
-      'Project Management',
-      // Add more program types as needed
-    ],
+        'Undefined',
+        'Artificial Intelligence and Data Analytics',
+        'Business Information Systems',
+        'Cloud Computing and Blockchain',
+        'Computer Automated Systems Technician',
+        'Computer Networking Technician',
+        'Computer Systems Technology',
+        'Cyber Security',
+        'Front-End Web Development',
+        'Graphic Communications',
+        'Interactive Design and Technology',
+        'Library and Information Technology',
+        'Library Clerk',
+        'Media Production',
+        'Software Developer',
+        'Technology Management',
+      ],
     PostingType: [
       'Job Placements',
       'Internships',
       'Student Projects',
-      // Add more posting types as needed
     ],
     Years: [
       '2024',
