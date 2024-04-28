@@ -19,7 +19,7 @@
     "sequelize": "^6.37.2",
     "sweetalert2": "^11.10.6",
     "v-click-outside": "^3.2.0",
-    "vue": "^3.2.13",
+    "vue": "^3.4.25",
     "vue-draggable-resizable": "^3.0.0",
     "vue-meta": "^2.4.0",
     "vue-router": "^4.2.5",
