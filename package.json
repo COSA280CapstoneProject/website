@@ -13,7 +13,7 @@
     "@syncfusion/ej2-vue-dropdowns": "^25.1.37",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
-    "mysql2": "^3.9.3",
+    "mysql2": "^3.9.7",
     "primeicons": "^4.1.0",
     "primevue": "^3.48.0",
     "sequelize": "^6.37.2",
